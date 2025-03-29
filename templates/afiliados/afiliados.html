@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Afiliados</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Lista de Afiliados</h1>
+        <form action="{% url 'afiliadoLista' %}" method="get"></form>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Género</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Número de Afiliado</th>
+                    <th>Fecha de Afiliación</th>
+                    <th>Estado de Afiliación</th>
+                    <th>Fecha de Renovación</th>
+                    <th>Tipo de Afiliado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for afiliado in afiliados %}
+                    <tr>
+                        <td>{{ afiliado.nombre }}</td>
+                        <td>{{ afiliado.apellido }}</td>
+                        <td>{{ afiliado.fecha_nacimiento }}</td>
+                        <td>{{ afiliado.get_genero_display }}</td>
+                        <td>{{ afiliado.email }}</td>
+                        <td>{{ afiliado.telefono }}</td>
+                        <td>{{ afiliado.direccion }}</td>
+                        <td>{{ afiliado.numero_afiliado }}</td>
+                        <td>{{ afiliado.fecha_afiliacion }}</td>
+                        <td>{{ afiliado.get_estado_afiliacion_display }}</td>
+                        <td>{{ afiliado.fecha_renovacion }}</td>
+                        <td>{{ afiliado.get_tipo_afiliado_display }}</td>
+                        <td>
+                            <a href="" class="btn btn-info btn-sm">Ver Detalles</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="13" class="text-center">No hay afiliados registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
