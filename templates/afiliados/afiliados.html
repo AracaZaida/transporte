@@ -11,20 +11,21 @@
         <form action="{% url 'afiliadoLista' %}" method="get"></form>
         
         <table class="table table-striped">
+            <a href="{% url 'crearAfiliados' %}">registrar</a>
             <thead>
                 <tr>
+                    <th>Número de Afiliado</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>Fecha de Nacimiento</th>
-                    <th>Género</th>
+                    <th>Carnet</th>
+                  
                     <th>Email</th>
                     <th>Teléfono</th>
                     <th>Dirección</th>
-                    <th>Número de Afiliado</th>
+                   
                     <th>Fecha de Afiliación</th>
                     <th>Estado de Afiliación</th>
-                    <th>Fecha de Renovación</th>
-                    <th>Tipo de Afiliado</th>
+                   
                     <th>Acciones</th>
                 </tr>
             </thead>

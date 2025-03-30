@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{% url 'crearAfiliados' %}" method="POST">
+    <form action="{% url 'crearFederacion' %}" method="POST">
         {% csrf_token %}
-        {{afiliados}}
+        {{federacion}}
         <Button>guardad</Button>
     </form>
 

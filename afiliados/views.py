@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from .forms import Afiliados
+from django.urls import reverse
 
 # Create your views here.
 from django.shortcuts import render, get_object_or_404
@@ -13,9 +15,16 @@ def afiliadoLista(request):
 
     return render(request, 'afiliados/afiliados.html', context)
 
-def crearAfiliados(resquest):
+def crearAfiliados(request):
     if request.method =='POST':
-        pass
+        afiliados=Afiliados(request.POST)
+        if afiliados.is_valid():
+            afiliados.save()
+            return redirect(reverse('afiliadoLista'))
+            
+
     else:
-        return render(request='afiliados/crear.afiliados.html')
+        afiliados=Afiliados()
+        context={'afiliados':afiliados}
+        return render(request,'afiliados/crear.afiliados.html', context)
 
