@@ -23,5 +23,6 @@ class Afiliado(models.Model):
     )
     
     def __str__(self):
-        return f"{self.nombre} {self.apellido} ({self.numero_afiliado})"
+        return f"{self.nombre} {self.apellido}"
 
+ 

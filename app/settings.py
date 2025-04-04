@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'afiliados',
     'federacion',
     'tramite',
-    'transporte',
+    'vehiculo',
     'usuarios',
+    
 
 ]
 
@@ -84,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'trans',
         'USER':'postgres',
-        'PASSWORD':'kanna',
+        'PASSWORD':'80804',
         'HOST':'localhost',
         'PORT':'5432',
     }
