@@ -3,4 +3,4 @@ from .models import Federacion
 class Federacions(forms.ModelForm):
     class Meta:
         model = Federacion
-        fields= ['nombre']
+        fields= ['nombre','direccion','celular']
