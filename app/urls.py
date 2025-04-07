@@ -23,5 +23,6 @@ urlpatterns = [
     path('',include('federacion.urls')),
     path('',include('vehiculo.urls')),
     path('',include('tramite.urls')),
+    path('',include('usuarios.urls')),
     #path('',include('afiliados.urls')),
 ]
