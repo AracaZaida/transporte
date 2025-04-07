@@ -1,8 +1,6 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
-
-
-from tramite.forms import TramiteF
+from tramite.forms import Tipo_tramiteF, TramiteF
 from tramite.models import Tramite
 from vehiculo.forms import VehiculosF
 
@@ -33,3 +31,18 @@ def listarTramite(request):
     context={'tramite':tramite}
 
     return render(request, 'tramite/listarT.html', context)
+
+def crearTipo_tramite(request):
+    if request.method =='POST':
+        tipo_tramite=Tipo_tramiteF(request.POST)
+        if tipo_tramite.is_valid():
+            tipo_tramite.save()
+        
+            return redirect(reverse('listarTramite'))
+            
+
+    else:
+        tipo_tramite=Tipo_tramiteF()
+        context={'tipo_tramite': tipo_tramite}
+
+        return render(request,'tramite/crearTipoTramite.html', context)

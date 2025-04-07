@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Lista de Usuario</h1>
+
+
+    <table class="table table-striped">
+        <a href="{% url 'crearUsuario' %}">registrar</a>
+        <thead>
+            <tr>
+                <th>CI:</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Descripcion</th>
+                <th>Fecha</th>
+                <th>Rol:</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usua in usuario %}
+            <tr>
+                <td>{{ usua.ci }}</td>
+                <td>{{ usua.nombre }}</td>
+                <td>{{ usua.apellidos }}</td>
+                <td>{{ usua.email }}</td>
+                <td>{{ usua.descripcion }}</td>
+                <td>{{ usua.fecha_creacion}}</td>
+                <td>{{ usua.rol }}</td>
+                <td>{{ usua.estado }}</td>
+
+                <td>
+                    <a href="" class="btn btn-info btn-sm">Ver Detalles</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="13" class="text-center">No hay afiliados registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
