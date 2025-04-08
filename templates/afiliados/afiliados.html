@@ -12,34 +12,32 @@
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Carnet</th>
-
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>Dirección</th>
-
+                <th>Federacion</th>
                 <th>Fecha de Afiliación</th>
                 <th>Estado de Afiliación</th>
-
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for afiliado in afiliados %}
             <tr>
+                <td>{{ afiliado.numero_afiliado }}</td>
                 <td>{{ afiliado.nombre }}</td>
                 <td>{{ afiliado.apellido }}</td>
-                <td>{{ afiliado.fecha_nacimiento }}</td>
-                <td>{{ afiliado.get_genero_display }}</td>
+                <td>{{ afiliado.carnet }}</td>
                 <td>{{ afiliado.email }}</td>
                 <td>{{ afiliado.telefono }}</td>
                 <td>{{ afiliado.direccion }}</td>
-                <td>{{ afiliado.numero_afiliado }}</td>
+                <td>{{ afiliado.federacion }}</td>
                 <td>{{ afiliado.fecha_afiliacion }}</td>
                 <td>{{ afiliado.get_estado_afiliacion_display }}</td>
-                <td>{{ afiliado.fecha_renovacion }}</td>
-                <td>{{ afiliado.get_tipo_afiliado_display }}</td>
                 <td>
-                    <a href="" class="btn btn-info btn-sm">Ver Detalles</a>
+                    <a href="" class="btn btn-info btn-sm">Ver</a>
+                    <a href="" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
             </tr>
             {% empty %}
