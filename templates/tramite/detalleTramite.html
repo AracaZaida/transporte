@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">📄 Detalle Completo del Trámite</h2>
+
+    <div class="card shadow rounded-4 border-0 p-4">
+        <!-- Sección: Afiliado -->
+        <div class="mb-4">
+            <h4 class="text-primary mb-3">👤 Afiliado</h4>
+            <div class="row">
+                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.vehiculo.afiliado.nombre }}</div>
+                <div class="col-md-4"><strong>CI:</strong> {{ tramite.vehiculo.afiliado.carnet }}</div>
+                <div class="col-md-4"><strong>celular:</strong> {{ tramite.vehiculo.afiliado.celular }}</div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4 class="text-primary mb-3">👤 Federacion</h4>
+            <div class="row">
+                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.vehiculo.afiliado.federacion.nombre }}</div>
+                <div class="col-md-4"><strong>direccion:</strong> {{ tramite.vehiculo.afiliado.federacion.direccion }}
+                </div>
+                <div class="col-md-4"><strong>celular:</strong> {{ tramite.vehiculo.afiliado.federacion.celular }}</div>
+            </div>
+        </div>
+        <!-- Sección: Vehículo -->
+        <div class="mb-4">
+            <h4 class="text-success mb-3">🚗 Vehículo</h4>
+            <div class="row">
+                <div class="col-md-3"><strong>Placa:</strong> {{ tramite.vehiculo.placa }}</div>
+                <div class="col-md-3"><strong>Marca:</strong> {{ tramite.vehiculo.marca }}</div>
+                <div class="col-md-3"><strong>Modelo:</strong> {{ tramite.vehiculo.modelo }}</div>
+                <div class="col-md-3"><strong>Color:</strong> {{ tramite.vehiculo.color }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3"><strong>Tipo Vehículo:</strong> {{ tramite.vehiculo.tipo_vehiculo }}</div>
+                <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ tramite.vehiculo.tipo_transporte }}</div>
+                <div class="col-md-3"><strong>Chasis:</strong> {{ tramite.vehiculo.chasis }}</div>
+                <div class="col-md-3"><strong>Capacidad:</strong> {{ tramite.vehiculo.capacidad }}</div>
+            </div>
+        </div>
+
+        <!-- Sección: Trámite -->
+        <div>
+            <h4 class="text-info mb-3">📝 Trámite</h4>
+            <div class="row">
+                <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite.nombre }}</div>
+                <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
+                <div class="col-md-3"><strong>Monto:</strong> {{ tramite.monto }}</div>
+                <div class="col-md-3"><strong>N° Fojas:</strong> {{ tramite.numero_fojas }}</div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutasOperar }}</div>
+                <div class="col-md-3"><strong>Depósito:</strong> {{ tramite.numero_deposito }}</div>
+                <div class="col-md-3"><strong>Fecha Validez Inicio:</strong> {{ tramite.fecha_validezI|date:"d/m/Y" }}
+                </div>
+                <div class="col-md-3"><strong>Fecha Validez Fin:</strong> {{ tramite.fecha_validezF|date:"d/m/Y" }}
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-3"><strong>Fecha Entrega:</strong> {{ tramite.fecha_entrega|date:"d/m/Y" }}</div>
+                <div class="col-md-3"><strong>Fecha Creación:</strong> {{ tramite.fecha_creacion|date:"d/m/Y" }}</div>
+                <div class="col-md-6">
+                    <strong>Estado:</strong>
+                    <span class="badge 
+                        {% if tramite.estado == 'ingresado' %} bg-secondary 
+                        {% elif tramite.estado == 'proceso' %} bg-warning text-dark 
+                        {% elif tramite.estado == 'entregado' %} bg-success 
+                        {% elif tramite.estado == 'anulado' %} bg-danger 
+                        {% endif %}">
+                        {{ tramite.estado|capfirst }}
+                    </span>
+                </div>
+            </div>
+            {% if tramite.observaciones %}
+            <div class="mt-3">
+                <strong>Observaciones:</strong>
+                <div class="alert alert-light border">{{ tramite.observaciones }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
