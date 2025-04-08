@@ -8,7 +8,7 @@
         <a href="{% url 'crearFederacion' %}">registrar</a>
         <thead>
             <tr>
-                <th>Fecha de Afiliación</th>
+                
                 <th>Nombre</th>
                 <th>Dirección</th>
                 <th>Celular</th>
@@ -19,7 +19,7 @@
         <tbody>
             {% for federacionss in federacion %}
             <tr>
-                <td>{{ federacionss.fecha_afiliacion }}</td>
+                
                 <td>{{ federacionss.nombre }}</td>
                 <td>{{ federacionss.direccion }}</td>
                 <td>{{ federacionss.celular }}</td>
