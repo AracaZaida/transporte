@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'afiliados',
     'federacion',
     'tramite',
-    'transporte',
+    'vehiculo',
     'usuarios',
+ 
 
 ]
 

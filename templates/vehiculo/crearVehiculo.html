@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{% url 'crearVehiculo' %}" method="POST">
+    {% csrf_token %}
+    {{vehiculo}}
+    <Button>guardad</Button>
+</form>
+
+{% endblock %}

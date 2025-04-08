@@ -1,7 +1,5 @@
 from django.db import models
 
-from django.db import models
-
 from federacion.models import Federacion
 
 class Afiliado(models.Model):
@@ -23,5 +21,6 @@ class Afiliado(models.Model):
     )
     
     def __str__(self):
-        return f"{self.nombre} {self.apellido} ({self.numero_afiliado})"
+        return f"{self.nombre} {self.apellido}"
 
+ 
