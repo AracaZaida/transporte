@@ -21,7 +21,7 @@ class Tramite(models.Model):
     estado = models.CharField(max_length=50,
             choices=[('ingresado', 'ingresado'), ('anulado', 'anulado'),('entregado','entregado'),('proceso','proceso')],
         default='ingresado')
-    #usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
     
     fecha_creacion = models.DateField(auto_now_add=True)
     flag=models.CharField(max_length=20,
