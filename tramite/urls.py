@@ -6,6 +6,7 @@ urlpatterns = [
    path('crearTramite',views.crearTramite, name='crearTramite'),
    path('listarTramite',views.listarTramite, name='listarTramite'),
    path('crearTipo_tramite', views.crearTipo_tramite, name='crearTipo_tramite'),
-   path('tramite/datalle/<int:id>', views.detalleTramite, name='detalleTramite')
+   path('listarTipo_tramite',views.listarTipo_tramite, name='listarTipo_tramite'),
+   path('tramite/datalle/<int:id>', views.detalleTramite, name='detalleTramite'),
  
 ]
