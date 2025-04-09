@@ -4,14 +4,13 @@ from usuarios.models import Usuario
 class TramiteF(forms.ModelForm):
     class Meta:
         model = Tramite
-        fields= ['gestion','rutasOperar','fecha_validezI','estado','monto','observaciones','fecha_entrega','numero_fojas','numero_deposito','tipo_tramite','usuario']
+        fields= ['rutasOperar','fecha_validezI','estado','monto','observaciones','fecha_entrega','numero_fojas','numero_deposito','tipo_tramite','usuario']
         widgets = {
-            'gestion': forms.TextInput(attrs={'class': 'form-control'}),
-            'rutasOperar': forms.Textarea(attrs={'class': 'form-control'}),
+            'rutasOperar': forms.Textarea(attrs={'class': 'form-control','rows': 1}),
             'fecha_validezI': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'estado': forms.Select(attrs={'class': 'form-control'}),
             'monto': forms.NumberInput(attrs={'class': 'form-control'}),
-            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
             'fecha_entrega': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'numero_fojas': forms.NumberInput(attrs={'class': 'form-control'}),
             'numero_deposito': forms.TextInput(attrs={'class': 'form-control'}),

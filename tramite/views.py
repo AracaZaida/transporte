@@ -3,11 +3,14 @@ from django.urls import reverse
 from tramite.forms import Tipo_tramiteF, TramiteF
 from tramite.models import Tramite
 from vehiculo.forms import VehiculosF
-from datetime import date
+from datetime import  datetime
 
 
 def crearTramite(request):
     if request.method =='POST':
+        fecha_actual = datetime.now()
+        gestion = fecha_actual.year
+
         tramite=TramiteF(request.POST)
         vehiculos=VehiculosF(request.POST)
         if tramite.is_valid() and vehiculos.is_valid():
@@ -15,6 +18,7 @@ def crearTramite(request):
             fecha_validezF =fecha_validezI.replace(year=fecha_validezI.year + 1)
             vehi=vehiculos.save()
             trami=tramite.save(commit=False)
+            trami.gestion = gestion
             trami.vehiculo=vehi
             trami.fecha_validezF= fecha_validezF
             trami.save()
@@ -27,11 +31,17 @@ def crearTramite(request):
         return render(request,'tramite/crearTramite.html', context)
 
 def listarTramite(request):
+    user = request.user
     
-    tramite = Tramite.objects.all()
-    context={'tramite':tramite}
+    if(user.rol == 'tecnico'):
+        tramite = Tramite.objects.filter(flag='nuevo', usuario=user.id)
+        context={'tramite':tramite}
+        return render(request, 'tramite/listarT.html', context)
+    else:
+        tramite = Tramite.objects.filter(flag='nuevo')
+        context={'tramite':tramite}
+        return render(request, 'tramite/listarT.html', context)
 
-    return render(request, 'tramite/listarT.html', context)
 
 def crearTipo_tramite(request):
     if request.method =='POST':
@@ -54,3 +64,14 @@ def detalleTramite (request, id):
         'tramite':detalle
     }
     return render(request,'tramite/detalleTramite.html', context)
+def aprobarTramite(request, id):
+    tramite= get_object_or_404(Tramite, pk=id)
+    tramite.estado ='aprobado'
+    tramite.save()
+    return redirect(reverse('listarTramite'))
+
+def anularTramite(request, id):
+    tramite= get_object_or_404(Tramite, pk=id)
+    tramite.estado ='anulado'
+    tramite.save()
+    return redirect(reverse('listarTramite'))

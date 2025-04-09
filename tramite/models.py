@@ -19,7 +19,7 @@ class Tramite(models.Model):
     tipo_tramite= models.ForeignKey(Tipo_tramite, on_delete=models.CASCADE)
     fecha_entrega=models.DateField(blank=True, null=True)
     estado = models.CharField(max_length=50,
-            choices=[('ingresado', 'ingresado'), ('anulado', 'anulado'),('entregado','entregado'),('proceso','proceso')],
+            choices=[('ingresado', 'ingresado'), ('anulado', 'anulado'),('entregado','entregado'),('aprobado','aprobado')],
         default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
 

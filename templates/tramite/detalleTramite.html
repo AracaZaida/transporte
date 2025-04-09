@@ -65,7 +65,7 @@
                     <strong>Estado:</strong>
                     <span class="badge 
                         {% if tramite.estado == 'ingresado' %} bg-secondary 
-                        {% elif tramite.estado == 'proceso' %} bg-warning text-dark 
+                        {% elif tramite.estado == 'aprobado' %} bg-success text-dark 
                         {% elif tramite.estado == 'entregado' %} bg-success 
                         {% elif tramite.estado == 'anulado' %} bg-danger 
                         {% endif %}">
@@ -77,6 +77,12 @@
             <div class="mt-3">
                 <strong>Observaciones:</strong>
                 <div class="alert alert-light border">{{ tramite.observaciones }}</div>
+            </div>
+            {% endif %}
+            {% if tramite.estado == 'ingresado' %}
+            <div class="col-md-6">
+                <a href="{% url 'aprobarTramite'  tramite.id %}" class="btn btn-success">Aprobar</a>
+                <a href="{% url 'anularTramite'  tramite.id %}" class="btn btn-danger">Anular</a>
             </div>
             {% endif %}
         </div>
