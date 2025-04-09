@@ -8,7 +8,6 @@ from datetime import date
 
 def crearTramite(request):
     if request.method =='POST':
-        user = request.user
         tramite=TramiteF(request.POST)
         vehiculos=VehiculosF(request.POST)
         if tramite.is_valid() and vehiculos.is_valid():
@@ -17,7 +16,6 @@ def crearTramite(request):
             vehi=vehiculos.save()
             trami=tramite.save(commit=False)
             trami.vehiculo=vehi
-            trami.usuario = user
             trami.fecha_validezF= fecha_validezF
             trami.save()
             return redirect(reverse('listarTramite'))

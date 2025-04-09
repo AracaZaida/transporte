@@ -13,13 +13,13 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     es_activo=models.BooleanField(default=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     rol = models.CharField(
-        max_length=20,
+        max_length=100,
         choices=[
-            ('admin', 'Administrador'),
-            ('operador', 'Operador'),
-            ('personal', 'Personal'),
+            ('super_admin', 'super admin'),
+            ('tecnico', 'tecnico'),
+            ('administrador', 'administrador'),
         ],
-        default='cliente'
+        default='uper_admin'
     )
     
     USERNAME_FIELD = 'username'

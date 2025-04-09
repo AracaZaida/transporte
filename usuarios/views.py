@@ -22,7 +22,9 @@ def crearUsuario(request):
             u.set_password(password)
             u.save()
             return redirect(reverse('listarUsuario'))
-            
+        else:
+            context = {'usuario': usuario}
+            return render(request, 'usuario/crearUsusario.html', context)
     else:
         usuario=UsuarioF()
         context={'usuario':usuario}

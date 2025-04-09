@@ -22,7 +22,8 @@ class Tramite(models.Model):
             choices=[('ingresado', 'ingresado'), ('anulado', 'anulado'),('entregado','entregado'),('proceso','proceso')],
         default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    
+
+
     fecha_creacion = models.DateField(auto_now_add=True)
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
