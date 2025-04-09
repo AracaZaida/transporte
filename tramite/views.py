@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
 from tramite.forms import Tipo_tramiteF, TramiteF
-from tramite.models import Tramite
+from tramite.models import Tipo_tramite, Tramite
 from vehiculo.forms import VehiculosF
 from datetime import  datetime
 
@@ -43,6 +43,8 @@ def listarTramite(request):
         return render(request, 'tramite/listarT.html', context)
 
 
+
+
 def crearTipo_tramite(request):
     if request.method =='POST':
         tipo_tramite=Tipo_tramiteF(request.POST)
@@ -57,6 +59,13 @@ def crearTipo_tramite(request):
         context={'tipo_tramite': tipo_tramite}
 
         return render(request,'tramite/crearTipoTramite.html', context)
+    
+def listarTipo_tramite(request):
+    tipo_tra= Tipo_tramite.objects.all() 
+    context={'tipo_tra': tipo_tra}
+
+    return render(request, 'tramite/listarTipo_tra.html', context)
+
 def detalleTramite (request, id):
     detalle = get_object_or_404(Tramite, pk=id)
 

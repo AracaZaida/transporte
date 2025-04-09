@@ -8,26 +8,28 @@
         <a href="{% url 'crearFederacion' %}">registrar</a>
         <thead>
             <tr>
-
+                
                 <th>Nombre</th>
-
-                <th>Fecha de Afiliación</th>
-
-
+                <th>Dirección</th>
+                <th>Celular</th>
+                <th>Fecha creacion</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for federacionss in federacion %}
             <tr>
-                <td>{{federacionss.nombre }}</td>
-
-
-                <td>{{ federacionss.fecha_afiliacion }}</td>
-
+                
+                <td>{{ federacionss.nombre }}</td>
+                <td>{{ federacionss.direccion }}</td>
+                <td>{{ federacionss.celular }}</td>
+                <td>{{ federacionss.fecha_creacion }}</td>
                 <td>
-                    <a href="" class="btn btn-info btn-sm">Ver Detalles</a>
+                    <a href="" class="btn btn-info btn-sm">Ver</a>
+                    <a href="" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
+
             </tr>
             {% empty %}
             <tr>
