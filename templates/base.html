@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,14 +5,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
+
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #bc656f;
+        background-color: #b3ccb3;
     }
-   
-</style>
 
+    .sidebar-custom {
+        background-color: rgb(187, 238, 191);
+    }
+
+    .sidebar-custom .nav-link {
+        color: #000; /* negro para buen contraste */
+    }
+
+    .sidebar-custom .nav-link:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+</style>
 
 <body>
     <div class="container-fluid">
@@ -26,12 +35,12 @@
                 ☰ Menú
             </button>
 
-            <div class="col-lg-2 d-none d-lg-block bg-light vh-100 p-3">
+            <!-- Sidebar de escritorio -->
+            <div class="col-lg-2 d-none d-lg-block vh-100 p-3 sidebar-custom">
                 <h5> ☰ Menú</h5>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href=""class="nav-link">🏠 Inicio</a></li>
-                
-                    <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link" > usuarios</a></li>
+                    <li class="nav-item"><a href="" class="nav-link">🏠 Inicio</a></li>
+                    <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
                     <li class="nav-item"><a href="{% url 'listaVehiculo' %}" class="nav-link">vehiculo</a></li>
                     <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">afiliados</a></li>
                     <li class="nav-item"><a href="{% url 'listarTramite' %}" class="nav-link">tramite</a></li>
@@ -57,10 +66,8 @@
                 </div>
             </div>
 
-
             <main class="col-lg-10 p-4">
                 {% block content %}
-
                 {% endblock %}
             </main>
         </div>
@@ -70,5 +77,4 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 </body>
-
 </html>
