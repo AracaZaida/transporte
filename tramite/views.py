@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
-from tramite.forms import Tipo_tramiteF, TramiteF
-from tramite.models import Tipo_tramite, Tramite
+from tramite.forms import TramiteF
+from tramite.models import Tramite
 from vehiculo.forms import VehiculosF
 from datetime import  datetime
 
@@ -12,14 +12,14 @@ def crearTramite(request):
         gestion = fecha_actual.year
 
         tramite=TramiteF(request.POST)
-        vehiculos=VehiculosF(request.POST)
-        if tramite.is_valid() and vehiculos.is_valid():
+       
+        if tramite.is_valid():
             fecha_validezI = tramite.cleaned_data['fecha_validezI']
             fecha_validezF =fecha_validezI.replace(year=fecha_validezI.year + 1)
-            vehi=vehiculos.save()
+           
             trami=tramite.save(commit=False)
             trami.gestion = gestion
-            trami.vehiculo=vehi
+            
             trami.fecha_validezF= fecha_validezF
             trami.save()
             return redirect(reverse('listarTramite'))
@@ -35,36 +35,13 @@ def listarTramite(request):
     
     if(user.rol == 'tecnico'):
         tramite = Tramite.objects.filter(flag='nuevo', usuario=user.id)
-        context={'tramite':tramite}
+        context={'tramite':tramite, 'rol': user.rol}
         return render(request, 'tramite/listarT.html', context)
     else:
         tramite = Tramite.objects.filter(flag='nuevo')
         context={'tramite':tramite}
         return render(request, 'tramite/listarT.html', context)
 
-
-
-
-def crearTipo_tramite(request):
-    if request.method =='POST':
-        tipo_tramite=Tipo_tramiteF(request.POST)
-        if tipo_tramite.is_valid():
-            tipo_tramite.save()
-        
-            return redirect(reverse('listarTramite'))
-            
-
-    else:
-        tipo_tramite=Tipo_tramiteF()
-        context={'tipo_tramite': tipo_tramite}
-
-        return render(request,'tramite/crearTipoTramite.html', context)
-    
-def listarTipo_tramite(request):
-    tipo_tra= Tipo_tramite.objects.all() 
-    context={'tipo_tra': tipo_tra}
-
-    return render(request, 'tramite/listarTipo_tra.html', context)
 
 def detalleTramite (request, id):
     detalle = get_object_or_404(Tramite, pk=id)
