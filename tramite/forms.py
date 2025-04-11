@@ -8,7 +8,13 @@ class TramiteF(forms.ModelForm):
         widgets = {
             #'rutasOperar': forms.Textarea(attrs={'class': 'form-control','rows': 1}),
             'afiliado':forms.Select(attrs={'class': 'form-control'}),
-            'fecha_validezI': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+           'fecha_validezI': forms.DateInput(
+                format='%Y-%m-%d',  # este formato funciona bien con type="date"
+                attrs={
+                    'class': 'form-control',
+                    'type': 'date'
+                }
+            ),
             'estado': forms.Select(attrs={'class': 'form-control'}),
             #'monto': forms.NumberInput(attrs={'class': 'form-control'}),
             #'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
@@ -21,4 +27,5 @@ class TramiteF(forms.ModelForm):
         self.fields['usuario'].widget = forms.Select(choices=tecnicos, attrs={'class': 'form-select'})
         self.fields['usuario'].widget.attrs.update({'class': 'form-select'})
         print(tecnicos)
+        
 

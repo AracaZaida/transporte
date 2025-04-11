@@ -12,6 +12,8 @@ urlpatterns = [
     
    path('tramite/anular/<int:id>', views.anularTramite, name='anularTramite'),
 
+    path('tramite/ver/<int:id>', views.verTramite, name='verTramite'),
+
    
    path('tramite/datalle/<int:id>', views.detalleTramite, name='detalleTramite'),
 ]
