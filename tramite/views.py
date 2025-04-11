@@ -29,6 +29,28 @@ def crearTramite(request):
         context={'tramite':tramite,'vehiculo':vehiculo}
 
         return render(request,'tramite/crearTramite.html', context)
+    
+def verTramite(request, id):
+    tramite = get_object_or_404(Tramite, pk=id)
+
+    if request.method =='POST':
+        fecha_actual = datetime.now()
+        gestion = fecha_actual.year
+        tramite=TramiteF(request.POST, instance=tramite)
+        if tramite.is_valid():
+            fecha_validezI = tramite.cleaned_data['fecha_validezI']
+            fecha_validezF =fecha_validezI.replace(year=fecha_validezI.year + 1)
+           
+            trami=tramite.save(commit=False)
+            trami.gestion = gestion
+            trami.fecha_validezF= fecha_validezF
+            trami.save()
+            return redirect(reverse('listarTramite'))
+    else:
+        tramite=TramiteF(instance=tramite)
+        context={'tramite':tramite , 'id':id}
+
+        return render(request,'tramite/verTramite.html', context)
 
 def listarTramite(request):
     user = request.user
