@@ -1,20 +1,19 @@
 from django import forms
-from .models import Tipo_tramite, Tramite
+from .models import  Tramite
 from usuarios.models import Usuario
 class TramiteF(forms.ModelForm):
     class Meta:
         model = Tramite
-        fields= ['rutasOperar','fecha_validezI','estado','monto','observaciones','fecha_entrega','numero_fojas','numero_deposito','tipo_tramite','usuario']
+        fields= ['fecha_validezI','estado','afiliado','tipo_tramite','usuario']
         widgets = {
-            'rutasOperar': forms.Textarea(attrs={'class': 'form-control','rows': 1}),
+            #'rutasOperar': forms.Textarea(attrs={'class': 'form-control','rows': 1}),
+            'afiliado':forms.Select(attrs={'class': 'form-control'}),
             'fecha_validezI': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'estado': forms.Select(attrs={'class': 'form-control'}),
-            'monto': forms.NumberInput(attrs={'class': 'form-control'}),
-            'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
-            'fecha_entrega': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'numero_fojas': forms.NumberInput(attrs={'class': 'form-control'}),
-            'numero_deposito': forms.TextInput(attrs={'class': 'form-control'}),
-            'tipo_tramite': forms.Select(attrs={'class': 'form-control'}),
+            #'monto': forms.NumberInput(attrs={'class': 'form-control'}),
+            #'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+            #'numero_deposito': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo_tramite': forms.TextInput(attrs={'class': 'form-control'}),
         }
     def __init__(self, *args, **kwargs):
         super(TramiteF,self).__init__(*args, **kwargs)
@@ -22,7 +21,4 @@ class TramiteF(forms.ModelForm):
         self.fields['usuario'].widget = forms.Select(choices=tecnicos, attrs={'class': 'form-select'})
         self.fields['usuario'].widget.attrs.update({'class': 'form-select'})
         print(tecnicos)
-class Tipo_tramiteF(forms.ModelForm):
-    class Meta:
-        model= Tipo_tramite
-        fields=['nombre']
+

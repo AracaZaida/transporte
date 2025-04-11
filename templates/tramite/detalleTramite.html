@@ -48,7 +48,7 @@
                 <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite.nombre }}</div>
                 <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
                 <div class="col-md-3"><strong>Monto:</strong> {{ tramite.monto }}</div>
-                <div class="col-md-3"><strong>N° Fojas:</strong> {{ tramite.numero_fojas }}</div>
+                
             </div>
             <div class="row mt-2">
                 <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutasOperar }}</div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="col-md-3"><strong>Fecha Entrega:</strong> {{ tramite.fecha_entrega|date:"d/m/Y" }}</div>
+                
                 <div class="col-md-3"><strong>Fecha Creación:</strong> {{ tramite.fecha_creacion|date:"d/m/Y" }}</div>
                 <div class="col-md-6">
                     <strong>Estado:</strong>
@@ -81,8 +81,8 @@
             {% endif %}
             {% if tramite.estado == 'ingresado' %}
             <div class="col-md-6">
-                <a href="{% url 'aprobarTramite'  tramite.id %}" class="btn btn-success">Aprobar</a>
-                <a href="{% url 'anularTramite'  tramite.id %}" class="btn btn-danger">Anular</a>
+                <a href="{% url 'aprobarTramite'  tramite.id %}" class="btn btn-success">Verificar</a>
+                <a href="{% url 'anularTramite'  tramite.id %}" class="btn btn-danger">Observado</a>
             </div>
             {% endif %}
         </div>
