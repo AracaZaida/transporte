@@ -18,8 +18,8 @@ class Tramite(models.Model):
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
     
     estado = models.CharField(max_length=50,
-            choices=[('verificado', 'verificado'), ('observado', 'observado'),('derivado','derivado'),('derivar','derivar')],
-        default='verificado')
+            choices=[('verificado', 'verificado'), ('observado', 'observado'),('ingresado','ingresado')],
+        default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
 

@@ -13,6 +13,8 @@ urlpatterns = [
    path('tramite/anular/<int:id>', views.anularTramite, name='anularTramite'),
 
     path('tramite/ver/<int:id>', views.verTramite, name='verTramite'),
+    path('verificadoTramite', views.verificadoTramite, name='verificadoTramite'),
+    path('observadosramitee', views.observadosramite, name='observadosramite'),
 
    
    path('tramite/datalle/<int:id>', views.detalleTramite, name='detalleTramite'),

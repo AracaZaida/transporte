@@ -53,16 +53,22 @@ def verTramite(request, id):
         return render(request,'tramite/verTramite.html', context)
 
 def listarTramite(request):
-    user = request.user
+        rol=request.user.rol
+        tramite = Tramite.objects.filter(flag='nuevo', estado='ingresado')
+        context={'tramite':tramite, 'rol':rol}
+        return render(request, 'tramite/listarT.html', context)
+
+def verificadoTramite(request):
+        rol=request.user.rol
+        tramite = Tramite.objects.filter(flag='nuevo', estado='verificado')
+        context={'tramite':tramite, 'rol':rol}
+        return render(request, 'tramite/verificado.html', context)
+
+def observadosramite(request):
     
-    if(user.rol == 'tecnico'):
-        tramite = Tramite.objects.filter(flag='nuevo', usuario=user.id)
-        context={'tramite':tramite, 'rol': user.rol}
-        return render(request, 'tramite/listarT.html', context)
-    else:
-        tramite = Tramite.objects.filter(flag='nuevo')
+        tramite = Tramite.objects.filter(flag='nuevo', estado='observado')
         context={'tramite':tramite}
-        return render(request, 'tramite/listarT.html', context)
+        return render(request, 'tramite/observado.html', context)
 
 
 def detalleTramite (request, id):
