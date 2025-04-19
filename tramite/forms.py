@@ -14,7 +14,7 @@ class TramiteF(forms.ModelForm):
                     'class': 'form-control',
                     'type': 'date'
                 }
-            ),
+            ),  
             'estado': forms.Select(attrs={'class': 'form-control'}),
             #'monto': forms.NumberInput(attrs={'class': 'form-control'}),
             #'observaciones': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
