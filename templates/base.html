@@ -17,7 +17,8 @@
     }
 
     .sidebar-custom .nav-link {
-        color: #000; /* negro para buen contraste */
+        color: #000;
+        /* negro para buen contraste */
     }
 
     .sidebar-custom .nav-link:hover {
@@ -43,28 +44,36 @@
                     <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
                     <li class="nav-item"><a href="{% url 'listaVehiculo' %}" class="nav-link">vehiculo</a></li>
                     <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">afiliados</a></li>
-                   
+
                     <li class="nav-item">
                         <div class="accordion" id="accordionTramites">
                             <div class="accordion-item border-0 bg-transparent">
                                 <h2 class="accordion-header" id="headingTramites">
-                                    <button class="accordion-button collapsed bg-transparent shadow-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTramites" aria-expanded="false" aria-controls="collapseTramites">
+                                    <button class="accordion-button collapsed bg-transparent shadow-none p-0"
+                                        type="button" data-bs-toggle="collapse" data-bs-target="#collapseTramites"
+                                        aria-expanded="false" aria-controls="collapseTramites">
                                         📝 Trámites
                                     </button>
                                 </h2>
-                                <div id="collapseTramites" class="accordion-collapse collapse" aria-labelledby="headingTramites" data-bs-parent="#accordionTramites">
+                                <div id="collapseTramites" class="accordion-collapse collapse"
+                                    aria-labelledby="headingTramites" data-bs-parent="#accordionTramites">
                                     <div class="accordion-body py-1 px-2">
                                         <ul class="nav flex-column">
-                                            <li class="nav-item"><a href="{% url 'listarTramite' %}" class="nav-link">📄 Trámite ingresados</a></li>
-                                            <li class="nav-item"><a href="{% url 'verificadoTramite' %}" class="nav-link">📄 Trámite verificados</a></li>
-                                            <li class="nav-item"><a href="{% url 'observadosramite' %}" class="nav-link">📄 Trámite observados</a></li>
+                                            <li class="nav-item"><a href="{% url 'crearTramite' %}" class="nav-link">📄
+                                                    Registar tramite</a></li>
+                                            <li class="nav-item"><a href="{% url 'listarTramite' %}" class="nav-link">📄
+                                                    Trámite ingresados</a></li>
+                                            <li class="nav-item"><a href="{% url 'verificadoTramite' %}"
+                                                    class="nav-link">📄 Trámite verificados</a></li>
+                                            <li class="nav-item"><a href="{% url 'observadosramite' %}"
+                                                    class="nav-link">📄 Trámite observados</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    
+
                     <li class="nav-item"><a href="{% url 'listarFedeacion' %}" class="nav-link">Federaciones</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">⚙ Configuración</a></li>
                 </ul>
@@ -97,4 +106,5 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

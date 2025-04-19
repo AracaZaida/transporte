@@ -5,7 +5,7 @@
 
 
     <table class="table table-striped">
-        <a href="{% url 'observadosramite' %}">registrar</a>
+
         <thead>
             <tr>
 
@@ -14,7 +14,7 @@
                 <th>fecha/Hora</th>
                 <th>solicitante</th>
                 <th>estado</th>
-                <th>Acciones</th>
+                <th>Detalle</th>
 
             </tr>
         </thead>
@@ -27,13 +27,9 @@
                 <td>{{tra.fecha_creacion}}</td>
                 <td>{{tra.afiliado}}</td>
                 <td>{{ tra.estado}}</td>
+                <td>{{ tra.observaciones}}</td>
                 <td>
-                    {% if rol == "tecnico" %}
-                    <a href="{% url 'verTramite' tra.id %}" class="btn btn-info btn-sm">Ver</a>
-                    {% else %}
-                    <a href="" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="" class="btn btn-danger btn-sm">Eliminar</a>
-                    {% endif %}
+
                 </td>
 
             </tr>

@@ -16,6 +16,6 @@ urlpatterns = [
     path('verificadoTramite', views.verificadoTramite, name='verificadoTramite'),
     path('observadosramitee', views.observadosramite, name='observadosramite'),
 
-   
-   path('tramite/datalle/<int:id>', views.detalleTramite, name='detalleTramite'),
+      path('tramite/tarjeta_tramite/<int:id>', views.tarjeta_tramite, name='tarjeta_tramite'),
 ]
+

@@ -2,10 +2,7 @@
 {% block content %}
 <div class="container">
     <h1 class="my-4">Lista de Tramite</h1>
-
-
     <table class="table table-striped">
-        <a href="{% url 'crearTramite' %}">registrar</a>
         <thead>
             <tr>
 
@@ -22,18 +19,15 @@
             {% for tra in tramite %}
             <tr>
 
-                <td>{{tra.id}}</td>
+                <td>{{tra.numero_tramite}}</td>
                 <td>{{tra.tipo_tramite}}</td>
                 <td>{{tra.fecha_creacion}}</td>
                 <td>{{tra.afiliado}}</td>
                 <td>{{ tra.estado}}</td>
                 <td>
-                    {% if rol == "tecnico" %}
+
                     <a href="{% url 'verTramite' tra.id %}" class="btn btn-info btn-sm">Ver</a>
-                    {% else %}
-                    <a href="" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="" class="btn btn-danger btn-sm">Eliminar</a>
-                    {% endif %}
+
                 </td>
 
             </tr>

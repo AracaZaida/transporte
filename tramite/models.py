@@ -8,13 +8,14 @@ from vehiculo.models import Vehiculo
 
 class Tramite(models.Model):
     gestion=models.CharField(max_length=100, blank=False, null=False)
-   # rutasOperar=models.TextField(max_length=100, blank=False, null=False)
+    numero_tramite = models.IntegerField(blank=True ,null=True)
+    rutasOperar=models.TextField(null=True, blank=True)
     fecha_validezI=models.DateField()
     fecha_validezF=models.DateField(blank=True, null=True)
     #numero_deposito=models.CharField(max_length=100, blank=True, null=True)
-    #monto = models.DecimalField(max_digits=10, decimal_places=2)
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
     afiliado=models.ForeignKey(Afiliado, on_delete=models.CASCADE)
-    #observaciones = models.TextField(null=True, blank=True)
+    observaciones = models.TextField(null=True, blank=True)
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
     
     estado = models.CharField(max_length=50,
@@ -27,4 +28,15 @@ class Tramite(models.Model):
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
         default='nuevo')
+    def save(self, *args, **kwargs):
+        if not self.numero_tramite:
+            ultimo_tramite = Tramite.objects.order_by('-id').first()
+
+            if ultimo_tramite and ultimo_tramite.numero_tramite:
+                nuevo_numero = str(int(ultimo_tramite.numero_tramite) + 1).zfill(4)
+            else:
+                nuevo_numero = "1000"
+        
+            self.numero_tramite = nuevo_numero
     
+        super().save(*args, **kwargs)

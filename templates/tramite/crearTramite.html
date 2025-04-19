@@ -1,13 +1,179 @@
 {% extends "base.html" %}
+
 {% block content %}
-<form action="{% url 'crearTramite' %}" method="POST">
-    {% csrf_token %}
-    <div class="row">
-        
-        <div class="col-6">{{tramite}}</div>
+<div class="container mt-5">
 
+    <!-- Botones para abrir modales -->
+    <div class="d-flex justify-content-center gap-3 mb-4">
+        <button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
+            Ver Afiliados
+        </button>
+        <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#modalTecnicos">
+            Ver Técnicos
+        </button>
     </div>
-    <Button>guardad</Button>
-</form>
 
+    <!-- Formulario tipo de trámite -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Crear Tipo de Trámite</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'crearTramite' %}">
+                {% csrf_token %}
+
+                <!-- Campos ocultos -->
+                <input type="hidden" name="afiliado_id" id="afiliado_id">
+                <input type="hidden" name="tecnico_id" id="tecnico_id">
+
+                <!-- Mostrar selección actual -->
+                <div class="mb-3">
+                    <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>
+                    <strong>Técnico seleccionado:</strong> <span id="tecnicoSeleccionado">Ninguno</span>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="tipo" class="col-sm-3 col-form-label">Tipo de Trámite</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="tipo" name="tipo"
+                            placeholder="Ej: Renovación de carnet">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="fecha" class="col-sm-3 col-form-label">Fecha de Validez</label>
+                    <div class="col-sm-9">
+                        <input type="date" class="form-control" id="fecha" name="fecha">
+                    </div>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Guardar Trámite</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Afiliados -->
+<div class="modal fade" id="modalAfiliados" tabindex="-1" aria-labelledby="modalAfiliadosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalAfiliadosLabel">Listado de Afiliados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Carnet</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Celular</th>
+                            <th>Dirección</th>
+                            <th>Federación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for afiliado in afiliados %}
+                        <tr>
+                            <td>{{ afiliado.carnet }}</td>
+                            <td>{{ afiliado.nombre }}</td>
+                            <td>{{ afiliado.apellido }}</td>
+                            <td>{{ afiliado.celular }}</td>
+                            <td>{{ afiliado.direccion }}</td>
+                            <td>{{ afiliado.federacion.nombre }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-success seleccionar-afiliado"
+                                    data-id="{{ afiliado.id }}"
+                                    data-nombre="{{ afiliado.nombre }} {{ afiliado.apellido }}" data-bs-dismiss="modal">
+                                    Seleccionar
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No hay afiliados registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Técnicos -->
+<div class="modal fade" id="modalTecnicos" tabindex="-1" aria-labelledby="modalTecnicosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="modalTecnicosLabel">Listado de Técnicos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Carnet</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Rol</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tecnico in tecnicos %}
+                        <tr>
+                            <td>{{ tecnico.carnet }}</td>
+                            <td>{{ tecnico.nombre }}</td>
+                            <td>{{ tecnico.apellidos }}</td>
+                            <td>{{ tecnico.rol }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning seleccionar-tecnico"
+                                    data-id="{{ tecnico.id }}"
+                                    data-nombre="{{ tecnico.nombre }} {{ tecnico.apellidos }}" data-bs-dismiss="modal">
+                                    Seleccionar
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay técnicos registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.querySelectorAll('.seleccionar-afiliado').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            document.getElementById('afiliado_id').value = id;
+            document.getElementById('afiliadoSeleccionado').textContent = nombre;
+        });
+    });
+
+
+    document.querySelectorAll('.seleccionar-tecnico').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            document.getElementById('tecnico_id').value = id;
+            document.getElementById('tecnicoSeleccionado').textContent = nombre;
+        });
+    });
+</script>
 {% endblock %}

@@ -1,15 +1,70 @@
 {% extends "base.html" %}
+
 {% block content %}
 <form action="{% url 'verTramite' id %}" method="POST">
     {% csrf_token %}
-    <div class="row">
+    <div class="container mt-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Ver Trámite</h5>
+            </div>
+            <div class="card-body">
 
-        <div class="col-6">{{tramite}}</div>
-        
-        
+                <div class="row mb-3">
+                    <label for="fecha_validez" class="col-sm-3 col-form-label">Fecha de Validez</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="fecha_validez">{{ tramite.fecha_validezI }}
+                            -{{tramite.fecha_validezF }} </p>
+                    </div>
+                </div>
 
+                <div class="row mb-3">
+                    <label for="afiliado" class="col-sm-3 col-form-label">Afiliado</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="afiliado">{{ tramite.afiliado.nombre }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="tipo_tramite" class="col-sm-3 col-form-label">Tipo de Trámite</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="tipo_tramite">{{ tramite.tipo_tramite }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="numero_tramite" class="col-sm-3 col-form-label">Número de Trámite</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="numero_tramite">{{ tramite.numero_tramite }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="estado" class="col-sm-3 col-form-label">Estado</label>
+                    <div class="col-sm-9">
+                        <select class="form-select" id="estado" name="estado">
+                            <option value="verificado">
+                                Verificado</option>
+                            <option value="observado">Observado
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="detalles" class="col-sm-3 col-form-label">Detalles</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" id="detalles" name="detalle"
+                            rows="3">{{ tramite.detalles }}</textarea>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+
+            </div>
+        </div>
     </div>
-    <Button>guardad</Button>
 </form>
-
 {% endblock %}
