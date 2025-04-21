@@ -19,8 +19,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             ('tecnico', 'tecnico'),
             ('administrador', 'administrador'),
         ],
-        default='uper_admin'
+        default='super_admin'
     )
-    
+   
     USERNAME_FIELD = 'username'
     objects = UserManager()

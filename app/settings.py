@@ -65,10 +65,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'utils.context_processors.datos_usuario',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                 
             ],
         },
     },
@@ -85,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'trans',
         'USER':'postgres',
-        'PASSWORD':'kanna',
+        'PASSWORD':'80804',
         'HOST':'localhost',
         'PORT':'5432',
     }

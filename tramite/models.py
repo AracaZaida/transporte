@@ -13,7 +13,7 @@ class Tramite(models.Model):
     fecha_validezI=models.DateField()
     fecha_validezF=models.DateField(blank=True, null=True)
     #numero_deposito=models.CharField(max_length=100, blank=True, null=True)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
+   # monto = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     afiliado=models.ForeignKey(Afiliado, on_delete=models.CASCADE)
     observaciones = models.TextField(null=True, blank=True)
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
