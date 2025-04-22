@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
 from tramite.models import Tramite
+from utils.context_processors import verificarRol
 from vehiculo.models import Vehiculo
 from datetime import  datetime
 
@@ -14,6 +15,9 @@ from datetime import datetime
 from .models import Tramite, Usuario, Afiliado
 
 def crearTramite(request):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
         fecha_validezI = request.POST.get('fecha')
@@ -55,6 +59,9 @@ def crearTramite(request):
 
     
 def verTramite(request, id):
+    resultado = verificarRol(request, ['super_admin','administrador','tecnico'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(Tramite, pk=id)
 
     if request.method =='POST':
@@ -71,21 +78,28 @@ def verTramite(request, id):
         return render(request,'tramite/verTramite.html', context)
 
 def listarTramite(request):
-    
-        tramite = Tramite.objects.filter(flag='nuevo', estado='ingresado')
-        context={'tramite':tramite}
-        return render(request, 'tramite/listarT.html', context)
+    resultado = verificarRol(request, ['tecnico','administrador'])
+    if resultado is not True:
+        return resultado
+    tramite = Tramite.objects.filter(flag='nuevo', estado='ingresado')
+    context={'tramite':tramite}
+    return render(request, 'tramite/listarT.html', context)
 
 def verificadoTramite(request):
-        tramite = Tramite.objects.filter(flag='nuevo', estado='verificado')
-        context={'tramite':tramite}
-        return render(request, 'tramite/verificado.html', context)
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
+    tramite = Tramite.objects.filter(flag='nuevo', estado='verificado')
+    context={'tramite':tramite}
+    return render(request, 'tramite/verificado.html', context)
 
 def observadosramite(request):
-    
-        tramite = Tramite.objects.filter(flag='nuevo', estado='observado')
-        context={'tramite':tramite}
-        return render(request, 'tramite/observado.html', context)
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
+    tramite = Tramite.objects.filter(flag='nuevo', estado='observado')
+    context={'tramite':tramite}
+    return render(request, 'tramite/observado.html', context)
 
 
 def detalleTramite (request, id):
@@ -97,6 +111,9 @@ def detalleTramite (request, id):
     return render(request,'tramite/detalleTramite.html', context)
 
 def tarjeta_tramite (request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     if request.method =='POST':
         placa = request.POST.get('placa')

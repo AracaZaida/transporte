@@ -1,18 +1,25 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
+
 from .models import Usuario
 from usuarios.forms import UsuarioF
 from django.contrib.auth import authenticate , login
 from django.contrib import messages
-
+from utils.context_processors import verificarRol
 def listarUsuario(request):
-    
+    resultado = verificarRol(request, ['super_admin'])
+    if resultado is not True:
+        return resultado
     usuario = Usuario.objects.all()
     context={'usuario':usuario}
 
     return render(request, 'usuario/listar.html', context)
 
 def crearUsuario(request):
+    resultado = verificarRol(request, ['super_admin'])
+    if resultado is not True:
+        return resultado
+    
     if request.method =='POST':
         usuario=UsuarioF(request.POST)
   
@@ -39,10 +46,14 @@ def login_sistema(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect(reverse('listarUsuario'))
+                return redirect(reverse('home'))
             else:
                 messages.error(request, 'Usuario o contraseña incorrectos')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
                 
     return render(request,'usuario/login.html')
+
+    
+def home(request):            
+    return render(request,'usuario/home.html')
