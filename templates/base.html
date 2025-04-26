@@ -50,7 +50,7 @@
                     {% endif %}
                     {% if user.rol == "administrador" or user.rol == "super_admin" %}
 
-                    <li class="nav-item"><a href="{% url 'listaVehiculo' %}" class="nav-link">vehiculo</a></li>
+                    <li class="nav-item"><a href="" class="nav-link">vehiculo</a></li>
 
                     <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">afiliados</a></li>
                     {% endif %}
@@ -121,7 +121,7 @@
                         {% if usuario.rol == "administrador" %}
                         <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
                         {% endif %}
-                        <li class="nav-item"><a href="{% url 'listaVehiculo' %}" class="nav-link">vehiculo</a></li>
+                        <li class="nav-item"><a href="" class="nav-link">vehiculo</a></li>
                         <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">afiliados</a></li>
 
                         <li class="nav-item">

@@ -10,7 +10,7 @@ class Vehiculo(models.Model):
         choices=[('carga', 'carga'), ('pasajero', 'pasajero')])
     chasis=models.CharField(max_length=255, blank=True, null=True)
     capacidad=models.CharField(max_length=255, blank=True, null=True)
-    afiliado=models.ForeignKey(Afiliado, on_delete=models.CASCADE)
+  
     tipo_vehiculo=models.CharField(max_length=100, blank=False, null=False)
     fecha_creacion = models.DateField(auto_now_add=True)
     flag=models.CharField(max_length=20,

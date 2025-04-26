@@ -15,6 +15,7 @@ class Tramite(models.Model):
     #numero_deposito=models.CharField(max_length=100, blank=True, null=True)
     monto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     afiliado=models.ForeignKey(Afiliado, on_delete=models.CASCADE)
+    vehiculo=models.ForeignKey(Vehiculo, on_delete=models.CASCADE, blank=True, null=True)
     observaciones = models.TextField(null=True, blank=True)
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
     

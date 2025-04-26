@@ -16,9 +16,9 @@ def listarUsuario(request):
     return render(request, 'usuario/listar.html', context)
 
 def crearUsuario(request):
-    resultado = verificarRol(request, ['super_admin'])
-    if resultado is not True:
-        return resultado
+    #resultado = verificarRol(request, ['super_admin'])
+    #if resultado is not True:
+        #return resultado
     
     if request.method =='POST':
         usuario=UsuarioF(request.POST)
