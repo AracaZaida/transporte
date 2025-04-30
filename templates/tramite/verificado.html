@@ -28,13 +28,18 @@
                 <td>{{tra.afiliado}}</td>
                 <td>{{ tra.estado}}</td>
                 <td>
-
+                    {% if tra.tiene_vehiculo == False %}
                     <a href="{% url 'tarjeta_tramite' tra.id %}" class="btn btn-info btn-sm">Trasporte</a>
-                    <a href="{% url 'generar_licencia_pdf' tra.id %}" class="btn btn-info btn-sm">Comprobante</a>
+                    {% endif %}
 
+                    {% if tra.tiene_vehiculo == True %}
+                    <a href="{% url 'detalleTramite' tra.id %}" class="btn btn-info btn-sm">Detalle</a>
+                    {% endif %}
+
+
+                    <a href="{% url 'editarTramite' tra.id %}" class="btn btn-info btn-sm">Editar</a>
 
                 </td>
-
             </tr>
             {% empty %}
             <tr>

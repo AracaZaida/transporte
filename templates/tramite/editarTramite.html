@@ -34,12 +34,9 @@
                 <div class="col-md-4">
                     <strong>Federación:</strong> {{ tramite.afiliado.federacion.nombre }}
                 </div>
-
                 <div class="col-md-4">
-                    <strong>Fecha de validez:</strong> {{ tramite.fecha_validezI }}
-                    -{{tramite.fecha_validezF }}
+                    <strong>Fecha de validez:</strong> {{ tramite.fecha_validezI }} - {{ tramite.fecha_validezF }}
                 </div>
-
             </div>
         </div>
     </div>
@@ -55,54 +52,61 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="placa" class="form-label">Placa</label>
-                        <input type="text" class="form-control" required id="placa" name="placa">
+                        <input type="text" value="{{ tramite.vehiculo.placa }}" class="form-control" required id="placa"
+                            name="placa">
                     </div>
                     <div class="col-md-4">
                         <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
                         <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
-                            <option value="" disabled selected>Seleccione una opción</option>
-                            <option value="Pasajeros">Pasajeros</option>
-                            <option value="Carga">Carga</option>
+                            <option value="" disabled {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>
+                                Seleccione una opción</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros</option>
+                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>
+                                Carga</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="modelo" class="form-label">Modelo</label>
-                        <input type="text" required class="form-control" id="modelo" name="modelo">
+                        <input type="text" required class="form-control" id="modelo" name="modelo"
+                            value="{{ tramite.vehiculo.modelo }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="marca" class="form-label">Marca</label>
-                        <input type="text" required class="form-control" id="marca" name="marca">
+                        <input type="text" value="{{ tramite.vehiculo.marca }}" required class="form-control" id="marca"
+                            name="marca">
                     </div>
                     <div class="col-md-4">
                         <label for="chasis" class="form-label">Número de Chasis</label>
-                        <input type="text" required class="form-control" id="chasis" name="chasis">
+                        <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control"
+                            id="chasis" name="chasis">
                     </div>
                     <div class="col-md-4">
                         <label for="tipo_servicio" class="form-label">Tipo de Servicio</label>
-                        <input type="text" required class="form-control" id="tipo_servicio" name="tipo_servicio">
+                        <input type="text" value="{{ tramite.vehiculo.tipo_vehiculo }}" required class="form-control"
+                            id="tipo_servicio" name="tipo_servicio">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="capacidad" class="form-label">Capacidad</label>
-                        <input type="number" required class="form-control" id="capacidad" name="capacidad">
+                        <input type="number" value="{{ tramite.vehiculo.capacidad }}" required class="form-control"
+                            id="capacidad" name="capacidad">
                     </div>
                     <div class="col-md-4">
                         <label for="rutas_autorizadas" class="form-label">Rutas Autorizadas</label>
                         <textarea class="form-control" required id="rutas_autorizadas" name="rutas_autorizadas"
-                            rows="3"></textarea>
+                            rows="3">{{ tramite.rutasOperar }}</textarea>
                     </div>
                     <div class="col-md-4">
                         <label for="monto" class="form-label">Monto</label>
-                        <input type="number" required class="form-control" id="monto" name="monto">
+                        <input type="number"  required class="form-control"
+                            value="{{ tramite.monto|default:0.0 }}" id="monto" name="monto">
                     </div>
                 </div>
-
-
 
                 <div class="text-end">
                     <button type="submit" class="btn btn-success">Guardar</button>

@@ -11,7 +11,7 @@ urlpatterns = [
    path('tramite/aprobar/<int:id>', views.aprobarTramite, name='aprobarTramite'),
     
    path('tramite/anular/<int:id>', views.anularTramite, name='anularTramite'),
-
+      path('tramite/editar/<int:id>', views.editarTramite, name='editarTramite'),
     path('tramite/ver/<int:id>', views.verTramite, name='verTramite'),
     path('verificadoTramite', views.verificadoTramite, name='verificadoTramite'),
     path('observadosramitee', views.observadosramite, name='observadosramite'),

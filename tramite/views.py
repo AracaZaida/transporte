@@ -140,15 +140,47 @@ def tarjeta_tramite (request, id):
                                  
                                 tipo_vehiculo=tipo_servicio
                                  )
-        tramite.monto = monto
+        tramite.monto = int(monto)
         tramite.rutasOperar = rutas_autorizadas
         tramite.vehiculo=vehiculo
+        tramite.tiene_vehiculo  = True
         tramite.save()
-
+        return redirect(reverse('verificadoTramite'))
     context  = {
         'tramite':tramite
     }
     return render(request,'tramite/tarjeta.html', context)
+
+def editarTramite(request, id):
+    tramite = get_object_or_404(Tramite, pk=id)
+    
+    if request.method =='POST':
+        placa = request.POST.get('placa')
+        tipo_transporte = request.POST.get('tipo_transporte')
+        modelo = request.POST.get('modelo')
+        marca = request.POST.get('marca')
+        chasis = request.POST.get('chasis')
+        tipo_servicio = request.POST.get('tipo_servicio')
+        capacidad = request.POST.get('capacidad')
+        rutas_autorizadas = request.POST.get('rutas_autorizadas')
+        monto = request.POST.get('monto')
+        tramite.vehiculo.placa = placa
+        tramite.vehiculo.tipo_transporte= tipo_transporte
+        tramite.vehiculo.modelo = modelo
+        tramite.vehiculo.marca = marca
+        tramite.vehiculo.chasis =chasis
+        tramite.vehiculo.tipo_vehiculo = tipo_servicio
+        tramite.vehiculo.capacidad = capacidad
+        tramite.rutasOperar= rutas_autorizadas
+        tramite.monto = float(monto)
+        tramite.vehiculo.save()
+        tramite.save()
+        return redirect(reverse('verificadoTramite'))
+
+    context  = {
+        'tramite':tramite
+    }
+    return  render(request,'tramite/editarTramite.html',context)
 
 def aprobarTramite(request, id):
     tramite= get_object_or_404(Tramite, pk=id)

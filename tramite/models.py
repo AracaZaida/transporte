@@ -13,7 +13,7 @@ class Tramite(models.Model):
     fecha_validezI=models.DateField()
     fecha_validezF=models.DateField(blank=True, null=True)
     #numero_deposito=models.CharField(max_length=100, blank=True, null=True)
-    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    monto = models.IntegerField(default=0)
     afiliado=models.ForeignKey(Afiliado, on_delete=models.CASCADE)
     vehiculo=models.ForeignKey(Vehiculo, on_delete=models.CASCADE, blank=True, null=True)
     observaciones = models.TextField(null=True, blank=True)
@@ -23,8 +23,7 @@ class Tramite(models.Model):
             choices=[('verificado', 'verificado'), ('observado', 'observado'),('ingresado','ingresado')],
         default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-
+    tiene_vehiculo = models.BooleanField(default=False)
     fecha_creacion = models.DateField(auto_now_add=True)
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],

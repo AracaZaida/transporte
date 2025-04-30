@@ -43,7 +43,7 @@
                 <h5> ☰ Menú</h5>
                 <ul class="nav flex-column">
 
-                    <li class="nav-item"><a href="" class="nav-link">🏠 Inicio</a></li>
+                    <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">🏠 Inicio</a></li>
                     {% if user.rol == "super_admin" %}
 
                     <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
@@ -75,12 +75,11 @@
                                             </li>
                                             {% endif %}
 
-                                            {% if user.rol == "tecnico" or user.rol == "super_admin" %}
                                             <li class="nav-item">
                                                 <a href="{% url 'listarTramite' %}" class="nav-link">📄 Trámite
                                                     ingresados</a>
                                             </li>
-                                            {% endif %}
+
 
                                             {% if user.rol == "administrador" or user.rol == "super_admin" %}
                                             <li class="nav-item">
@@ -116,7 +115,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a href="" class="nav-link">🏠 Inicio</a></li>
+                        <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">🏠 Inicio</a></li>
                         {{ usuario.rol }}
                         {% if usuario.rol == "administrador" %}
                         <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
