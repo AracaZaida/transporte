@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 
 from .models import Usuario
@@ -6,19 +6,21 @@ from usuarios.forms import UsuarioF
 from django.contrib.auth import authenticate , login
 from django.contrib import messages
 from utils.context_processors import verificarRol
+from django.contrib.auth.models import User
+from .forms import UsuarioF
 def listarUsuario(request):
     resultado = verificarRol(request, ['super_admin'])
     if resultado is not True:
         return resultado
-    usuario = Usuario.objects.all()
+    usuario = Usuario.objects.filter(es_habilitado=True)
     context={'usuario':usuario}
 
     return render(request, 'usuario/listar.html', context)
 
 def crearUsuario(request):
-    #resultado = verificarRol(request, ['super_admin'])
-    #if resultado is not True:
-        #return resultado
+    resultado = verificarRol(request, ['super_admin'])
+    if resultado is not True:
+        return resultado
     
     if request.method =='POST':
         usuario=UsuarioF(request.POST)
@@ -57,3 +59,29 @@ def login_sistema(request):
     
 def home(request):            
     return render(request,'usuario/home.html')
+
+def editar_user(request, usuario_id):
+    user = get_object_or_404(Usuario, id=usuario_id)
+
+    if request.method == 'POST':
+        form = UsuarioF(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('listarUsuario')  
+    else:
+        form = UsuarioF(instance=user)
+        
+
+    return render(request, 'usuario/editar.html', {'form': form,'id':user.id})
+
+def elimar_usario(request, usuario_id):
+    user = get_object_or_404(Usuario, id=usuario_id)
+    user.es_activo=False
+    user.es_habilitado=False
+    user.save()
+    return redirect('listarUsuario')  
+    
+
+    
+    
+
