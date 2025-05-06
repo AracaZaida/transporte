@@ -39,6 +39,9 @@
                 </div>
             </div>
         </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRuta">
+            Añadir Ruta
+        </button>
     </div>
 
     <!-- Formulario del Vehículo -->
@@ -60,7 +63,7 @@
                         <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
                             <option value="" disabled {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>
                                 Seleccione una opción</option>
-                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{%endif %}>Pasajeros</option>
                             <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>
                                 Carga</option>
                         </select>
@@ -97,15 +100,16 @@
                             id="capacidad" name="capacidad">
                     </div>
                     <div class="col-md-4">
-                        <label for="rutas_autorizadas" class="form-label">Rutas Autorizadas</label>
-                        <textarea class="form-control" required id="rutas_autorizadas" name="rutas_autorizadas"
-                            rows="3">{{ tramite.rutasOperar }}</textarea>
+                        <label class="form-label">Ruta Seleccionada</label>
+                        <input value="{{tramite.rutas.nombre}}" type="text" readonly class="form-control" id="ruta_nombre_mostrar" required>
                     </div>
-                    <div class="col-md-4">
-                        <label for="monto" class="form-label">Monto</label>
-                        <input type="number"  required class="form-control"
-                            value="{{ tramite.monto|default:0.0 }}" id="monto" name="monto">
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalRuta1">
+                            Listar Rutas Autorizadas
+                        </button>
                     </div>
+                    <input  value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
+
                 </div>
 
                 <div class="text-end">
@@ -115,4 +119,120 @@
         </div>
     </form>
 </div>
+<!-- Modal: Añadir Ruta -->
+<div class="modal fade" id="modalRuta" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalRutaLabel">Añadir Ruta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+          
+            <form id="formRuta">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre de la Ruta</label>
+                        <textarea class="form-control" id="nombre" name="nombre" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Listar Rutas -->
+<div class="modal fade" id="modalRuta1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rutas Autorizadas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_rutas_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Crear ruta
+    document.getElementById('formRuta').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        axios.post("{% url 'crearRuta' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.data.estatus === 201) {
+                    alert('Ruta guardada correctamente');
+                    document.getElementById('formRuta').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalRuta')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+
+
+    document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarRuta' %}")
+            .then(response => {
+                const rutas = response.data;
+                const tbody = document.getElementById('tabla_rutas_body');
+                tbody.innerHTML = ''; // Limpiar
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-ruta" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+
+                document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                      
+                        
+                        const rutaId = this.getAttribute('data-id');
+                        console.log(rutaId);
+                        
+                        const rutaNombre = this.getAttribute('data-nombre');
+                        document.getElementById('ruta_id').value = rutaId;
+                        document.getElementById('ruta_nombre_mostrar').value = rutaNombre;
+                        bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+</script>
 {% endblock %}

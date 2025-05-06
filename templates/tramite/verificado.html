@@ -35,9 +35,12 @@
                     {% if tra.tiene_vehiculo == True %}
                     <a href="{% url 'detalleTramite' tra.id %}" class="btn btn-info btn-sm">Detalle</a>
                     {% endif %}
-
-
                     <a href="{% url 'editarTramite' tra.id %}" class="btn btn-info btn-sm">Editar</a>
+                    {% if tra.verificarPago == True %}
+                    <a href="#" class="btn btn-info btn-sm">verificado</a>
+                    {% else %}
+                    <a href="{% url 'verificarPago' tra.id %}" class="btn btn-info btn-sm">verificar pago</a>
+                    {% endif %}
 
                 </td>
             </tr>

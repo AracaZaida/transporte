@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
-from tramite.models import Tramite
+from tramite.models import Tramite ,Rutas
 from utils.context_processors import verificarRol
 from vehiculo.models import Vehiculo
 from datetime import  datetime
-
+import json
 from usuarios.models import Usuario
 
 from  afiliados.models import Afiliado
@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from datetime import datetime
 from .models import Tramite, Usuario, Afiliado
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -120,6 +120,8 @@ def tarjeta_tramite (request, id):
         return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     if request.method =='POST':
+        ruta = request.POST.get('ruta_id')    
+        r = get_object_or_404(Rutas, pk= ruta) 
         placa = request.POST.get('placa')
         tipo_transporte = request.POST.get('tipo_transporte')
         modelo = request.POST.get('modelo')
@@ -127,8 +129,7 @@ def tarjeta_tramite (request, id):
         chasis = request.POST.get('chasis')
         tipo_servicio = request.POST.get('tipo_servicio')
         capacidad = request.POST.get('capacidad')
-        rutas_autorizadas = request.POST.get('rutas_autorizadas')
-        monto = request.POST.get('monto')
+       
 
         vehiculo=Vehiculo.objects.create(marca= marca, 
                                 
@@ -140,8 +141,8 @@ def tarjeta_tramite (request, id):
                                  
                                 tipo_vehiculo=tipo_servicio
                                  )
-        tramite.monto = int(monto)
-        tramite.rutasOperar = rutas_autorizadas
+     
+        tramite.rutas = r
         tramite.vehiculo=vehiculo
         tramite.tiene_vehiculo  = True
         tramite.save()
@@ -155,6 +156,8 @@ def editarTramite(request, id):
     tramite = get_object_or_404(Tramite, pk=id)
     
     if request.method =='POST':
+        ruta = request.POST.get('ruta_id')    
+        r = get_object_or_404(Rutas, pk= ruta)
         placa = request.POST.get('placa')
         tipo_transporte = request.POST.get('tipo_transporte')
         modelo = request.POST.get('modelo')
@@ -162,8 +165,8 @@ def editarTramite(request, id):
         chasis = request.POST.get('chasis')
         tipo_servicio = request.POST.get('tipo_servicio')
         capacidad = request.POST.get('capacidad')
-        rutas_autorizadas = request.POST.get('rutas_autorizadas')
-        monto = request.POST.get('monto')
+        
+    
         tramite.vehiculo.placa = placa
         tramite.vehiculo.tipo_transporte= tipo_transporte
         tramite.vehiculo.modelo = modelo
@@ -171,8 +174,7 @@ def editarTramite(request, id):
         tramite.vehiculo.chasis =chasis
         tramite.vehiculo.tipo_vehiculo = tipo_servicio
         tramite.vehiculo.capacidad = capacidad
-        tramite.rutasOperar= rutas_autorizadas
-        tramite.monto = float(monto)
+        tramite.rutas= r
         tramite.vehiculo.save()
         tramite.save()
         return redirect(reverse('verificadoTramite'))
@@ -194,8 +196,36 @@ def anularTramite(request, id):
     tramite.save()
     return redirect(reverse('listarTramite'))
 
+def verificarPago(request, id):
+    tramite = get_object_or_404(Tramite, pk= id)
+    if request.method =='POST':
+        
+        numeroComprobante = request.POST.get('numeroComprobante')
+        fechaPago = request.POST.get('fechaPago')
+        monto = request.POST.get('monto')
+        tramite.numero_comprobante= numeroComprobante
+        tramite.fecha_pago= fechaPago
+        tramite.monto = monto
+        tramite.verificarPago= True
+        tramite.save()
+        return redirect(reverse('verificadoTramite'))
+    return render(request, 'tramite/verificarPago.html', {'id':tramite.id})
 
-
+def crearRuta(request):  # Usa el `id` si lo necesitas
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nombre = data.get('nombre')
+            if not nombre:
+                return JsonResponse({'estatus': 400, 'mensaje': 'Nombre requerido'}, status=400)
+            Rutas.objects.create(nombre=nombre)
+            return JsonResponse({'estatus': 201})
+        except Exception as e:
+            return JsonResponse({'estatus': 500, 'mensaje': str(e)}, status=500)
+def listarRuta(request):
+    rutas = Rutas.objects.all()  
+    rutas_data = list(rutas.values('id', 'nombre'))  
+    return JsonResponse(rutas_data, safe=False)
 
 def generar_licencia_pdf(request, id):
     tramite=get_object_or_404(Tramite, pk=id)
@@ -262,7 +292,7 @@ def generar_licencia_pdf(request, id):
     p.drawString(50, y, "Rutas Autorizadas:")
     p.setFont("Helvetica", 8)
     y -= 12
-    p.drawString(70, y, f"{tramite.rutasOperar}")
+    p.drawString(70, y, f"{tramite.rutas.nombre}")
     y -= 12
  
     p.setFont("Helvetica-Bold", 8)
