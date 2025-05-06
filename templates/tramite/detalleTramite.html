@@ -46,14 +46,13 @@
         <div>
             <h4 class="text-info mb-3">📝 Trámite</h4>
             <div class="row">
-                <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite.nombre }}</div>
+                <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite }}</div>
                 <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
-                <div class="col-md-3"><strong>Monto:</strong> {{ tramite.monto }}</div>
+
 
             </div>
             <div class="row mt-2">
-                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutasOperar }}</div>
-                <div class="col-md-3"><strong>Depósito:</strong> {{ tramite.numero_deposito }}</div>
+                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutas.nombre }}</div>
                 <div class="col-md-3"><strong>Fecha Validez Inicio:</strong> {{ tramite.fecha_validezI|date:"d/m/Y" }}
                 </div>
                 <div class="col-md-3"><strong>Fecha Validez Fin:</strong> {{ tramite.fecha_validezF|date:"d/m/Y" }}
@@ -75,6 +74,20 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm rounded-4 border-0 mt-4 p-4 bg-light">
+                <h4 class="text-dark mb-3">💰 Detalles del Pago</h4>
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <strong>Número de Comprobante:</strong> {{ tramite.numero_comprobante }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Fecha de Pago:</strong> {{ tramite.fecha_pago|date:"d/m/Y" }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Monto Pagado:</strong> {{ tramite.monto }}
+                    </div>
+                </div>
+            </div>
             <div class="col-md-6">
                 <a href="{% url 'generar_licencia_pdf'  tramite.id %}" class="btn btn-success">Comprobante</a>
 
