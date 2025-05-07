@@ -72,9 +72,3 @@ def editar_user(request, usuario_id):
 
     return render(request, 'usuario/editar.html', {'form': form,'id':user.id})
 
-def elimar_usario(request, usuario_id):
-    user = get_object_or_404(Usuario, id=usuario_id)
-    user.es_activo=False
-    user.es_habilitado=False
-    user.save()
-    return redirect('listarUsuario')  
