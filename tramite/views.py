@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
+from federacion.models import Federacion
 from tramite.models import Tramite ,Rutas
 from utils.context_processors import verificarRol
 from vehiculo.models import Vehiculo
@@ -12,7 +13,7 @@ from  afiliados.models import Afiliado
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from datetime import datetime
-from .models import Tramite, Usuario, Afiliado
+from .models import DetalleTramite, Tramite, Usuario, Afiliado
 from django.http import HttpResponse, JsonResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -25,17 +26,19 @@ def crearTramite(request):
     if request.method == 'POST':
         tipo = request.POST.get('tipo')
         fecha_validezI = request.POST.get('fecha')
-        afiliado_id = request.POST.get('afiliado_id')
+      
         tecnico_id = request.POST.get('tecnico_id')
+        federacion = request.POST.get('afiliado_id')
+        
 
-        if tipo and fecha_validezI and afiliado_id and tecnico_id:
+        if tipo and fecha_validezI  and tecnico_id:
             # Convertir fecha de string a objeto datetime.date
             fecha_validezI = datetime.strptime(fecha_validezI, '%Y-%m-%d').date()
             fecha_validezF = fecha_validezI.replace(year=fecha_validezI.year + 1)
             gestion = datetime.now().year
-
+            federacion = get_object_or_404(Federacion, pk= federacion)
             # Obtener objetos relacionados
-            afiliado = Afiliado.objects.get(id=afiliado_id)
+         
             tecnico = Usuario.objects.get(id=tecnico_id)
 
             Tramite.objects.create(
@@ -43,7 +46,7 @@ def crearTramite(request):
                 fecha_validezI=fecha_validezI,
                 fecha_validezF=fecha_validezF,
                 gestion=gestion,
-                afiliado=afiliado,
+               federacion=federacion,
                 usuario=tecnico
             )
 
@@ -54,10 +57,12 @@ def crearTramite(request):
 
 
     tecnicos = Usuario.objects.filter(rol='tecnico', es_activo=True)
-    afiliados = Afiliado.objects.filter(flag='nuevo')
+   # afiliados = Afiliado.objects.filter(flag='nuevo')
+    federacion = Federacion.objects.filter(flag='nuevo')
     context = {
         'tecnicos': tecnicos,
-        'afiliados': afiliados
+         'federacion': federacion,
+       # 'afiliados': afiliados
     }
     return render(request, 'tramite/crearTramite.html', context)
 
@@ -107,10 +112,11 @@ def observadosramite(request):
 
 
 def detalleTramite (request, id):
-    detalle = get_object_or_404(Tramite, pk=id)
-
+    tramite = get_object_or_404(Tramite, pk=id)
+    detalle = DetalleTramite.objects.filter(tramite= tramite)
     context  = {
-        'tramite':detalle
+        'tramite':tramite,
+        'detalle':detalle
     }
     return render(request,'tramite/detalleTramite.html', context)
 
@@ -120,8 +126,11 @@ def tarjeta_tramite (request, id):
         return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     if request.method =='POST':
-        ruta = request.POST.get('ruta_id')    
+        ruta = request.POST.get('ruta_id')  
+        afiliado = request.POST.get('afiliado_id')
+          
         r = get_object_or_404(Rutas, pk= ruta) 
+        a = get_object_or_404(Afiliado, pk= afiliado) 
         placa = request.POST.get('placa')
         tipo_transporte = request.POST.get('tipo_transporte')
         modelo = request.POST.get('modelo')
@@ -142,18 +151,18 @@ def tarjeta_tramite (request, id):
                                 tipo_vehiculo=tipo_servicio
                                  )
      
-        tramite.rutas = r
-        tramite.vehiculo=vehiculo
-        tramite.tiene_vehiculo  = True
-        tramite.save()
+        
+        DetalleTramite.objects.create(vehiculo= vehiculo , rutas=r , afiliado= a, tramite= tramite)
         return redirect(reverse('verificadoTramite'))
+    afiliado = Afiliado.objects.filter(federacion = tramite.federacion)
     context  = {
-        'tramite':tramite
+        'tramite':tramite,
+        'afiliados':afiliado
     }
     return render(request,'tramite/tarjeta.html', context)
 
 def editarTramite(request, id):
-    tramite = get_object_or_404(Tramite, pk=id)
+    tramite = get_object_or_404(DetalleTramite, pk=id)
     
     if request.method =='POST':
         ruta = request.POST.get('ruta_id')    
@@ -228,7 +237,7 @@ def listarRuta(request):
     return JsonResponse(rutas_data, safe=False)
 
 def generar_licencia_pdf(request, id):
-    tramite=get_object_or_404(Tramite, pk=id)
+    detalle=get_object_or_404(DetalleTramite, pk=id)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="licencia_operacion.pdf"'
 
@@ -250,20 +259,20 @@ def generar_licencia_pdf(request, id):
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Línea Sindical:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{tramite.afiliado.federacion.nombre}")
+    p.drawString(140, y, f"{detalle.afiliado.federacion.nombre}")
     y -= 18
 
     datos_col1 = [
-        ("Operador:", f"{tramite.afiliado.nombre } {tramite.afiliado.apellido}"),
-        ("Afiliado:", f"{tramite.afiliado.id}"),
-        ("Modelo:", f"{tramite.vehiculo.modelo}"),
-        ("Registro:", f"{tramite.numero_tramite}"),
+        ("Operador:", f"{detalle.afiliado.nombre } {detalle.afiliado.apellido}"),
+        ("Afiliado:", f"{detalle.afiliado.id}"),
+        ("Modelo:", f"{detalle.vehiculo.modelo}"),
+        ("Registro:", f"{detalle.tramite.numero_tramite}"),
     ]
     datos_col2 = [
-        ("Categoría:", f"{tramite.vehiculo.tipo_vehiculo}"),
-        ("Capacidad:", f"{tramite.vehiculo.capacidad}"),
-        ("Chasis:", f"{tramite.vehiculo.chasis}"),
-        ("Marca:", f"{tramite.vehiculo.marca}"),
+        ("Categoría:", f"{detalle.vehiculo.tipo_vehiculo}"),
+        ("Capacidad:", f"{detalle.vehiculo.capacidad}"),
+        ("Chasis:", f"{detalle.vehiculo.chasis}"),
+        ("Marca:", f"{detalle.vehiculo.marca}"),
     ]
     x1 = 50
     x2 = width / 2 + 10
@@ -281,7 +290,7 @@ def generar_licencia_pdf(request, id):
 
     p.setFont("Helvetica-Bold", 12)
     p.setFillColor(colors.black)
-    p.drawCentredString(width / 2, y - 10, f"{tramite.vehiculo.placa}")
+    p.drawCentredString(width / 2, y - 10, f"{detalle.vehiculo.placa}")
     y -= 25
 
     p.setStrokeColor(colors.black)
@@ -292,13 +301,13 @@ def generar_licencia_pdf(request, id):
     p.drawString(50, y, "Rutas Autorizadas:")
     p.setFont("Helvetica", 8)
     y -= 12
-    p.drawString(70, y, f"{tramite.rutas.nombre}")
+    p.drawString(70, y, f"{detalle.rutas.nombre}")
     y -= 12
  
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Licencia válida de:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{tramite.fecha_validezI} al {tramite.fecha_validezF}")
+    p.drawString(140, y, f"{detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}")
     y -= 18
 
     p.setFont("Helvetica", 7)
