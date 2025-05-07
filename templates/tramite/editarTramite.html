@@ -27,7 +27,7 @@
                     <strong>Fecha:</strong> {{ tramite.fecha_creacion }}
                 </div>
                 <div class="col-md-4">
-                    <strong>Usuario:</strong> {{ tramite.usuario.username }}
+                    <strong>Usuario:</strong> {{ tramite.tramite.usuario.username }}
                 </div>
             </div>
             <div class="row">
@@ -35,7 +35,7 @@
                     <strong>Federación:</strong> {{ tramite.afiliado.federacion.nombre }}
                 </div>
                 <div class="col-md-4">
-                    <strong>Fecha de validez:</strong> {{ tramite.fecha_validezI }} - {{ tramite.fecha_validezF }}
+                    <strong>Fecha de validez:</strong> {{ tramite.tramite.fecha_validezI }} - {{ tramite.tramite.fecha_validezF }}
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                         <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
                             <option value="" disabled {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>
                                 Seleccione una opción</option>
-                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{%endif %}>Pasajeros</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros"%} selected{%endif %}>Pasajeros</option>
                             <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>
                                 Carga</option>
                         </select>
@@ -101,14 +101,16 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ruta Seleccionada</label>
-                        <input value="{{tramite.rutas.nombre}}" type="text" readonly class="form-control" id="ruta_nombre_mostrar" required>
+                        <input value="{{tramite.rutas.nombre}}" type="text" readonly class="form-control"
+                            id="ruta_nombre_mostrar" required>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalRuta1">
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                            data-bs-target="#modalRuta1">
                             Listar Rutas Autorizadas
                         </button>
                     </div>
-                    <input  value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
+                    <input value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
 
                 </div>
 
@@ -127,7 +129,7 @@
                 <h5 class="modal-title" id="modalRutaLabel">Añadir Ruta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-          
+
             <form id="formRuta">
                 <div class="modal-body">
                     <div class="mb-3">
@@ -218,11 +220,11 @@
 
                 document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
                     btn.addEventListener('click', function () {
-                      
-                        
+
+
                         const rutaId = this.getAttribute('data-id');
                         console.log(rutaId);
-                        
+
                         const rutaNombre = this.getAttribute('data-nombre');
                         document.getElementById('ruta_id').value = rutaId;
                         document.getElementById('ruta_nombre_mostrar').value = rutaNombre;
