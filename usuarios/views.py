@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 
 from .models import Usuario
@@ -10,7 +10,7 @@ def listarUsuario(request):
     resultado = verificarRol(request, ['super_admin'])
     if resultado is not True:
         return resultado
-    usuario = Usuario.objects.all()
+    usuario = Usuario.objects.filter(es_habilitado=True)
     context={'usuario':usuario}
 
     return render(request, 'usuario/listar.html', context)
@@ -57,3 +57,24 @@ def login_sistema(request):
     
 def home(request):            
     return render(request,'usuario/home.html')
+
+def editar_user(request, usu_id):
+    user = get_object_or_404(Usuario, id=usu_id)
+
+    if request.method == 'POST':
+        form = UsuarioF(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('listarUsuario')  
+    else:
+        form = UsuarioF(instance=user)
+        
+
+    return render(request, 'usuario/editar.html', {'form': form,'id':user.id})
+
+def eliminar_usuario(request, usuario_id):
+    user = get_object_or_404(Usuario, id=usuario_id)
+    user.es_activo = False
+    user.es_habilitado = False
+    user.save()
+    return redirect('listarUsuario')
