@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{% url 'crearUsuario' %}" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <Button>guardad</Button>
+</form>
+
+{% endblock %}
