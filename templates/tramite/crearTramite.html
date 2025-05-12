@@ -10,7 +10,7 @@
         </button>-->
 
         <button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
-            federacion
+            Operador
         </button>
         <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#modalTecnicos">
             Ver Técnicos
@@ -33,10 +33,16 @@
                 <!-- Mostrar selección actual -->
                 <div class="mb-3">
                     <!-- <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>-->
-                    <strong>Federacion seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>
+                    <strong>operador seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>
                     <strong>Técnico seleccionado:</strong> <span id="tecnicoSeleccionado">Ninguno</span>
                 </div>
 
+                <div class="row mb-3">
+                    <label for="fojas" class="col-sm-3 col-form-label">Numero de fojas</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="fojas" name="fojas">
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <label for="tipo" class="col-sm-3 col-form-label">Tipo de Trámite</label>
                     <div class="col-sm-9">
@@ -44,6 +50,7 @@
                             placeholder="Ej: Renovación de carnet">
                     </div>
                 </div>
+
                 <div class="row mb-3">
                     <label for="fecha" class="col-sm-3 col-form-label">Fecha de Validez</label>
                     <div class="col-sm-9">
@@ -73,22 +80,25 @@
                             <th>Nombre</th>
                             <th>Celular</th>
                             <th>Dirección</th>
+                            <th>Federacion</th>
+                            <th>Accion</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        {% for afiliado in federacion %}
+                        {% for op in operador %}
                         <tr>
 
-                            <td>{{ afiliado.nombre }}</td>
+                            <td>{{ op.nombre }}</td>
 
-                            <td>{{ afiliado.celular }}</td>
-                            <td>{{ afiliado.direccion }}</td>
+                            <td>{{ op.celular }}</td>
+                            <td>{{ op.direccion }}</td>
+                            <td>{{ op.federacion }}</td>
 
                             <td>
                                 <button type="button" class="btn btn-sm btn-success seleccionar-afiliado"
-                                    data-id="{{ afiliado.id }}"
-                                    data-nombre="{{ afiliado.nombre }} {{ afiliado.apellido }}" data-bs-dismiss="modal">
+                                    data-id="{{  op.id }}" data-nombre="{{  op.nombre }} {{  op.apellido }}"
+                                    data-bs-dismiss="modal">
                                     Seleccionar
                                 </button>
                             </td>
