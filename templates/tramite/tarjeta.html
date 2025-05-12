@@ -34,7 +34,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <strong>Federación:</strong> {{ tramite.federacion.nombre }}
+                    <strong>Federación:</strong> {{ tramite.operador.federacion.nombre }}
                 </div>
 
                 <div class="col-md-4">
@@ -59,6 +59,7 @@
             <div class="card-body">
                 <div class="col-md-4">
                     <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>
+                    <input type="text" hidden id="idTramite" value="{{tramite.id}}">
                 </div>
 
                 <div class="row mb-3">
@@ -119,7 +120,7 @@
                 <input type="hidden" id="ruta_id" name="ruta_id">
 
                 <div class="text-end">
-                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" id="registrar" class="btn btn-success">Registar</button>
                 </div>
             </div>
         </div>
@@ -229,8 +230,139 @@
     </div>
 </div>
 
+<div>
+    <table id="tablaRegistros" class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Afiliado ID</th>
+                <th>Placa</th>
+                <th>Tipo de Transporte</th>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Chasis</th>
+                <th>Tipo de Servicio</th>
+                <th>Capacidad</th>
+                <th>Ruta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se agregarán las filas -->
+        </tbody>
+
+    </table>
+
+    <div class="d-flex justify-content-center mt-3">
+        <button id="guardar" class="btn btn-success">Guardar</button>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block js %}
 
 <script>
+    let dataTarjeta = []
+
+
+
+    document.getElementById('registrar').addEventListener('click', function (e) {
+
+        e.preventDefault();
+        const afiliado_id = document.getElementById('afiliado_id').value;
+        const afiliadoSeleccionado = document.getElementById('afiliadoSeleccionado').textContent;
+        const placa = document.getElementById('placa').value;
+        const tipo_transporte = document.getElementById('tipo_transporte').value;
+        const modelo = document.getElementById('modelo').value;
+        const marca = document.getElementById('marca').value;
+        const chasis = document.getElementById('chasis').value;
+        const tipo_servicio = document.getElementById('tipo_servicio').value;
+        const capacidad = document.getElementById('capacidad').value;
+        const ruta_nombre_mostrar = document.getElementById('ruta_nombre_mostrar').value;
+        const ruta_id = document.getElementById('ruta_id').value;
+        if (!afiliado_id || !afiliadoSeleccionado || !placa || !tipo_transporte || !modelo || !marca || !chasis || !tipo_servicio || !capacidad || !ruta_nombre_mostrar || !ruta_id) {
+            alert("Por favor, complete todos los campos obligatorios.");
+            return;
+        }
+        const data = {
+            afiliadoSeleccionado,
+            afiliado_id,
+            placa,
+            tipo_transporte,
+            modelo,
+            marca,
+            chasis,
+            tipo_servicio,
+            capacidad,
+            ruta_nombre_mostrar,
+            ruta_id
+        }
+        dataTarjeta.push(data)
+        actualizarTabla()
+    });
+    function actualizarTabla() {
+
+        const tablaBody = document.querySelector('#tablaRegistros tbody');
+        tablaBody.innerHTML = '';
+
+
+        dataTarjeta.forEach(item => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+            <td>${item.afiliadoSeleccionado}</td>
+            <td>${item.placa}</td>
+            <td>${item.tipo_transporte}</td>
+            <td>${item.modelo}</td>
+            <td>${item.marca}</td>
+            <td>${item.chasis}</td>
+            <td>${item.tipo_servicio}</td>
+            <td>${item.capacidad}</td>
+            <td>${item.ruta_nombre_mostrar}</td>
+            <td><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
+        `;
+            tablaBody.appendChild(fila);
+        });
+    }
+
+    function eliminarFila(button) {
+
+        const fila = button.closest('tr');
+
+        const index = Array.from(fila.parentNode.children).indexOf(fila);
+
+
+        dataTarjeta.splice(index, 1);
+
+
+        actualizarTabla();
+    }
+
+    document.getElementById('guardar').addEventListener('click', function (e) {
+        const idTramite = document.getElementById('idTramite').value;
+
+        // Genera la URL correctamente en Django
+        const url = "{% url 'tarjeta_tramite' id=0 %}".replace('0', idTramite);
+        axios.post(url, dataTarjeta, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.status === 201) {
+                    alert('guardada correctamente');
+                    window.location.href = "{% url 'verificadoTramite' %}"
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+
+    });
+
 
     document.querySelectorAll('.seleccionar-afiliado').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -240,7 +372,6 @@
             document.getElementById('afiliadoSeleccionado').textContent = nombre;
         });
     });
-
 
     document.getElementById('formRuta').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -254,6 +385,8 @@
             }
         })
             .then(response => {
+                console.log(response);
+
                 if (response.data.estatus === 201) {
                     alert('Ruta guardada correctamente');
                     document.getElementById('formRuta').reset();

@@ -4,7 +4,7 @@ from .models import Federacion
 from federacion.forms import Federacions
 def listarFedeacion(request):
     
-    federacion = Federacion.objects.all()
+    federacion = Federacion.objects.filter(flag='nuevo')
     context={'federacion':federacion}
 
     return render(request, 'federacion/listar.html', context)

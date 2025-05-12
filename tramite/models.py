@@ -2,6 +2,7 @@ from django.db import models
 
 from afiliados.models import Afiliado
 from federacion.models import Federacion
+from operador.models import Operador
 from usuarios.models import Usuario
 from vehiculo.models import Vehiculo
 
@@ -13,7 +14,7 @@ class Rutas(models.Model):
 class Tramite(models.Model):
     gestion=models.CharField(max_length=100, blank=False, null=False)
     numero_tramite = models.IntegerField(blank=True ,null=True)
-  
+    numero_fojas=models.IntegerField(blank=True ,null=True)
     fecha_validezI=models.DateField()
     fecha_validezF=models.DateField(blank=True, null=True)
     numero_comprobante=models.CharField(blank=True, null=True)
@@ -22,7 +23,7 @@ class Tramite(models.Model):
     observaciones = models.TextField(null=True, blank=True)
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
     fecha_pago = models.DateField(blank=True, null=True)
-    federacion = models.ForeignKey(Federacion, on_delete=models.CASCADE, blank=False, null=False)
+    operador = models.ForeignKey(Operador, on_delete=models.CASCADE, blank=False, null=False)
     estado = models.CharField(max_length=50,
             choices=[('verificado', 'verificado'), ('observado', 'observado'),('ingresado','ingresado')],
         default='ingresado')

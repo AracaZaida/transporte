@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
 from federacion.models import Federacion
+from operador.models import Operador
 from tramite.models import Tramite ,Rutas
 from utils.context_processors import verificarRol
 from vehiculo.models import Vehiculo
@@ -28,15 +29,15 @@ def crearTramite(request):
         fecha_validezI = request.POST.get('fecha')
       
         tecnico_id = request.POST.get('tecnico_id')
-        federacion = request.POST.get('afiliado_id')
-        
+        operador = request.POST.get('afiliado_id')
+        fojas=request.POST.get('fojas')
 
         if tipo and fecha_validezI  and tecnico_id:
             # Convertir fecha de string a objeto datetime.date
             fecha_validezI = datetime.strptime(fecha_validezI, '%Y-%m-%d').date()
             fecha_validezF = fecha_validezI.replace(year=fecha_validezI.year + 1)
             gestion = datetime.now().year
-            federacion = get_object_or_404(Federacion, pk= federacion)
+            operador = get_object_or_404(Operador, pk= operador)
             # Obtener objetos relacionados
          
             tecnico = Usuario.objects.get(id=tecnico_id)
@@ -46,8 +47,9 @@ def crearTramite(request):
                 fecha_validezI=fecha_validezI,
                 fecha_validezF=fecha_validezF,
                 gestion=gestion,
-               federacion=federacion,
-                usuario=tecnico
+               operador=operador,
+                usuario=tecnico,
+                numero_fojas= fojas
             )
 
             return redirect(reverse('listarTramite'))
@@ -58,10 +60,10 @@ def crearTramite(request):
 
     tecnicos = Usuario.objects.filter(rol='tecnico', es_activo=True)
    # afiliados = Afiliado.objects.filter(flag='nuevo')
-    federacion = Federacion.objects.filter(flag='nuevo')
+    operador = Operador.objects.filter(flag='nuevo')
     context = {
         'tecnicos': tecnicos,
-         'federacion': federacion,
+         'operador': operador,
        # 'afiliados': afiliados
     }
     return render(request, 'tramite/crearTramite.html', context)
@@ -126,35 +128,25 @@ def tarjeta_tramite (request, id):
         return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     if request.method =='POST':
-        ruta = request.POST.get('ruta_id')  
-        afiliado = request.POST.get('afiliado_id')
-          
-        r = get_object_or_404(Rutas, pk= ruta) 
-        a = get_object_or_404(Afiliado, pk= afiliado) 
-        placa = request.POST.get('placa')
-        tipo_transporte = request.POST.get('tipo_transporte')
-        modelo = request.POST.get('modelo')
-        marca = request.POST.get('marca')
-        chasis = request.POST.get('chasis')
-        tipo_servicio = request.POST.get('tipo_servicio')
-        capacidad = request.POST.get('capacidad')
-       
-
-        vehiculo=Vehiculo.objects.create(marca= marca, 
+        data = json.loads(request.body)
+        for d in data:
+            afiliado = get_object_or_404(Afiliado, pk =  d["afiliado_id"])
+            ruta = get_object_or_404(Rutas, pk=d["ruta_id"])
+            vehiculo=Vehiculo.objects.create(marca= d["marca"], 
                                 
-                                modelo = modelo,
-                                 placa= placa, 
-                                 tipo_transporte =tipo_transporte,
-                                 chasis= chasis,
-                                 capacidad= capacidad,
+                                modelo = d["modelo"],
+                                 placa= d["placa"], 
+                                 tipo_transporte =d["tipo_transporte"],
+                                 chasis= d["chasis"],
+                                 capacidad= d["capacidad"],
                                  
-                                tipo_vehiculo=tipo_servicio
+                                tipo_vehiculo=d["tipo_servicio"]
                                  )
-     
         
-        DetalleTramite.objects.create(vehiculo= vehiculo , rutas=r , afiliado= a, tramite= tramite)
-        return redirect(reverse('verificadoTramite'))
-    afiliado = Afiliado.objects.filter(federacion = tramite.federacion)
+            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=ruta , afiliado= afiliado, tramite= tramite)
+        print('registrado')
+        return JsonResponse({"status": "success"}, status=201)
+    afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
     context  = {
         'tramite':tramite,
         'afiliados':afiliado
