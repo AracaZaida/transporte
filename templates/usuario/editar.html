@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<form action="{% url 'crearUsuario' %}" method="POST">
+<form action="{% url 'editar_user' id %}" method="POST">
     {% csrf_token %}
     {{ form }}
     <Button>guardad</Button>
