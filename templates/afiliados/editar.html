@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Editar Afiliado</h2>
+    <form action="{% url 'editar_afiliado' id %}" method="POST">
+        {% csrf_token %}
+        {{ forms.as_p }}
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+</div>
+{% endblock %}
