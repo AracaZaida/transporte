@@ -8,9 +8,9 @@
         <div class="mt-4">
             <h4 class="text-primary mb-3">🏛️ Federación</h4>
             <div class="row">
-                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.federacion.nombre }}</div>
-                <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.federacion.direccion }}</div>
-                <div class="col-md-4"><strong>Celular:</strong> {{ tramite.federacion.celular }}</div>
+                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.federacion.nombre }}</div>
+                <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.federacion.direccion }}</div>
+                <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.federacion.celular }}</div>
             </div>
         </div>
         <br>
@@ -19,6 +19,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <strong>Número de Trámite:</strong> {{ tramite.numero_tramite }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Número de foja:</strong> {{ tramite.numero_fojas}}
                 </div>
                 <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite }}</div>
                 <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
