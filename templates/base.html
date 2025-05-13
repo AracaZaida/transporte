@@ -96,9 +96,7 @@
                     {% if user.rol == "super_admin" %}
                     <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">Usuarios</a></li>
                     {% endif %}
-                    {% if user.rol == "administrador" or user.rol == "super_admin" %}
-                    <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">Afiliados</a></li>
-                    {% endif %}
+
 
                     <li class="nav-item">
                         <div class="accordion" id="accordionTramites">
@@ -148,61 +146,11 @@
                     {% if user.rol == "administrador" or user.rol == "super_admin" %}
                     <li class="nav-item"><a href="{% url 'listarOperador' %}" class="nav-link">operador</a></li>
                     {% endif %}
+                    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link">logout</a></li>
                 </ul>
             </div>
 
-            <!-- Sidebar en modo Offcanvas para móviles -->
-            <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
-                <div class="offcanvas-header">
-                    <h5 id="sidebarLabel">Menú</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">🏠 Inicio</a></li>
-                        {% if user.rol == "super_admin" %}
-                        <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">Usuarios</a></li>
-                        {% endif %}
 
-                        <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">Afiliados</a></li>
-
-                        <li class="nav-item">
-                            <div class="accordion" id="accordionTramitesMovil">
-                                <div class="accordion-item border-0 bg-transparent">
-                                    <h2 class="accordion-header" id="headingTramitesMovil">
-                                        <button class="accordion-button collapsed bg-transparent shadow-none p-0"
-                                            type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseTramitesMovil" aria-expanded="false"
-                                            aria-controls="collapseTramitesMovil">
-                                            📝 Trámites
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTramitesMovil" class="accordion-collapse collapse"
-                                        aria-labelledby="headingTramitesMovil" data-bs-parent="#accordionTramitesMovil">
-                                        <div class="accordion-body py-1 px-2">
-                                            <ul class="nav flex-column">
-                                                <li class="nav-item"><a href="{% url 'crearTramite' %}"
-                                                        class="nav-link">📄 Registrar trámite</a></li>
-                                                <li class="nav-item"><a href="{% url 'listarTramite' %}"
-                                                        class="nav-link">📄 Trámites ingresados</a></li>
-                                                <li class="nav-item"><a href="{% url 'verificadoTramite' %}"
-                                                        class="nav-link">📄 Trámites verificados</a></li>
-                                                <li class="nav-item"><a href="{% url 'observadosramite' %}"
-                                                        class="nav-link">📄 Trámites observados</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="nav-item"><a href="{% url 'listarFedeacion' %}" class="nav-link">Federaciones</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Contenido principal -->
             <main class="col-lg-10 p-4">
                 {% block content %}
                 {% endblock %}

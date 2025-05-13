@@ -13,6 +13,14 @@
                 <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.federacion.celular }}</div>
             </div>
         </div>
+        <div class="mt-4">
+            <h4 class="text-primary mb-3">🏛️ Operadador</h4>
+            <div class="row">
+                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.nombre }}</div>
+                <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.direccion }}</div>
+                <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.celular }}</div>
+            </div>
+        </div>
         <br>
         <div>
             <h4 class="text-info mb-3">📝 Información del Trámite</h4>
@@ -66,10 +74,11 @@
             <div class="mt-4">
                 <h4 class="text-primary mb-3">👤 Afiliado</h4>
                 <div class="row">
-                    <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.afiliado.nombre }}
+                    <div class="col-md-4"><strong>Nombre completo:</strong> {{ tramite.afiliado }}</div>
+                    <!--  <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.afiliado.nombre }}
                         {{tramite.afiliado.apellido }}</div>
                     <div class="col-md-4"><strong>CI:</strong> {{ tramite.afiliado.carnet }}</div>
-                    <div class="col-md-4"><strong>Celular:</strong> {{ tramite.afiliado.celular }}</div>
+                    <div class="col-md-4"><strong>Celular:</strong> {{ tramite.afiliado.celular }}</div> -->
                 </div>
             </div>
 
@@ -78,7 +87,7 @@
 
             <!-- Sección: Vehículo -->
             <div class="mt-4">
-                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutas.nombre }}</div>
+                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutas }}</div>
                 <h4 class="text-success mb-3">🚗 Vehículo</h4>
                 <div class="row">
 
@@ -88,14 +97,14 @@
                     <div class="col-md-3"><strong>Capacidad:</strong> {{ tramite.vehiculo.capacidad }}</div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-3"><strong>Tipo Vehículo:</strong> {{ tramite.vehiculo.tipo_vehiculo }}</div>
+
                     <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ tramite.vehiculo.tipo_transporte }}</div>
                     <div class="col-md-3"><strong>Chasis:</strong> {{ tramite.vehiculo.chasis }}</div>
                 </div>
             </div>
             <div class="text-end mt-4">
                 <a href="{% url 'generar_licencia_pdf' tramite.id %}" class="btn btn-success">
-                    📄 Descargar Comprobante
+                    📄 Descargar Tarjeta
                 </a>
             </div>
             {% endfor %}

@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container mt-5">
-    <button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
+    <!--<button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
         Ver Afiliados
-    </button>
+    </button> -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Datos del Afiliado</h5>
@@ -58,7 +58,9 @@
             </div>
             <div class="card-body">
                 <div class="col-md-4">
-                    <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>
+                    <!--   <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>-->
+                    <label for="afiliado" class="form-label">Propietario</label>
+                    <input type="text" class="form-control" required id="afiliado" name="afiliado">
                     <input type="text" hidden id="idTramite" value="{{tramite.id}}">
                 </div>
 
@@ -93,10 +95,10 @@
                         <label for="chasis" class="form-label">Número de Chasis</label>
                         <input type="text" required class="form-control" id="chasis" name="chasis">
                     </div>
-                    <div class="col-md-4">
+                    <!--- <div class="col-md-4">
                         <label for="tipo_servicio" class="form-label">Tipo de Servicio</label>
                         <input type="text" required class="form-control" id="tipo_servicio" name="tipo_servicio">
-                    </div>
+                    </div>-->
                 </div>
 
                 <div class="row mb-3">
@@ -106,7 +108,10 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ruta Seleccionada</label>
-                        <input type="text" readonly class="form-control" id="ruta_nombre_mostrar" required>
+
+                        <input type="text" hidden readonly class="form-control" id="ruta_nombre_mostrar" required>
+                        <div id="rutas_seleccionadas_lista" class="mt-2">
+                        </div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
@@ -240,7 +245,7 @@
                 <th>Modelo</th>
                 <th>Marca</th>
                 <th>Chasis</th>
-                <th>Tipo de Servicio</th>
+                <!--<th>Tipo de Servicio</th>-->
                 <th>Capacidad</th>
                 <th>Ruta</th>
                 <th>Acciones</th>
@@ -258,6 +263,7 @@
 </div>
 
 
+
 {% endblock %}
 {% block js %}
 
@@ -269,30 +275,32 @@
     document.getElementById('registrar').addEventListener('click', function (e) {
 
         e.preventDefault();
-        const afiliado_id = document.getElementById('afiliado_id').value;
-        const afiliadoSeleccionado = document.getElementById('afiliadoSeleccionado').textContent;
+        //const afiliado_id = document.getElementById('afiliado_id').value;
+        // const afiliadoSeleccionado = document.getElementById('afiliadoSeleccionado').textContent;
+        const afiliado = document.getElementById('afiliado').value;
         const placa = document.getElementById('placa').value;
         const tipo_transporte = document.getElementById('tipo_transporte').value;
         const modelo = document.getElementById('modelo').value;
         const marca = document.getElementById('marca').value;
         const chasis = document.getElementById('chasis').value;
-        const tipo_servicio = document.getElementById('tipo_servicio').value;
+        //const tipo_servicio = document.getElementById('tipo_servicio').value;
         const capacidad = document.getElementById('capacidad').value;
         const ruta_nombre_mostrar = document.getElementById('ruta_nombre_mostrar').value;
         const ruta_id = document.getElementById('ruta_id').value;
-        if (!afiliado_id || !afiliadoSeleccionado || !placa || !tipo_transporte || !modelo || !marca || !chasis || !tipo_servicio || !capacidad || !ruta_nombre_mostrar || !ruta_id) {
+        if (!afiliado || !placa || !tipo_transporte || !modelo || !marca || !chasis || !capacidad || !ruta_nombre_mostrar || !ruta_id) {
             alert("Por favor, complete todos los campos obligatorios.");
             return;
         }
         const data = {
-            afiliadoSeleccionado,
-            afiliado_id,
+            //afiliadoSeleccionado,
+            //afiliado_id,
+            afiliado,
             placa,
             tipo_transporte,
             modelo,
             marca,
             chasis,
-            tipo_servicio,
+            // tipo_servicio,
             capacidad,
             ruta_nombre_mostrar,
             ruta_id
@@ -309,13 +317,13 @@
         dataTarjeta.forEach(item => {
             const fila = document.createElement('tr');
             fila.innerHTML = `
-            <td>${item.afiliadoSeleccionado}</td>
+            <td>${item.afiliado}</td>
             <td>${item.placa}</td>
             <td>${item.tipo_transporte}</td>
             <td>${item.modelo}</td>
             <td>${item.marca}</td>
             <td>${item.chasis}</td>
-            <td>${item.tipo_servicio}</td>
+           
             <td>${item.capacidad}</td>
             <td>${item.ruta_nombre_mostrar}</td>
             <td><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
@@ -400,12 +408,40 @@
     });
 
 
+    const rutasSeleccionadas = [];
+    function renderizarRutasSeleccionadas() {
+        const contenedor = document.getElementById('rutas_seleccionadas_lista');
+        contenedor.innerHTML = '';
+
+        rutasSeleccionadas.forEach((ruta, index) => {
+            const rutaDiv = document.createElement('div');
+            rutaDiv.classList.add('d-flex', 'align-items-center', 'mb-1');
+            rutaDiv.innerHTML = `
+            <span class="me-2">${ruta}</span>
+            <button class="btn btn-sm btn-danger eliminar-ruta" data-index="${index}">Eliminar</button>
+        `;
+            contenedor.appendChild(rutaDiv);
+        });
+
+        // Mostrar en input también
+        document.getElementById('ruta_nombre_mostrar').value = rutasSeleccionadas.join(' - ');
+
+        // Botones de eliminar
+        document.querySelectorAll('.eliminar-ruta').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const index = parseInt(this.getAttribute('data-index'));
+                rutasSeleccionadas.splice(index, 1); // Elimina del array
+                renderizarRutasSeleccionadas(); // Redibuja
+            });
+        });
+    }
+
     document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
         axios.get("{% url 'listarRuta' %}")
             .then(response => {
                 const rutas = response.data;
                 const tbody = document.getElementById('tabla_rutas_body');
-                tbody.innerHTML = ''; // Limpiar
+                tbody.innerHTML = '';
 
                 rutas.forEach((ruta, index) => {
                     const row = document.createElement('tr');
@@ -417,13 +453,20 @@
                     tbody.appendChild(row);
                 });
 
-
                 document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
                     btn.addEventListener('click', function () {
                         const rutaId = this.getAttribute('data-id');
                         const rutaNombre = this.getAttribute('data-nombre');
+
+                        // Guardar último seleccionado (opcional)
                         document.getElementById('ruta_id').value = rutaId;
-                        document.getElementById('ruta_nombre_mostrar').value = rutaNombre;
+
+                        // Agregar si no está ya en la lista
+                        if (!rutasSeleccionadas.includes(rutaNombre)) {
+                            rutasSeleccionadas.push(rutaNombre);
+                            renderizarRutasSeleccionadas();
+                        }
+
                         bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
                     });
                 });
@@ -432,5 +475,6 @@
                 console.error("Error al cargar las rutas:", error);
             });
     });
+
 </script>
 {% endblock %}

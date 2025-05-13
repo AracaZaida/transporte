@@ -19,6 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
+from django.core.paginator import Paginator
+
 
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
@@ -59,12 +61,12 @@ def crearTramite(request):
 
 
     tecnicos = Usuario.objects.filter(rol='tecnico', es_activo=True)
-   # afiliados = Afiliado.objects.filter(flag='nuevo')
+ 
     operador = Operador.objects.filter(flag='nuevo')
     context = {
         'tecnicos': tecnicos,
          'operador': operador,
-       # 'afiliados': afiliados
+    
     }
     return render(request, 'tramite/crearTramite.html', context)
 
@@ -93,25 +95,49 @@ def listarTramite(request):
     if resultado is not True:
         return resultado
     tramite = Tramite.objects.filter(flag='nuevo', estado='ingresado')
-    context={'tramite':tramite}
+
+
+    paginator = Paginator(tramite, 20)  
+    page_number = request.GET.get('page') 
+    page_obj = paginator.get_page(page_number)  
+
+   
+    context = {'page_obj': page_obj}
     return render(request, 'tramite/listarT.html', context)
 
 def verificadoTramite(request):
-    resultado = verificarRol(request, ['super_admin','administrador'])
+    resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
         return resultado
+    
+
     tramite = Tramite.objects.filter(flag='nuevo', estado='verificado')
-    context={'tramite':tramite}
+
+    paginator = Paginator(tramite, 20) 
+    page_number = request.GET.get('page')  
+    page_obj = paginator.get_page(page_number)  
+
+   
+    context = {'page_obj': page_obj}
     return render(request, 'tramite/verificado.html', context)
 
+
 def observadosramite(request):
-    resultado = verificarRol(request, ['super_admin','administrador'])
+    resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
         return resultado
+    
+ 
     tramite = Tramite.objects.filter(flag='nuevo', estado='observado')
-    context={'tramite':tramite}
-    return render(request, 'tramite/observado.html', context)
 
+ 
+    paginator = Paginator(tramite, 20)  
+    page_number = request.GET.get('page')  
+    page_obj = paginator.get_page(page_number)  
+
+   
+    context = {'page_obj': page_obj}
+    return render(request, 'tramite/observado.html', context)
 
 def detalleTramite (request, id):
     tramite = get_object_or_404(Tramite, pk=id)
@@ -130,20 +156,20 @@ def tarjeta_tramite (request, id):
     if request.method =='POST':
         data = json.loads(request.body)
         for d in data:
-            afiliado = get_object_or_404(Afiliado, pk =  d["afiliado_id"])
-            ruta = get_object_or_404(Rutas, pk=d["ruta_id"])
+            #afiliado = get_object_or_404(Afiliado, pk =  d["afiliado_id"])
+            #ruta = get_object_or_404(Rutas, pk=d["ruta_nombre_mostrar"])
             vehiculo=Vehiculo.objects.create(marca= d["marca"], 
                                 
                                 modelo = d["modelo"],
                                  placa= d["placa"], 
                                  tipo_transporte =d["tipo_transporte"],
                                  chasis= d["chasis"],
-                                 capacidad= d["capacidad"],
+                                 capacidad= d["capacidad"]
                                  
-                                tipo_vehiculo=d["tipo_servicio"]
+                                #tipo_vehiculo=d["tipo_servicio"]
                                  )
         
-            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=ruta , afiliado= afiliado, tramite= tramite)
+            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"], tramite= tramite)
         print('registrado')
         return JsonResponse({"status": "success"}, status=201)
     afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
@@ -157,14 +183,15 @@ def editarTramite(request, id):
     tramite = get_object_or_404(DetalleTramite, pk=id)
     
     if request.method =='POST':
-        ruta = request.POST.get('ruta_id')    
-        r = get_object_or_404(Rutas, pk= ruta)
+        ruta = request.POST.get('rutas') 
+        afiliado = request.POST.get('afiliado')    
+        #r = get_object_or_404(Rutas, pk= ruta)
         placa = request.POST.get('placa')
         tipo_transporte = request.POST.get('tipo_transporte')
         modelo = request.POST.get('modelo')
         marca = request.POST.get('marca')
         chasis = request.POST.get('chasis')
-        tipo_servicio = request.POST.get('tipo_servicio')
+        #tipo_servicio = request.POST.get('tipo_servicio')
         capacidad = request.POST.get('capacidad')
         
     
@@ -173,9 +200,10 @@ def editarTramite(request, id):
         tramite.vehiculo.modelo = modelo
         tramite.vehiculo.marca = marca
         tramite.vehiculo.chasis =chasis
-        tramite.vehiculo.tipo_vehiculo = tipo_servicio
+        #tramite.vehiculo.tipo_vehiculo = tipo_servicio
         tramite.vehiculo.capacidad = capacidad
-        tramite.rutas= r
+        tramite.rutas= ruta
+        tramite.afiliado = afiliado
         tramite.vehiculo.save()
         tramite.save()
         return redirect(reverse('verificadoTramite'))
@@ -230,6 +258,7 @@ def listarRuta(request):
 
 def generar_licencia_pdf(request, id):
     detalle=get_object_or_404(DetalleTramite, pk=id)
+    print(detalle.afiliado)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="licencia_operacion.pdf"'
 
@@ -251,24 +280,23 @@ def generar_licencia_pdf(request, id):
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Línea Sindical:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{detalle.afiliado.federacion.nombre}")
+    p.drawString(140, y, f"{detalle.tramite.operador.federacion}")
     y -= 18
 
     datos_col1 = [
-        ("Operador:", f"{detalle.afiliado.nombre } {detalle.afiliado.apellido}"),
-        ("Afiliado:", f"{detalle.afiliado.id}"),
+        ("Operador:", f"{detalle.afiliado }"),
         ("Modelo:", f"{detalle.vehiculo.modelo}"),
         ("Registro:", f"{detalle.tramite.numero_tramite}"),
     ]
     datos_col2 = [
-        ("Categoría:", f"{detalle.vehiculo.tipo_vehiculo}"),
         ("Capacidad:", f"{detalle.vehiculo.capacidad}"),
         ("Chasis:", f"{detalle.vehiculo.chasis}"),
         ("Marca:", f"{detalle.vehiculo.marca}"),
     ]
+
     x1 = 50
     x2 = width / 2 + 10
-    for i in range(4):
+    for i in range(3):
         p.setFont("Helvetica-Bold", 8)
         p.drawString(x1, y, datos_col1[i][0])
         p.setFont("Helvetica", 8)
@@ -293,7 +321,7 @@ def generar_licencia_pdf(request, id):
     p.drawString(50, y, "Rutas Autorizadas:")
     p.setFont("Helvetica", 8)
     y -= 12
-    p.drawString(70, y, f"{detalle.rutas.nombre}")
+    p.drawString(70, y, f"{detalle.rutas}")
     y -= 12
  
     p.setFont("Helvetica-Bold", 8)

@@ -46,13 +46,21 @@
                 <div class="row mb-3">
                     <label for="tipo" class="col-sm-3 col-form-label">Tipo de Trámite</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="tipo" name="tipo"
-                            placeholder="Ej: Renovación de carnet">
+                        <div class="form-group">
+                            <label for="tipo" class="form-label fw-bold">Tipo de trámite</label>
+                            <select name="tipo" id="tipo" class="form-select">
+                                <option value="Adquisición de tarjeta de operacion">Adquisición de tarjeta de operación
+                                </option>
+                                <option value="Extencion de tarjeta de operacion">Extensión de tarjeta de operación
+                                </option>
+                            </select>
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="row mb-3">
-                    <label for="fecha" class="col-sm-3 col-form-label">Fecha de Validez</label>
+                    <label for="fecha" class="col-sm-3 col-form-label">Fecha de inicio</label>
                     <div class="col-sm-9">
                         <input type="date" class="form-control" id="fecha" name="fecha">
                     </div>
@@ -193,7 +201,7 @@ Modal Afiliados -->
                     <tbody>
                         {% for tecnico in tecnicos %}
                         <tr>
-                            <td>{{ tecnico.carnet }}</td>
+                            <td>{{ tecnico.ci }}</td>
                             <td>{{ tecnico.nombre }}</td>
                             <td>{{ tecnico.apellidos }}</td>
                             <td>{{ tecnico.rol }}</td>

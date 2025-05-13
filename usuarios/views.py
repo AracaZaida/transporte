@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from .models import Usuario
 from usuarios.forms import UsuarioF
-from django.contrib.auth import authenticate , login
+from django.contrib.auth import authenticate , login, logout
 from django.contrib import messages
 from utils.context_processors import verificarRol
 def listarUsuario(request):
@@ -78,3 +78,6 @@ def eliminar_usuario(request, usuario_id):
     user.es_habilitado = False
     user.save()
     return redirect('listarUsuario')
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('login')
