@@ -29,8 +29,7 @@ class Tramite(models.Model):
         default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
- 
-    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
@@ -50,11 +49,11 @@ class Tramite(models.Model):
         super().save(*args, **kwargs)
 
 class DetalleTramite(models.Model):
-    rutas=models.ForeignKey(Rutas, on_delete=models.CASCADE, blank=False, null=False)
+    rutas=models.CharField(blank=True, null=True)#models.ForeignKey(Rutas, on_delete=models.CASCADE, blank=False, null=False)
     vehiculo=models.ForeignKey(Vehiculo, on_delete=models.CASCADE, blank=False, null=False)
-    afiliado = models.ForeignKey(Afiliado, on_delete=models.CASCADE, blank=False, null=False)
+    afiliado = models.CharField(blank=True, null=True)  #models.ForeignKey(Afiliado, on_delete=models.CASCADE, blank=False, null=False)
     tramite = models.ForeignKey(Tramite, on_delete=models.CASCADE, blank=False, null=False)
-    fecha_creacion = models.DateField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
         default='nuevo')

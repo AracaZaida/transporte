@@ -54,6 +54,10 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-4">
+                        <label for="placa" class="form-label">Propietario</label>
+                        <input type="text" value="{{ tramite.afiliado }}" class="form-control" required id="afiliado"  name="afiliado">
+                    </div>
+                    <div class="col-md-4">
                         <label for="placa" class="form-label">Placa</label>
                         <input type="text" value="{{ tramite.vehiculo.placa }}" class="form-control" required id="placa"
                             name="placa">
@@ -86,11 +90,7 @@
                         <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control"
                             id="chasis" name="chasis">
                     </div>
-                    <div class="col-md-4">
-                        <label for="tipo_servicio" class="form-label">Tipo de Servicio</label>
-                        <input type="text" value="{{ tramite.vehiculo.tipo_vehiculo }}" required class="form-control"
-                            id="tipo_servicio" name="tipo_servicio">
-                    </div>
+                   
                 </div>
 
                 <div class="row mb-3">
@@ -101,8 +101,10 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Ruta Seleccionada</label>
-                        <input value="{{tramite.rutas.nombre}}" type="text" readonly class="form-control"
-                            id="ruta_nombre_mostrar" required>
+                    
+                        <input type="text"  readonly class="form-control" name="rutas" id="ruta_nombre_mostrar" value="{{tramite.rutas}}" required>
+                        <div id="rutas_seleccionadas_lista" class="mt-2">
+                        </div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
@@ -198,43 +200,73 @@
                 alert('Hubo un error al guardar la ruta');
             });
     });
+        const rutasSeleccionadas = [];
+        function renderizarRutasSeleccionadas() {
+            const contenedor = document.getElementById('rutas_seleccionadas_lista');
+            contenedor.innerHTML = '';
 
+            rutasSeleccionadas.forEach((ruta, index) => {
+                const rutaDiv = document.createElement('div');
+                rutaDiv.classList.add('d-flex', 'align-items-center', 'mb-1');
+                rutaDiv.innerHTML = `
+            <span class="me-2">${ruta}</span>
+            <button class="btn btn-sm btn-danger eliminar-ruta" data-index="${index}">Eliminar</button>
+        `;
+                contenedor.appendChild(rutaDiv);
+            });
 
-    document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
-        axios.get("{% url 'listarRuta' %}")
-            .then(response => {
-                const rutas = response.data;
-                const tbody = document.getElementById('tabla_rutas_body');
-                tbody.innerHTML = ''; // Limpiar
+            // Mostrar en input también
+            document.getElementById('ruta_nombre_mostrar').value = rutasSeleccionadas.join(' - ');
 
-                rutas.forEach((ruta, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+            // Botones de eliminar
+            document.querySelectorAll('.eliminar-ruta').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    rutasSeleccionadas.splice(index, 1); // Elimina del array
+                    renderizarRutasSeleccionadas(); // Redibuja
+                });
+            });
+        }
+
+        document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
+            axios.get("{% url 'listarRuta' %}")
+                .then(response => {
+                    const rutas = response.data;
+                    const tbody = document.getElementById('tabla_rutas_body');
+                    tbody.innerHTML = '';
+
+                    rutas.forEach((ruta, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${ruta.nombre}</td>
                     <td><button class="btn btn-sm btn-success seleccionar-ruta" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
                 `;
-                    tbody.appendChild(row);
-                });
-
-
-                document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
-                    btn.addEventListener('click', function () {
-
-
-                        const rutaId = this.getAttribute('data-id');
-                        console.log(rutaId);
-
-                        const rutaNombre = this.getAttribute('data-nombre');
-                        document.getElementById('ruta_id').value = rutaId;
-                        document.getElementById('ruta_nombre_mostrar').value = rutaNombre;
-                        bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                        tbody.appendChild(row);
                     });
+
+                    document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const rutaId = this.getAttribute('data-id');
+                            const rutaNombre = this.getAttribute('data-nombre');
+
+                            // Guardar último seleccionado (opcional)
+                            document.getElementById('ruta_id').value = rutaId;
+
+                            // Agregar si no está ya en la lista
+                            if (!rutasSeleccionadas.includes(rutaNombre)) {
+                                rutasSeleccionadas.push(rutaNombre);
+                                renderizarRutasSeleccionadas();
+                            }
+
+                            bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error("Error al cargar las rutas:", error);
                 });
-            })
-            .catch(error => {
-                console.error("Error al cargar las rutas:", error);
-            });
-    });
+        });
+
 </script>
 {% endblock %}

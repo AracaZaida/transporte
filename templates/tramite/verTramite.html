@@ -18,12 +18,12 @@
                     </div>
                 </div>
 
-                <!--  <div class="row mb-3">
+                <div class="row mb-3">
                     <label for="afiliado" class="col-sm-3 col-form-label">Afiliado</label>
                     <div class="col-sm-9">
                         <p class="form-control-plaintext" id="afiliado">{{ tramite.afiliado.nombre }}</p>
                     </div>
-                </div> -->
+                </div>
 
                 <div class="row mb-3">
                     <label for="tipo_tramite" class="col-sm-3 col-form-label">Tipo de Trámite</label>
@@ -36,6 +36,14 @@
                     <label for="numero_tramite" class="col-sm-3 col-form-label">Número de Trámite</label>
                     <div class="col-sm-9">
                         <p class="form-control-plaintext" id="numero_tramite">{{ tramite.numero_tramite }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="numero_tramite" class="col-sm-3 col-form-label">Fecha de rigistro</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="numero_tramite">
+                            {{ tramite.fecha_creacion|date:"d/m/Y" }}
+                        </p>
                     </div>
                 </div>
 

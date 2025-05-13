@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <h1 class="my-4">Lista de Trámite Verificados</h1>
-
+    
     <table id="tablaTramites" class="table table-striped">
         <thead>
             <tr>
@@ -16,12 +16,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for tra in tramite %}
+            {% for tra in page_obj %}
             <tr>
                 <td>{{ tra.numero_tramite }}</td>
                 <td>{{ tra.tipo_tramite }}</td>
                 <td>{{ tra.fecha_creacion }}</td>
-                <td>{{ tra.afiliado }}</td>
+                <td>{{ tra.operador }}</td>
                 <td>{{ tra.estado }}</td>
                 <td>
                     <a href="{% url 'tarjeta_tramite' tra.id %}" class="btn btn-info btn-sm">Transporte</a>
@@ -40,14 +40,30 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Paginación -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 {% endblock %}
+
 {% block js %}
 <script>
-    $(document).ready(function () {
-        $('#tablaTramites').DataTable({
 
-        });
-    });
 </script>
 {% endblock %}
