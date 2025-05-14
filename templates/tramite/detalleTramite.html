@@ -3,7 +3,9 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">📄 Detalle Completo del Trámite</h2>
-
+    <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn btn-success">
+        📄 Descargar detalle completo
+    </a>
     <div class="card shadow rounded-4 border-0 p-4">
         <div class="mt-4">
             <h4 class="text-primary mb-3">🏛️ Federación</h4>

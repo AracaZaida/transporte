@@ -21,6 +21,12 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from django.core.paginator import Paginator
 
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+from io import BytesIO
+
+
 
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
@@ -256,6 +262,80 @@ def listarRuta(request):
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
 
+def descargarDetalleCompleto(request, id):
+    tramite = get_object_or_404(Tramite, pk=id)
+    detalles = DetalleTramite.objects.filter(tramite=tramite)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="tramite_{tramite.numero_tramite}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+    margin = 40
+    y = height - 40
+
+   
+
+    for detalle in detalles:
+        if y < 100:
+            p.showPage()
+            y = height - 40
+
+        p.setFont("Helvetica-Bold", 10)
+        p.drawString(margin, y, f"Nro. Trámite: {tramite.numero_tramite}")
+        p.drawRightString(width - margin, y, f"Tecnico : {tramite.usuario.username}")
+        y -= 12
+      
+        p.setFont("Helvetica", 9)
+      
+        p.drawString(margin, y, f"Empresa: {detalle.tramite.operador.nombre.upper()}")
+        y -= 15
+        p.drawString(margin, y, f"Propietario: {detalle.afiliado.upper() }")
+        y -= 12
+        # Datos en dos columnas
+        col1 = margin
+        col2 = margin + 230
+
+        p.drawString(col1, y, f"Placa: {detalle.vehiculo.placa}")
+        p.drawString(col2, y, f"Tipo Transporte: {detalle.vehiculo.tipo_transporte}")
+        y -= 12
+        p.drawString(col1, y, f"Modelo: {detalle.vehiculo.modelo}")
+        p.drawString(col2, y, f"Marca: {detalle.vehiculo.marca}")
+        y -= 12
+        p.drawString(col1, y, f"Nro. Registro: {detalle.vehiculo.pk}")
+        p.drawString(col2, y, f"Chasis : {detalle.vehiculo.chasis}")
+        y -= 12
+        p.drawString(col2, y, f"Capacidad: {detalle.vehiculo.capacidad}")
+        y -= 12
+
+        # Rutas, validez, monto por bloque
+        p.drawString(margin, y, f"Rutas Autorizadas:")
+        y -= 12
+        p.drawString(margin, y, f"{detalle.rutas}")
+        y -= 12
+        p.drawString(margin, y, f"Validez:")
+        p.drawString(margin + 50, y, f"{tramite.fecha_validezI} a  {tramite.fecha_validezF}")
+        p.drawRightString(width - margin, y, f"Monto: {tramite.monto } Bs.")
+        y -= 20
+        p.setFont("Helvetica", 9)
+        p.drawString(margin, y, f"Fecha de creacion: {tramite.fecha_creacion.strftime('%d/%m/%Y')}")
+        p.drawRightString(width - margin, y, f"Hora: {tramite.fecha_creacion.strftime('%H:%M')}")
+        y -= 12
+
+        p.setFont("Helvetica", 10)
+     
+        # Línea separadora
+        p.setStrokeColor(colors.grey)
+        p.line(margin, y, width - margin, y)
+        y -= 15
+
+    # Pie de página
+    p.setFont("Helvetica", 8)
+    p.drawRightString(width - margin, 30, f"Potosí - {datetime.now().strftime('%d/%m/%Y')}")
+
+    p.save()
+    return response
+
 def generar_licencia_pdf(request, id):
     detalle=get_object_or_404(DetalleTramite, pk=id)
     print(detalle.afiliado)
@@ -330,9 +410,7 @@ def generar_licencia_pdf(request, id):
     p.drawString(140, y, f"{detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}")
     y -= 18
 
-    p.setFont("Helvetica", 7)
-    p.drawRightString(width - 40, y, "Potosí - lunes, 24 de marzo de 2025")
-    y -= 100
+    
 
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Abog. Guido Soux Velasquez")
