@@ -6,18 +6,20 @@
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-lg rounded">
                 <div class="card-header bg-info text-white text-center">
-                    <h4 class="mb-0">Crear Federación</h4>
+                    <h4 class="mb-0">Editar Federación</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{% url 'crearFederacion' %}" method="POST">
+                    <form action="{% url 'editar_federacion' id %}" method="POST">
                         {% csrf_token %}
                         
-                        {% for field in federacion %}
+                        {% for field in form %}
                         <div class="mb-3">
                             <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {{ field }}
                             {% if field.errors %}
-                                <div class="text-danger small">{{ field.errors }}</div>
+                                <div class="text-danger small">
+                                    {{ field.errors }}
+                                </div>
                             {% endif %}
                         </div>
                         {% endfor %}

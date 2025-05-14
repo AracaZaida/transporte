@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render,get_object_or_404
 from django.urls import reverse
 
 from operador.forms import OperadorF
@@ -23,3 +23,25 @@ def crearOperdor(request):
         operador=OperadorF()
         context={'operador':operador}
         return render(request,'operador/crear.html', context)
+    
+
+def editar_operador(request, ope_id):
+    ope = get_object_or_404(Operador, id= ope_id)
+
+    if request.method == 'POST':
+        form = OperadorF(request.POST, instance=ope)
+        if form.is_valid():
+            form.save()
+            return redirect('listarOperador')  
+    else:
+        form = OperadorF(instance=ope)
+        
+
+    return render(request, 'operador/editar.html', {'form': form,'id':ope.id})
+
+
+def eliminar_operador(request, ope_id):
+    operador = get_object_or_404(Operador, id=ope_id)
+    operador.flag = False
+    operador.save()
+    return redirect('listarOperador')

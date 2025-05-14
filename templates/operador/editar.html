@@ -6,14 +6,14 @@
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-info text-white text-center">
-                    <h4>Crear Operador</h4>
+                    <h4>Editar Operador</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{% url 'crearOperdor' %}" method="POST">
+                    <form action="{% url 'editar_operador' id %}" method="POST">
                         {% csrf_token %}
-                        {{ operador }}
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">Guardar</button>
+                        {{ form }}
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-success">Guardar Cambios</button>
                         </div>
                     </form>
                 </div>
