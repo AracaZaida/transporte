@@ -5,7 +5,7 @@
 
 
     <table class="table table-striped">
-        <a href="{% url 'crearOperdor' %}">registrar</a>
+        <a class="btn btn-success" href="{% url 'crearOperdor' %}">registrar</a>
         <thead>
             <tr>
 
@@ -27,9 +27,9 @@
                 <td>{{ o.federacion }}</td>
                 <td>{{ o.fecha_creacion }}</td>
                 <td>
-                    <a href="" class="btn btn-info btn-sm">Ver</a>
-                    <a href="" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="" class="btn btn-danger btn-sm">Eliminar</a>
+                   
+                    <a href="{% url 'editar_operador' o.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_operador' o.id %}" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
 
             </tr>

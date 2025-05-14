@@ -1,9 +1,24 @@
 from django import forms
-
 from operador.models import Operador
 
 class OperadorF(forms.ModelForm):
     class Meta:
         model = Operador
-        fields= ['nombre','direccion','celular','federacion']
-
+        fields = ['nombre', 'direccion', 'celular', 'federacion']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el nombre del operador'
+            }),
+            'direccion': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la dirección'
+            }),
+            'celular': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese el número de celular'
+            }),
+            'federacion': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+        }
