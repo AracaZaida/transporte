@@ -18,6 +18,7 @@ urlpatterns = [
 
       path('tramite/tarjeta_tramite/<int:id>', views.tarjeta_tramite, name='tarjeta_tramite'),
   path('generar_licencia_pdf/<int:id>',views.generar_licencia_pdf, name='generar_licencia_pdf'),
+    path('descargarDetalleCompleto/<int:id>',views.descargarDetalleCompleto, name='descargarDetalleCompleto'),
     path('verificarPago/<int:id>',views.verificarPago, name='verificarPago'),
         path('crearRuta',views.crearRuta, name='crearRuta'),
   
