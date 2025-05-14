@@ -29,7 +29,11 @@ class Tramite(models.Model):
         default='ingresado')
     usuario=models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_creacion = models.DateTimeField(blank=True , null=True)
+    
+    fecha_verificacion = models.DateTimeField(blank=True , null=True)
+      
+    fecha_observacion = models.DateTimeField(blank=True , null=True)
 
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],

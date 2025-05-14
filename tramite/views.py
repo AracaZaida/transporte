@@ -26,7 +26,7 @@ from xhtml2pdf import pisa
 from django.http import HttpResponse
 from io import BytesIO
 
-
+from django.utils import timezone
 
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
@@ -57,7 +57,8 @@ def crearTramite(request):
                 gestion=gestion,
                operador=operador,
                 usuario=tecnico,
-                numero_fojas= fojas
+                numero_fojas= fojas,
+                fecha_creacion=timezone.now()
             )
 
             return redirect(reverse('listarTramite'))
@@ -88,6 +89,10 @@ def verTramite(request, id):
             detalle = request.POST.get('detalle')
             tramite.estado = estado
             tramite.observaciones = detalle
+            if estado == 'verificado':
+                tramite.fecha_verificacion = timezone.now()
+            if estado == 'observado':
+                tramite.fecha_observacion = timezone.now()
             tramite.save()
             return redirect(reverse('listarTramite'))
     else:
@@ -100,7 +105,17 @@ def listarTramite(request):
     resultado = verificarRol(request, ['tecnico','administrador'])
     if resultado is not True:
         return resultado
-    tramite = Tramite.objects.filter(flag='nuevo', estado='ingresado')
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
+
+    filtros = {'flag': 'nuevo', 'estado': 'ingresado'}
+
+ 
+    if fecha_inicio and fecha_fin:
+        filtros['fecha_creacion__date__gte'] = fecha_inicio
+        filtros['fecha_creacion__date__lte'] = fecha_fin
+
+    tramite = Tramite.objects.filter(**filtros)
 
 
     paginator = Paginator(tramite, 20)  
@@ -110,21 +125,32 @@ def listarTramite(request):
    
     context = {'page_obj': page_obj}
     return render(request, 'tramite/listarT.html', context)
-
 def verificadoTramite(request):
     resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
         return resultado
-    
 
-    tramite = Tramite.objects.filter(flag='nuevo', estado='verificado')
+    fecha_inicio = request.GET.get('fecha_inicio')
+    fecha_fin = request.GET.get('fecha_fin')
 
-    paginator = Paginator(tramite, 20) 
-    page_number = request.GET.get('page')  
-    page_obj = paginator.get_page(page_number)  
+    filtros = {'flag': 'nuevo', 'estado': 'verificado'}
 
-   
-    context = {'page_obj': page_obj}
+ 
+    if fecha_inicio and fecha_fin:
+        filtros['fecha_verificacion__date__gte'] = fecha_inicio
+        filtros['fecha_verificacion__date__lte'] = fecha_fin
+
+    tramite = Tramite.objects.filter(**filtros)
+
+    paginator = Paginator(tramite, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin
+    }
     return render(request, 'tramite/verificado.html', context)
 
 
@@ -222,6 +248,7 @@ def editarTramite(request, id):
 def aprobarTramite(request, id):
     tramite= get_object_or_404(Tramite, pk=id)
     tramite.estado ='aprobado'
+    
     tramite.save()
     return redirect(reverse('listarTramite'))
 
