@@ -26,6 +26,10 @@ from xhtml2pdf import pisa
 from django.http import HttpResponse
 from io import BytesIO
 
+from reportlab.graphics.barcode import qr
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics import renderPDF
+
 from django.utils import timezone
 
 def crearTramite(request):
@@ -300,63 +304,76 @@ def descargarDetalleCompleto(request, id):
     width, height = letter
     margin = 40
     y = height - 40
-
-   
-
     for detalle in detalles:
-        if y < 100:
+        if y < 200:
             p.showPage()
             y = height - 40
 
+        qr_texto = (
+            f"Placa: {capitalizar_palabras(detalle.vehiculo.placa)}\n"
+            f"Trámite: {detalle.tramite.numero_tramite}\n"
+            f"Operador: {capitalizar_palabras(str(detalle.afiliado))}\n"
+            f"Modelo: {capitalizar_palabras(detalle.vehiculo.modelo)}\n"
+            f"Marca: {capitalizar_palabras(detalle.vehiculo.marca)}\n"
+            f"Chasis: {capitalizar_palabras(detalle.vehiculo.chasis)}\n"
+            f"Capacidad: {capitalizar_palabras(str(detalle.vehiculo.capacidad))}\n"
+            f"Rutas: {capitalizar_palabras(detalle.rutas)}\n"
+            f"Válida del: {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}"
+        )
+
         p.setFont("Helvetica-Bold", 10)
         p.drawString(margin, y, f"Nro. Trámite: {tramite.numero_tramite}")
-        p.drawRightString(width - margin, y, f"Tecnico : {tramite.usuario.username}")
-        y -= 12
-      
-        p.setFont("Helvetica", 9)
-      
-        p.drawString(margin, y, f"Empresa: {detalle.tramite.operador.nombre.upper()}")
+        p.drawRightString(width - margin, y, f"Técnico : {capitalizar_palabras(tramite.usuario.username)}")
         y -= 15
-        p.drawString(margin, y, f"Propietario: {detalle.afiliado.upper() }")
-        y -= 12
-        # Datos en dos columnas
+
+        p.setFont("Helvetica", 9)
+        p.drawString(margin, y, f"Empresa: {capitalizar_palabras(detalle.tramite.operador.nombre)}")
+        y -= 15
+        p.drawString(margin, y, f"Propietario: {capitalizar_palabras(str(detalle.afiliado)) if detalle.afiliado else ''}")
+        y -= 15
+
+        qr_code = qr.QrCodeWidget(qr_texto)
+        qr_code.barWidth = 90
+        qr_code.barHeight = 90
+        d = Drawing(100, 100)
+        d.add(qr_code)
+        renderPDF.draw(d, p, width - 150, y - 50)
+
         col1 = margin
         col2 = margin + 230
 
-        p.drawString(col1, y, f"Placa: {detalle.vehiculo.placa}")
-        p.drawString(col2, y, f"Tipo Transporte: {detalle.vehiculo.tipo_transporte}")
+        p.drawString(col1, y, f"Placa: {capitalizar_palabras(detalle.vehiculo.placa)}")
+        p.drawString(col2, y, f"Tipo Transporte: {capitalizar_palabras(detalle.vehiculo.tipo_transporte)}")
         y -= 12
-        p.drawString(col1, y, f"Modelo: {detalle.vehiculo.modelo}")
-        p.drawString(col2, y, f"Marca: {detalle.vehiculo.marca}")
+        p.drawString(col1, y, f"Modelo: {capitalizar_palabras(detalle.vehiculo.modelo)}")
+        p.drawString(col2, y, f"Marca: {capitalizar_palabras(detalle.vehiculo.marca)}")
         y -= 12
-        p.drawString(col1, y, f"Nro. Registro: {detalle.vehiculo.pk}")
-        p.drawString(col2, y, f"Chasis : {detalle.vehiculo.chasis}")
+        p.drawString(col1, y, f"Nro. Registro: {str(detalle.vehiculo.pk)}")
+        p.drawString(col2, y, f"Chasis : {capitalizar_palabras(detalle.vehiculo.chasis)}")
         y -= 12
-        p.drawString(col2, y, f"Capacidad: {detalle.vehiculo.capacidad}")
+        p.drawString(col2, y, f"Capacidad: {str(detalle.vehiculo.capacidad)}")
         y -= 12
 
-        # Rutas, validez, monto por bloque
         p.drawString(margin, y, f"Rutas Autorizadas:")
         y -= 12
-        p.drawString(margin, y, f"{detalle.rutas}")
+        p.drawString(margin, y, capitalizar_palabras(detalle.rutas))
         y -= 12
         p.drawString(margin, y, f"Validez:")
-        p.drawString(margin + 50, y, f"{tramite.fecha_validezI} a  {tramite.fecha_validezF}")
-        p.drawRightString(width - margin, y, f"Monto: {tramite.monto } Bs.")
+        p.drawString(margin + 50, y, f"{detalle.tramite.fecha_validezI} a {detalle.tramite.fecha_validezF}")
+        p.drawRightString(width - margin, y, f"Monto: {tramite.monto} Bs.")
         y -= 20
-        p.setFont("Helvetica", 9)
-        p.drawString(margin, y, f"Fecha de creacion: {tramite.fecha_creacion.strftime('%d/%m/%Y')}")
-        p.drawRightString(width - margin, y, f"Hora: {tramite.fecha_creacion.strftime('%H:%M')}")
-        y -= 12
 
-        p.setFont("Helvetica", 10)
-     
-        # Línea separadora
+        p.setFont("Helvetica", 9)
+        if tramite.fecha_creacion:
+            p.drawString(margin, y, f"Fecha de creación: {tramite.fecha_creacion.strftime('%d/%m/%Y')}")
+            p.drawRightString(width - margin, y, f"Hora: {tramite.fecha_creacion.strftime('%H:%M')}")
+            y -= 12
+
+        y -= 10
         p.setStrokeColor(colors.grey)
         p.line(margin, y, width - margin, y)
         y -= 15
 
-    # Pie de página
     p.setFont("Helvetica", 8)
     p.drawRightString(width - margin, 30, f"Potosí - {datetime.now().strftime('%d/%m/%Y')}")
 
@@ -364,41 +381,58 @@ def descargarDetalleCompleto(request, id):
     return response
 
 def generar_licencia_pdf(request, id):
-    detalle=get_object_or_404(DetalleTramite, pk=id)
-    print(detalle.afiliado)
+    detalle = get_object_or_404(DetalleTramite, pk=id)
+    qr_texto = (
+        f"Placa: {capitalizar_palabras(detalle.vehiculo.placa)}\n"
+        f"Trámite: {detalle.tramite.numero_tramite}\n"
+        f"Operador: {capitalizar_palabras(str(detalle.afiliado))}\n"
+        f"Modelo: {capitalizar_palabras(detalle.vehiculo.modelo)}\n"
+        f"Marca: {capitalizar_palabras(detalle.vehiculo.marca)}\n"
+        f"Chasis: {capitalizar_palabras(detalle.vehiculo.chasis)}\n"
+        f"Capacidad: {capitalizar_palabras(str(detalle.vehiculo.capacidad))}\n"
+        f"Rutas: {capitalizar_palabras(detalle.rutas)}\n"
+        f"Válida del: {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}"
+    )
+
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="licencia_operacion.pdf"'
 
     width, height = letter
-    height = height / 2  
+    height = height / 2
     p = canvas.Canvas(response, pagesize=(width, height))
 
+ 
     p.setLineWidth(0.5)
     p.rect(30, 20, width - 60, height - 40)
+
 
     p.setFont("Helvetica-Bold", 10)
     p.drawCentredString(width / 2, height - 35, "LICENCIA DE OPERACIÓN PARA EL TRANSPORTE AUTOMOTOR")
     p.drawCentredString(width / 2, height - 50, "INTERPROVINCIAL - CONFEDERADO")
 
+   
     p.setStrokeColor(colors.grey)
     p.line(40, height - 60, width - 40, height - 60)
 
     y = height - 75
+
+   
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Línea Sindical:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{detalle.tramite.operador.federacion}")
+    p.drawString(140, y, capitalizar_palabras(detalle.tramite.operador.federacion))
     y -= 18
 
+   
     datos_col1 = [
-        ("Operador:", f"{detalle.afiliado }"),
-        ("Modelo:", f"{detalle.vehiculo.modelo}"),
-        ("Registro:", f"{detalle.tramite.numero_tramite}"),
+        ("Operador:", capitalizar_palabras(str(detalle.afiliado))),
+        ("Modelo:", capitalizar_palabras(detalle.vehiculo.modelo)),
+        ("Registro:", str(detalle.tramite.numero_tramite)),
     ]
     datos_col2 = [
-        ("Capacidad:", f"{detalle.vehiculo.capacidad}"),
-        ("Chasis:", f"{detalle.vehiculo.chasis}"),
-        ("Marca:", f"{detalle.vehiculo.marca}"),
+        ("Capacidad:", capitalizar_palabras(str(detalle.vehiculo.capacidad))),
+        ("Chasis:", capitalizar_palabras(detalle.vehiculo.chasis)),
+        ("Marca:", capitalizar_palabras(detalle.vehiculo.marca)),
     ]
 
     x1 = 50
@@ -415,43 +449,60 @@ def generar_licencia_pdf(request, id):
         p.drawString(x2 + 80, y, datos_col2[i][1])
         y -= 14
 
+    # Placa centrada capitalizada
     p.setFont("Helvetica-Bold", 12)
     p.setFillColor(colors.black)
-    p.drawCentredString(width / 2, y - 10, f"{detalle.vehiculo.placa}")
+    p.drawCentredString(width / 2, y - 10, capitalizar_palabras(detalle.vehiculo.placa))
     y -= 25
 
     p.setStrokeColor(colors.black)
     p.line(40, y, width - 40, y)
     y -= 12
 
+    # Rutas
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Rutas Autorizadas:")
     p.setFont("Helvetica", 8)
     y -= 12
-    p.drawString(70, y, f"{detalle.rutas}")
-    y -= 12
- 
+    p.drawString(70, y, capitalizar_palabras(detalle.rutas))
+    y -= 18
+
+    # Validez
     p.setFont("Helvetica-Bold", 8)
     p.drawString(50, y, "Licencia válida de:")
     p.setFont("Helvetica", 8)
     p.drawString(140, y, f"{detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}")
-    y -= 18
+    y -= 30
 
-    
+    # Código QR
+    qr_code = qr.QrCodeWidget(qr_texto)
+    qr_code.barWidth = 90
+    qr_code.barHeight = 90
+    d = Drawing(100, 100)
+    d.add(qr_code)
+
+    renderPDF.draw(d, p, width - 150, 120)
+
+    # Firmas
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(50, 60, "Abog. Guido Soux Velasquez")
+    p.setFont("Helvetica", 7)
+    p.drawString(50, 50, "SECRETARIO DEPARTAMENTAL")
+    p.drawString(50, 40, "DE JURÍDICA")
 
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "Abog. Guido Soux Velasquez")
+    p.drawRightString(width - 50, 60, "Oscar Mendoza Mamani")
     p.setFont("Helvetica", 7)
-    p.drawString(50, y - 10, "SECRETARIO DEPARTAMENTAL")
-    p.drawString(50, y - 20, "DE JURÍDICA")
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawRightString(width - 50, y, "Oscar Mendoza Mamani")
-    p.setFont("Helvetica", 7)
-    p.drawRightString(width - 50, y - 10, "SECRETARIO DEPARTAMENTAL")
-    p.drawRightString(width - 50, y - 20, "DE COORDINACIÓN GENERAL")
+    p.drawRightString(width - 50, 50, "SECRETARIO DEPARTAMENTAL")
+    p.drawRightString(width - 50, 40, "DE COORDINACIÓN GENERAL")
 
     p.showPage()
     p.save()
-
     return response
+
+def capitalizar_palabras(texto):
+    if not texto:
+        return ""
+    if not isinstance(texto, str):
+        texto = str(texto)
+    return " ".join(palabra.capitalize() for palabra in texto.split())

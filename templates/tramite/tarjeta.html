@@ -95,10 +95,17 @@
                         <label for="chasis" class="form-label">Número de Chasis</label>
                         <input type="text" required class="form-control" id="chasis" name="chasis">
                     </div>
-                    <!--- <div class="col-md-4">
-                        <label for="tipo_servicio" class="form-label">Tipo de Servicio</label>
-                        <input type="text" required class="form-control" id="tipo_servicio" name="tipo_servicio">
-                    </div>-->
+                    <div class="col-md-4">
+                        <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
+                        <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select">
+                            <option selected disabled>Seleccionar tipo...</option>
+                            <option value="InterProvincial">InterProvincial</option>
+                            <option value="InterProv.ATL">InterProv.ATL</option>
+                            <option value="InterProv.Confederado">InterProv.Confederado</option>
+                            <option value="InterProv.Confe.SCZ">InterProv.Confe.SCZ</option>
+                            <option value="InterProv.Coopertivas">InterProv.Coopertivas</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="row mb-3">
