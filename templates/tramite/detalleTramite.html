@@ -3,117 +3,95 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">📄 Detalle Completo del Trámite</h2>
-    <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn btn-success">
-        📄 Descargar detalle completo
-    </a>
-    <div class="card shadow rounded-4 border-0 p-4">
-        <div class="mt-4">
-            <h4 class="text-primary mb-3">🏛️ Federación</h4>
-            <div class="row">
-                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.federacion.nombre }}</div>
-                <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.federacion.direccion }}</div>
-                <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.federacion.celular }}</div>
+
+    <div class="text-end mb-4">
+        <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn btn-success">
+            📥 Descargar detalle completo
+        </a>
+    </div>
+
+    <div class="card shadow-sm rounded-4 border-0 p-4">
+        <h4 class="text-primary mb-3">🏛️ Federación</h4>
+        <div class="row mb-3">
+            <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.federacion.nombre }}</div>
+            <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.federacion.direccion }}</div>
+            <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.federacion.celular }}</div>
+        </div>
+
+        <h4 class="text-primary mb-3">👔 Operador</h4>
+        <div class="row mb-3">
+            <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.nombre }}</div>
+            <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.direccion }}</div>
+            <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.celular }}</div>
+        </div>
+
+        <h4 class="text-info mb-3">📝 Información del Trámite</h4>
+        <div class="row mb-2">
+            <div class="col-md-4"><strong>N° Trámite:</strong> {{ tramite.numero_tramite }}</div>
+            <div class="col-md-4"><strong>N° Foja:</strong> {{ tramite.numero_fojas }}</div>
+            <div class="col-md-2"><strong>Tipo:</strong> {{ tramite.tipo_tramite }}</div>
+            <div class="col-md-2"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3"><strong>Inicio:</strong> {{ tramite.fecha_validezI|date:"d/m/Y" }}</div>
+            <div class="col-md-3"><strong>Fin:</strong> {{ tramite.fecha_validezF|date:"d/m/Y" }}</div>
+            <div class="col-md-3"><strong>Creación:</strong> {{ tramite.fecha_creacion|date:"d/m/Y" }}</div>
+            <div class="col-md-3">
+                <strong>Estado:</strong>
+                <span class="badge 
+                    {% if tramite.estado == 'ingresado' %} bg-secondary 
+                    {% elif tramite.estado == 'verificado' %} bg-success text-dark 
+                    {% elif tramite.estado == 'observado' %} bg-danger 
+                    {% endif %}">
+                    {{ tramite.estado|capfirst }}
+                </span>
             </div>
         </div>
-        <div class="mt-4">
-            <h4 class="text-primary mb-3">🏛️ Operadador</h4>
+
+        <div class="card bg-light border-0 rounded-3 shadow-sm mt-4 p-3">
+            <h5 class="text-dark mb-3">💰 Detalles del Pago</h5>
             <div class="row">
-                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.operador.nombre }}</div>
-                <div class="col-md-4"><strong>Dirección:</strong> {{ tramite.operador.direccion }}</div>
-                <div class="col-md-4"><strong>Celular:</strong> {{ tramite.operador.celular }}</div>
+                <div class="col-md-4"><strong>N° Comprobante:</strong> {{ tramite.numero_comprobante }}</div>
+                <div class="col-md-4"><strong>Fecha de Pago:</strong> {{ tramite.fecha_pago|date:"d/m/Y" }}</div>
+                <div class="col-md-4"><strong>Monto Pagado:</strong> {{ tramite.monto }}</div>
             </div>
-        </div>
-        <br>
-        <div>
-            <h4 class="text-info mb-3">📝 Información del Trámite</h4>
-            <div class="row">
-                <div class="col-md-4">
-                    <strong>Número de Trámite:</strong> {{ tramite.numero_tramite }}
-                </div>
-                <div class="col-md-4">
-                    <strong>Número de foja:</strong> {{ tramite.numero_fojas}}
-                </div>
-                <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite }}</div>
-                <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
-            </div>
-            <div class="row mt-2">
-
-                <div class="col-md-3"><strong>Inicio de Validez:</strong> {{ tramite.fecha_validezI|date:"d/m/Y" }}
-                </div>
-                <div class="col-md-3"><strong>Fin de Validez:</strong> {{ tramite.fecha_validezF|date:"d/m/Y" }}</div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3"><strong>Fecha de Creación:</strong> {{ tramite.fecha_creacion|date:"d/m/Y" }}
-                </div>
-                <div class="col-md-6">
-                    <strong>Estado:</strong>
-                    <span class="badge 
-                        {% if tramite.estado == 'ingresado' %} bg-secondary 
-                        {% elif tramite.estado == 'verificado' %} bg-success text-dark 
-                        {% elif tramite.estado == 'observado' %}  bg-danger 
-                        {% endif %}">
-                        {{ tramite.estado|capfirst }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Sección: Pago -->
-            <div class="card shadow-sm rounded-4 border-0 mt-4 p-4 bg-light">
-                <h4 class="text-dark mb-3">💰 Detalles del Pago</h4>
-                <div class="row mb-2">
-                    <div class="col-md-4"><strong>N° Comprobante:</strong> {{ tramite.numero_comprobante }}</div>
-                    <div class="col-md-4"><strong>Fecha de Pago:</strong> {{ tramite.fecha_pago|date:"d/m/Y" }}</div>
-                    <div class="col-md-4"><strong>Monto Pagado:</strong> {{ tramite.monto }}</div>
-                </div>
-            </div>
-
-            <!-- Recorre los detalles -->
-            {% for tramite in detalle %}
-            <div class="mt-4">
-                -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            </div>
-            <a href="{% url 'editarTramite' tramite.id %}" class="btn btn-info btn-sm">Editar</a>
-            <div class="mt-4">
-                <h4 class="text-primary mb-3">👤 Afiliado</h4>
-                <div class="row">
-                    <div class="col-md-4"><strong>Nombre completo:</strong> {{ tramite.afiliado }}</div>
-                    <!--  <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.afiliado.nombre }}
-                        {{tramite.afiliado.apellido }}</div>
-                    <div class="col-md-4"><strong>CI:</strong> {{ tramite.afiliado.carnet }}</div>
-                    <div class="col-md-4"><strong>Celular:</strong> {{ tramite.afiliado.celular }}</div> -->
-                </div>
-            </div>
-
-            <!-- Sección: Federación -->
-
-
-            <!-- Sección: Vehículo -->
-            <div class="mt-4">
-                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutas }}</div>
-                <h4 class="text-success mb-3">🚗 Vehículo</h4>
-                <div class="row">
-
-                    <div class="col-md-3"><strong>Placa:</strong> {{ tramite.vehiculo.placa }}</div>
-                    <div class="col-md-3"><strong>Marca:</strong> {{ tramite.vehiculo.marca }}</div>
-                    <div class="col-md-3"><strong>Modelo:</strong> {{ tramite.vehiculo.modelo }}</div>
-                    <div class="col-md-3"><strong>Capacidad:</strong> {{ tramite.vehiculo.capacidad }}</div>
-                </div>
-                <div class="row mt-2">
-
-                    <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ tramite.vehiculo.tipo_transporte }}</div>
-                    <div class="col-md-3"><strong>Chasis:</strong> {{ tramite.vehiculo.chasis }}</div>
-                </div>
-            </div>
-            <div class="text-end mt-4">
-                <a href="{% url 'generar_licencia_pdf' tramite.id %}" class="btn btn-success">
-                    📄 Descargar Tarjeta
-                </a>
-            </div>
-            {% endfor %}
-
-            <!-- Botón -->
-
         </div>
     </div>
+
+    {% for tramites in detalle %}
+    <div class="card shadow-sm rounded-4 border-0 mt-5 p-4">
+        <h5 class="text-secondary">🗂️ Detalle del Trámite N° {{ tramite.numero_tramite }}</h5>
+
+        <div class="text-end">
+            <a href="{% url 'editarTramite' tramites.id %}" class="btn btn-outline-info btn-sm">✏️ Editar</a>
+        </div>
+
+        <h5 class="text-primary mt-4">👤 Afiliado</h5>
+        <div class="row mb-2">
+            <div class="col-md-4"><strong>Nombre completo:</strong> {{ tramites.afiliado }}</div>
+            <div class="col-md-4"><strong>Tipo tarjeta:</strong> {{ tramites.tipo_tarjeta }}</div>
+        </div>
+
+        <h5 class="text-success mt-4">🚗 Vehículo</h5>
+        <div class="row mb-2">
+            <div class="col-md-3"><strong>Placa:</strong> {{ tramites.vehiculo.placa }}</div>
+            <div class="col-md-3"><strong>Marca:</strong> {{ tramites.vehiculo.marca }}</div>
+            <div class="col-md-3"><strong>Modelo:</strong> {{ tramites.vehiculo.modelo }}</div>
+            <div class="col-md-3"><strong>Capacidad:</strong> {{ tramites.vehiculo.capacidad }}</div>
+
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ tramites.vehiculo.tipo_transporte }}</div>
+            <div class="col-md-3"><strong>Chasis:</strong> {{ tramites.vehiculo.chasis }}</div>
+            <div class="col-md-6"><strong>Rutas a Operar:</strong> {{ tramites.rutas }}</div>
+        </div>
+
+        <div class="text-end mt-3">
+            <a href="{% url 'generar_licencia_pdf' tramites.id %}" class="btn btn-outline-success">
+                📥 Descargar Tarjeta
+            </a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

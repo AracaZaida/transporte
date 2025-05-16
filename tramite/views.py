@@ -205,7 +205,7 @@ def tarjeta_tramite (request, id):
                                 #tipo_vehiculo=d["tipo_servicio"]
                                  )
         
-            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"], tramite= tramite)
+            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"], tramite= tramite, tipo_tarjeta = d['tipoTarjeta'])
         print('registrado')
         return JsonResponse({"status": "success"}, status=201)
     afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
@@ -227,7 +227,7 @@ def editarTramite(request, id):
         modelo = request.POST.get('modelo')
         marca = request.POST.get('marca')
         chasis = request.POST.get('chasis')
-        #tipo_servicio = request.POST.get('tipo_servicio')
+        tipo_tarjeta = request.POST.get('tipo_tarjeta')
         capacidad = request.POST.get('capacidad')
         
     
@@ -236,7 +236,7 @@ def editarTramite(request, id):
         tramite.vehiculo.modelo = modelo
         tramite.vehiculo.marca = marca
         tramite.vehiculo.chasis =chasis
-        #tramite.vehiculo.tipo_vehiculo = tipo_servicio
+        tramite.tipo_tarjeta= tipo_tarjeta
         tramite.vehiculo.capacidad = capacidad
         tramite.rutas= ruta
         tramite.afiliado = afiliado

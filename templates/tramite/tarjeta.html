@@ -97,13 +97,13 @@
                     </div>
                     <div class="col-md-4">
                         <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
-                        <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select">
+                        <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
                             <option selected disabled>Seleccionar tipo...</option>
                             <option value="InterProvincial">InterProvincial</option>
-                            <option value="InterProv.ATL">InterProv.ATL</option>
-                            <option value="InterProv.Confederado">InterProv.Confederado</option>
-                            <option value="InterProv.Confe.SCZ">InterProv.Confe.SCZ</option>
-                            <option value="InterProv.Coopertivas">InterProv.Coopertivas</option>
+                            <option value="InterProvincial ATL">InterProvincial ATL</option>
+                            <option value="InterProvincial Confederado">InterProvincial Confederado</option>
+                            <option value="InterProv Confederado SCZ">InterProv Confederado SCZ</option>
+                            <option value="InterProvincial Coopertivas">InterProvincial Coopertivas</option>
                         </select>
                     </div>
                 </div>
@@ -255,6 +255,7 @@
                 <!--<th>Tipo de Servicio</th>-->
                 <th>Capacidad</th>
                 <th>Ruta</th>
+                <th>tipo tarjeta</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -290,6 +291,7 @@
         const modelo = document.getElementById('modelo').value;
         const marca = document.getElementById('marca').value;
         const chasis = document.getElementById('chasis').value;
+        const tipoTarjeta = document.getElementById("tipo_tarjeta").value;
         //const tipo_servicio = document.getElementById('tipo_servicio').value;
         const capacidad = document.getElementById('capacidad').value;
         const ruta_nombre_mostrar = document.getElementById('ruta_nombre_mostrar').value;
@@ -301,6 +303,7 @@
         const data = {
             //afiliadoSeleccionado,
             //afiliado_id,
+            tipoTarjeta,
             afiliado,
             placa,
             tipo_transporte,
@@ -333,6 +336,7 @@
            
             <td>${item.capacidad}</td>
             <td>${item.ruta_nombre_mostrar}</td>
+                    <td>${item.tipoTarjeta}</td>
             <td><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
         `;
             tablaBody.appendChild(fila);

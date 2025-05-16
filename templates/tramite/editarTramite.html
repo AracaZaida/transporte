@@ -62,6 +62,7 @@
                         <input type="text" value="{{ tramite.vehiculo.placa }}" class="form-control" required id="placa"
                             name="placa">
                     </div>
+                    
                     <div class="col-md-4">
                         <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
                         <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
@@ -71,13 +72,16 @@
                             <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>
                                 Carga</option>
                         </select>
+                        
                     </div>
+                    
                     <div class="col-md-4">
                         <label for="modelo" class="form-label">Modelo</label>
                         <input type="text" required class="form-control" id="modelo" name="modelo"
                             value="{{ tramite.vehiculo.modelo }}">
-                    </div>
+                   
                 </div>
+                
 
                 <div class="row mb-3">
                     <div class="col-md-4">
@@ -89,7 +93,21 @@
                         <label for="chasis" class="form-label">Número de Chasis</label>
                         <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control"
                             id="chasis" name="chasis">
+                        </div>
+                        <div class="col-md-4">
+                         <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
+                        <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
+                            <option value="" disabled {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar tipo...</option>
+                            <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>InterProvincial
+                            </option>
+                            <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>
+                                InterProvincial ATL</option>
+                            <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado" %}selected{%endif %}>InterProvincial Confederado</option>
+                            <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{% endif%}>InterProv Confederado SCZ</option>
+                            <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial Coopertivas</option>               </select>
+                     </div>
                     </div>
+                    
                    
                 </div>
 
@@ -99,6 +117,7 @@
                         <input type="number" value="{{ tramite.vehiculo.capacidad }}" required class="form-control"
                             id="capacidad" name="capacidad">
                     </div>
+                    
                     <div class="col-md-4">
                         <label class="form-label">Ruta Seleccionada</label>
                     
