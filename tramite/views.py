@@ -298,8 +298,8 @@ def descargarDetalleCompleto(request, id):
     detalles = DetalleTramite.objects.filter(tramite=tramite)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="tramite_{tramite.numero_tramite}.pdf"'
-
+    response['Content-Disposition'] = 'inline; filename="licencia_operacion.pdf"'
+    response['X-Frame-Options'] = 'SAMEORIGIN'
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
     margin = 40
@@ -334,8 +334,8 @@ def descargarDetalleCompleto(request, id):
 
         qr_code = qr.QrCodeWidget(qr_texto)
         qr_code.barWidth = 90
-        qr_code.barHeight = 90
-        d = Drawing(100, 100)
+        qr_code.barHeight =90
+        d = Drawing(90, 90)
         d.add(qr_code)
         renderPDF.draw(d, p, width - 150, y - 50)
 
@@ -395,7 +395,8 @@ def generar_licencia_pdf(request, id):
     )
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="licencia_operacion.pdf"'
+    response['Content-Disposition'] = 'inline; filename="licencia_operacion.pdf"'
+    response['X-Frame-Options'] = 'SAMEORIGIN'
 
     width, height = letter
     height = height / 2
