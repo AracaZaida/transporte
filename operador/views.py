@@ -16,7 +16,7 @@ def crearOperdor(request):
         operador=OperadorF(request.POST)
         if operador.is_valid():
             operador.save()
-            return redirect(reverse('listarFedeacion'))
+            return redirect(reverse('listarOperador'))
             
 
     else:
