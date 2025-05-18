@@ -206,7 +206,7 @@ def tarjeta_tramite (request, id):
                                  )
         
 
-            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite)
+            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite, tipo_tarjeta=d['tipoTarjeta'])
 
           
 
