@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 
 from .models import Usuario
-from usuarios.forms import UsuarioF
+from usuarios.forms import UsuarioF, UsuariosActualizar
 from django.contrib.auth import authenticate , login, logout
 from django.contrib import messages
 from utils.context_processors import verificarRol
@@ -62,12 +62,12 @@ def editar_user(request, usu_id):
     user = get_object_or_404(Usuario, id=usu_id)
 
     if request.method == 'POST':
-        form = UsuarioF(request.POST, instance=user)
+        form = UsuariosActualizar(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('listarUsuario')  
     else:
-        form = UsuarioF(instance=user)
+        form = UsuariosActualizar(instance=user)
         
 
     return render(request, 'usuario/editar.html', {'form': form,'id':user.id})

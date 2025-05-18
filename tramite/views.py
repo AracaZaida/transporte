@@ -190,9 +190,9 @@ def tarjeta_tramite (request, id):
         for d in data:
             #afiliado = get_object_or_404(Afiliado, pk =  d["afiliado_id"])
             #ruta = get_object_or_404(Rutas, pk=d["ruta_nombre_mostrar"])
-            vehiculo=Vehiculo.objects.create(marca= d["marca"], 
+            vehiculo=Vehiculo.objects.create(marca= d["marca"].title(), 
                                 
-                                modelo = d["modelo"],
+                                modelo = d["modelo"].title(),
                                  placa= d["placa"], 
                                  tipo_transporte =d["tipo_transporte"],
                                  chasis= d["chasis"],
@@ -201,7 +201,7 @@ def tarjeta_tramite (request, id):
                                 #tipo_vehiculo=d["tipo_servicio"]
                                  )
         
-            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"], tramite= tramite)
+            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite)
         print('registrado')
         return JsonResponse({"status": "success"}, status=201)
     afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
@@ -280,7 +280,7 @@ def crearRuta(request):  # Usa el `id` si lo necesitas
             nombre = data.get('nombre')
             if not nombre:
                 return JsonResponse({'estatus': 400, 'mensaje': 'Nombre requerido'}, status=400)
-            Rutas.objects.create(nombre=nombre)
+            Rutas.objects.create(nombre=nombre.title())
             return JsonResponse({'estatus': 201})
         except Exception as e:
             return JsonResponse({'estatus': 500, 'mensaje': str(e)}, status=500)
