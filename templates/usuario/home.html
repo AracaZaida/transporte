@@ -1,10 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-    <div class="card shadow p-4 rounded-4" style="background: #f8f9fa;">
-        <h1 class="display-4 mb-3">¡Bienvenido al Sistema!</h1>
-        <p class="lead">Gracias por iniciar sesión. Usa el menú de navegación para comenzar.</p>
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4 border-0">
+        <div class="row g-0">
+            <div class="col-12 p-5 bg-light">
+                <p class="text-muted fs-5 mb-4 text-center">Bienvenido al sistema. Aquí está tu información completa:</p>
+                <h2 class="text-primary fw-bold mb-3 text-center" >{{ user.nombre }} {{ user.apellidos }}</h2>
+                
+
+                <div class="row">
+                    <!-- CI -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">CI:</span>
+                            <span class="text-dark">{{ user.ci }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Nombre:</span>
+                            <span class="text-dark">{{ user.nombre }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Apellidos:</span>
+                            <span class="text-dark">{{ user.apellidos }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Usuario:</span>
+                            <span class="text-dark">{{ user.username }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Email:</span>
+                            <span class="text-dark">{{ user.email }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Rol:</span>
+                            <span class="badge bg-info text-white rounded-pill px-3">{{ user.get_rol_display }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Es habilitado -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">¿Habilitado?</span>
+                            <span class="text-dark">
+                                {% if user.es_habilitado %}
+                                    Sí
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Es activo -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">¿Activo?</span>
+                            <span class="text-dark">
+                                {% if user.es_activo %}
+                                    Sí
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Fecha de creación -->
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3 bg-white border rounded-3 shadow-sm d-flex justify-content-between">
+                            <span class="text-secondary fw-semibold">Fecha de Creación:</span>
+                            <span class="text-dark">{{ user.fecha_creacion }}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

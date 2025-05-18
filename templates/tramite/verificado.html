@@ -39,7 +39,7 @@
                 <td>{{ tra.estado }}</td>
                 <td>{{ tra.fecha_verificacion }}</td>
                 <td>
-                    <a href="{% url 'tarjeta_tramite' tra.id %}" class="btn btn-info btn-sm">Transporte</a>
+                    <a href="{% url 'tarjeta_tramite' tra.id %}" class="btn btn-info btn-sm">Vehiculo</a>
                     <a href="{% url 'detalleTramite' tra.id %}" class="btn btn-info btn-sm">Detalle</a>
                     {% if tra.verificarPago %}
                     <a href="#" class="btn btn-success btn-sm">Verificado</a>

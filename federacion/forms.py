@@ -19,3 +19,18 @@ class Federacions(forms.ModelForm):
                 'placeholder': 'Ingrese el número de celular'
             }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # Capitaliza nombre y dirección
+        nombre = cleaned_data.get('nombre')
+        direccion = cleaned_data.get('direccion')
+
+        if nombre:
+            cleaned_data['nombre'] = nombre.title()
+
+        if direccion:
+            cleaned_data['direccion'] = direccion.title()
+
+        return cleaned_data
