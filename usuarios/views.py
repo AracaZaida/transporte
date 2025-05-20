@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 
+from log.views import registrar_log
+
 from .models import Usuario
 from usuarios.forms import UsuarioF, UsuariosActualizar
 from django.contrib.auth import authenticate , login, logout
@@ -28,6 +30,7 @@ def crearUsuario(request):
             u =  usuario.save(commit=False)
             u.set_password(password)
             u.save()
+            registrar_log('usuario',request.user.username, f'se regitro el usuario  {usuario.cleaned_data['username']}')
             return redirect(reverse('listarUsuario'))
         else:
             context = {'usuario': usuario}
@@ -46,6 +49,7 @@ def login_sistema(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                registrar_log('usuario',username, f'se logueo el usuario {username}')
                 return redirect(reverse('home'))
             else:
                 messages.error(request, 'Usuario o contraseña incorrectos')
@@ -59,12 +63,16 @@ def home(request):
     return render(request,'usuario/home.html')
 
 def editar_user(request, usu_id):
+    resultado = verificarRol(request, ['super_admin'])
+    if resultado is not True:
+        return resultado
     user = get_object_or_404(Usuario, id=usu_id)
 
     if request.method == 'POST':
         form = UsuariosActualizar(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            registrar_log('usuario',request.user.username, f'se edito el usuario {user.username}')
             return redirect('listarUsuario')  
     else:
         form = UsuariosActualizar(instance=user)
@@ -73,10 +81,14 @@ def editar_user(request, usu_id):
     return render(request, 'usuario/editar.html', {'form': form,'id':user.id})
 
 def eliminar_usuario(request, usuario_id):
+    resultado = verificarRol(request, ['super_admin'])
+    if resultado is not True:
+        return resultado
     user = get_object_or_404(Usuario, id=usuario_id)
     user.es_activo = False
     user.es_habilitado = False
     user.save()
+    registrar_log('usuario',request.user.username, f'se elimino el usuario {user.username}')
     return redirect('listarUsuario')
 def cerrar_sesion(request):
     logout(request)

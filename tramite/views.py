@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse
 from federacion.models import Federacion
+from log.views import registrar_log
 from operador.models import Operador
 from tramite.models import Tramite ,Rutas
 from utils.context_processors import verificarRol
@@ -54,7 +55,7 @@ def crearTramite(request):
          
             tecnico = Usuario.objects.get(id=tecnico_id)
 
-            Tramite.objects.create(
+            t= Tramite.objects.create(
                 tipo_tramite=tipo,
                 fecha_validezI=fecha_validezI,
                 fecha_validezF=fecha_validezF,
@@ -64,8 +65,10 @@ def crearTramite(request):
                 numero_fojas= fojas,
                 fecha_creacion=timezone.now()
             )
+            registrar_log('tramite',request.user.username, f'se registro un tramite con el numero {t.numero_tramite}')
 
             return redirect(reverse('listarTramite'))
+        
         else:
          
             print("Datos incompletos")
@@ -98,6 +101,7 @@ def verTramite(request, id):
             if estado == 'observado':
                 tramite.fecha_observacion = timezone.now()
             tramite.save()
+            registrar_log('tramite',request.user.username, f'El numero de tramite {tramite.numero_tramite} cambio de estado  {estado}')
             return redirect(reverse('listarTramite'))
     else:
        
@@ -204,13 +208,15 @@ def tarjeta_tramite (request, id):
                                  
                                 #tipo_vehiculo=d["tipo_servicio"]
                                  )
+            
         
 
             DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite, tipo_tarjeta=d['tipoTarjeta'])
-
+            registrar_log('vehiculo',request.user.username, f'se registro un vehiculo con la placa  {d["placa"]}')
           
 
         print('registrado')
+        
         return JsonResponse({"status": "success"}, status=201)
     afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
     context  = {
@@ -246,6 +252,7 @@ def editarTramite(request, id):
         tramite.afiliado = afiliado
         tramite.vehiculo.save()
         tramite.save()
+        registrar_log('tramite',request.user.username, f'se edito el tramite con el numero  {tramite.tramite.numero_tramite}')
         return redirect(reverse('verificadoTramite'))
 
     context  = {
@@ -258,6 +265,7 @@ def aprobarTramite(request, id):
     tramite.estado ='aprobado'
     
     tramite.save()
+    
     return redirect(reverse('listarTramite'))
 
 def anularTramite(request, id):
@@ -278,6 +286,7 @@ def verificarPago(request, id):
         tramite.monto = monto
         tramite.verificarPago= True
         tramite.save()
+        registrar_log('tramite',request.user.username, f'Realizo el pago de tramite   {tramite.numero_tramite}')
         return redirect(reverse('verificadoTramite'))
     return render(request, 'tramite/verificarPago.html', {'id':tramite.id})
 

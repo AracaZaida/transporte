@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'tramite',
     'vehiculo',
     'usuarios',
-    'operador'
+    'operador',
+    'log'
  
 
 ]
