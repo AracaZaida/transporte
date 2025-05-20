@@ -25,5 +25,6 @@ urlpatterns = [
     path('',include('tramite.urls')),
     path('',include('usuarios.urls')),
     path('',include('operador.urls')),
+    path('',include('log.urls')),
     #path('',include('afiliados.urls')),
 ]
