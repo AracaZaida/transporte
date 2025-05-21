@@ -23,7 +23,9 @@ class Tramite(models.Model):
     observaciones = models.TextField(null=True, blank=True)
     tipo_tramite= models.CharField(max_length=100,blank=False, null=False)
     fecha_pago = models.DateField(blank=True, null=True)
+    banco = models.CharField(blank=True, null=True, max_length=255)
     operador = models.ForeignKey(Operador, on_delete=models.CASCADE, blank=False, null=False)
+    
     estado = models.CharField(max_length=50,
             choices=[('verificado', 'verificado'), ('observado', 'observado'),('ingresado','ingresado')],
         default='ingresado')
