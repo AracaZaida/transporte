@@ -27,8 +27,8 @@
                 {% csrf_token %}
 
                 <!-- Campos ocultos -->
-                <input type="hidden" name="afiliado_id" id="afiliado_id">
-                <input type="hidden" name="tecnico_id" id="tecnico_id">
+                <input type="hidden" name="afiliado_id" id="afiliado_id" required>
+                <input type="hidden" name="tecnico_id" id="tecnico_id" required>
 
                 <!-- Mostrar selección actual -->
                 <div class="mb-3">
@@ -40,7 +40,7 @@
                 <div class="row mb-3">
                     <label for="fojas" class="col-sm-3 col-form-label">Numero de fojas</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="fojas" name="fojas">
+                        <input type="text" class="form-control" id="fojas" name="fojas" required>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -48,7 +48,7 @@
                     <div class="col-sm-9">
                         <div class="form-group">
                             <label for="tipo" class="form-label fw-bold">Tipo de trámite</label>
-                            <select name="tipo" id="tipo" class="form-select">
+                            <select required name="tipo" id="tipo" class="form-select">
                                 <option value="Adquisición de tarjeta de operacion">Adquisición de tarjeta de operación
                                 </option>
                                 <option value="Extencion de tarjeta de operacion">Extensión de tarjeta de operación

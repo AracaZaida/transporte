@@ -281,9 +281,12 @@ def verificarPago(request, id):
         numeroComprobante = request.POST.get('numeroComprobante')
         fechaPago = request.POST.get('fechaPago')
         monto = request.POST.get('monto')
+        banco = request.POST.get('banco')
+        print(banco)
         tramite.numero_comprobante= numeroComprobante
         tramite.fecha_pago= fechaPago
         tramite.monto = monto
+        tramite.banco= banco
         tramite.verificarPago= True
         tramite.save()
         registrar_log('tramite',request.user.username, f'Realizo el pago de tramite   {tramite.numero_tramite}')
@@ -305,6 +308,17 @@ def listarRuta(request):
     rutas = Rutas.objects.all()  
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
+def dibujar_encabezado(p, width, height, margin):
+    y_encabezado = height - 50
+    p.setFont("Helvetica-Bold", 11)
+    p.drawCentredString(width / 2, y_encabezado, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
+    y_encabezado -= 15
+    p.setFont("Helvetica", 10)
+    p.drawCentredString(width / 2, y_encabezado, "UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE")
+    y_encabezado -= 15
+    p.setFont("Helvetica-Bold", 10)
+    p.drawCentredString(width / 2, y_encabezado, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
+    return y_encabezado - 2
 
 def descargarDetalleCompleto(request, id):
     tramite = get_object_or_404(Tramite, pk=id)
@@ -316,7 +330,11 @@ def descargarDetalleCompleto(request, id):
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
     margin = 40
-    y = height - 40
+    y = height - 100
+
+    # Encabezado inicial
+    y = dibujar_encabezado(p, width, height, margin)
+
     for detalle in detalles:
         if y < 200:
             p.showPage()
@@ -333,6 +351,7 @@ def descargarDetalleCompleto(request, id):
             f"Rutas: {capitalizar_palabras(detalle.rutas)}\n"
             f"Válida del: {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}"
         )
+        y -= 30
 
         p.setFont("Helvetica-Bold", 10)
         p.drawString(margin, y, f"Nro. Trámite: {tramite.numero_tramite}")
@@ -347,7 +366,7 @@ def descargarDetalleCompleto(request, id):
 
         qr_code = qr.QrCodeWidget(qr_texto)
         qr_code.barWidth = 90
-        qr_code.barHeight =90
+        qr_code.barHeight = 90
         d = Drawing(90, 90)
         d.add(qr_code)
         renderPDF.draw(d, p, width - 150, y - 50)
@@ -387,8 +406,36 @@ def descargarDetalleCompleto(request, id):
         p.line(margin, y, width - margin, y)
         y -= 15
 
+    # Fecha al pie de la última página de contenido
     p.setFont("Helvetica", 8)
     p.drawRightString(width - margin, 30, f"Potosí - {datetime.now().strftime('%d/%m/%Y')}")
+
+    # NUEVA HOJA PARA EL INSTRUCTIVO
+    p.showPage()
+    width, height = letter
+    footer_y = 100
+
+    p.setFont("Helvetica-Bold", 9)
+    p.drawString(margin, footer_y + 90, "Instructivo:")
+
+    p.setFont("Helvetica", 8)
+    p.drawString(margin + 10, footer_y + 78, "a) Lea detalladamente los datos de cada uno de los vehículos en el presente formulario.")
+    p.drawString(margin + 10, footer_y + 67, "b) Si encuentra algún error, resaltarlo y devolverlo a Unidad Registro y Regulación de Transporte")
+    p.drawString(margin + 25, footer_y + 56, "para su corrección sin firmar.")
+    p.drawString(margin + 10, footer_y + 45, "c) Si todos los datos están correctos, firmar el formulario y proceder a realizar el depósito")
+    p.drawString(margin + 25, footer_y + 34, f"correspondiente en la cuenta N: {tramite.numero_comprobante} del {tramite.banco.upper()} por el total de las tarjetas, luego")
+    p.drawString(margin + 25, footer_y + 23, "entregar fotocopia del presente formulario y del comprobante de depósito a Tesorería de la")
+    p.drawString(margin + 25, footer_y + 12, "Gobernación.")
+
+    p.setFont("Helvetica-Bold", 8)
+    p.drawString(margin, footer_y - 8, "JURO LA EXACTITUD DE LOS DATOS DEL PRESENTE FORMULARIO")
+    p.drawString(width - 230, footer_y - 8, "ACLARACIÓN DE LA FIRMA")
+
+    p.setFont("Helvetica", 8)
+    p.line(margin, footer_y - 20, margin + 150, footer_y - 20)
+    p.drawString(margin + 40, footer_y - 32, "Firma Rep. legal")
+    p.drawString(width - 210, footer_y - 20, "Nombre: __________________________")
+    p.drawString(width - 210, footer_y - 32, "C.I.: __________________________")
 
     p.save()
     return response
