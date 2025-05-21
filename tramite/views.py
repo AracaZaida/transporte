@@ -443,57 +443,52 @@ def descargarDetalleCompleto(request, id):
 def generar_licencia_pdf(request, id):
     detalle = get_object_or_404(DetalleTramite, pk=id)
     qr_texto = (
-        f"Placa: {capitalizar_palabras(detalle.vehiculo.placa)}\n"
-        f"Trámite: {detalle.tramite.numero_tramite}\n"
-        f"Operador: {capitalizar_palabras(str(detalle.afiliado))}\n"
-        f"Modelo: {capitalizar_palabras(detalle.vehiculo.modelo)}\n"
-        f"Marca: {capitalizar_palabras(detalle.vehiculo.marca)}\n"
-        f"Chasis: {capitalizar_palabras(detalle.vehiculo.chasis)}\n"
-        f"Capacidad: {capitalizar_palabras(str(detalle.vehiculo.capacidad))}\n"
-        f"Rutas: {capitalizar_palabras(detalle.rutas)}\n"
-        f"Válida del: {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}"
+        f"PLACA: {str(detalle.vehiculo.placa).upper()}\n"
+        f"TRÁMITE: {str(detalle.tramite.numero_tramite).upper()}\n"
+        f"OPERADOR: {str(detalle.afiliado).upper()}\n"
+        f"MODELO: {str(detalle.vehiculo.modelo).upper()}\n"
+        f"MARCA: {str(detalle.vehiculo.marca).upper()}\n"
+        f"CHASIS: {str(detalle.vehiculo.chasis).upper()}\n"
+        f"CAPACIDAD: {str(detalle.vehiculo.capacidad).upper()}\n"
+        f"RUTAS: {str(detalle.rutas).upper()}\n"
+        f"VÁLIDA DEL: {detalle.tramite.fecha_validezI} AL {detalle.tramite.fecha_validezF}"
     )
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="licencia_operacion.pdf"'
+    response['Content-Disposition'] = 'inline; filename="LICENCIA_OPERACION.PDF"'
     response['X-Frame-Options'] = 'SAMEORIGIN'
 
     width, height = letter
     height = height / 2
     p = canvas.Canvas(response, pagesize=(width, height))
 
- 
     p.setLineWidth(0.5)
     p.rect(30, 20, width - 60, height - 40)
-
 
     p.setFont("Helvetica-Bold", 10)
     p.drawCentredString(width / 2, height - 35, "LICENCIA DE OPERACIÓN PARA EL TRANSPORTE AUTOMOTOR")
     p.drawCentredString(width / 2, height - 50, "INTERPROVINCIAL - CONFEDERADO")
 
-   
     p.setStrokeColor(colors.grey)
     p.line(40, height - 60, width - 40, height - 60)
 
     y = height - 75
 
-   
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "Línea Sindical:")
+    p.drawString(50, y, "LÍNEA SINDICAL:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, capitalizar_palabras(detalle.tramite.operador.federacion))
+    p.drawString(140, y, str(detalle.tramite.operador.federacion).upper())
     y -= 18
 
-   
     datos_col1 = [
-        ("Operador:", capitalizar_palabras(str(detalle.afiliado))),
-        ("Modelo:", capitalizar_palabras(detalle.vehiculo.modelo)),
-        ("Registro:", str(detalle.tramite.numero_tramite)),
+        ("OPERADOR:", str(detalle.afiliado).upper()),
+        ("MODELO:", str(detalle.vehiculo.modelo).upper()),
+        ("REGISTRO:", str(detalle.tramite.numero_tramite).upper()),
     ]
     datos_col2 = [
-        ("Capacidad:", capitalizar_palabras(str(detalle.vehiculo.capacidad))),
-        ("Chasis:", capitalizar_palabras(detalle.vehiculo.chasis)),
-        ("Marca:", capitalizar_palabras(detalle.vehiculo.marca)),
+        ("CAPACIDAD:", str(detalle.vehiculo.capacidad).upper()),
+        ("CHASIS:", str(detalle.vehiculo.chasis).upper()),
+        ("MARCA:", str(detalle.vehiculo.marca).upper()),
     ]
 
     x1 = 50
@@ -510,49 +505,44 @@ def generar_licencia_pdf(request, id):
         p.drawString(x2 + 80, y, datos_col2[i][1])
         y -= 14
 
-    # Placa centrada capitalizada
+    altura_qr = height - 75 - (14 * 1) - 10
+
+    qr_code = qr.QrCodeWidget(qr_texto)
+    qr_code.barWidth = 90
+    qr_code.barHeight = 90
+    d = Drawing(100, 100)
+    d.add(qr_code)
+    renderPDF.draw(d, p, width - 150, 240)
+
     p.setFont("Helvetica-Bold", 12)
     p.setFillColor(colors.black)
-    p.drawCentredString(width / 2, y - 10, capitalizar_palabras(detalle.vehiculo.placa))
+    p.drawCentredString(width / 2, y - 10, str(detalle.vehiculo.placa).upper())
     y -= 25
 
     p.setStrokeColor(colors.black)
     p.line(40, y, width - 40, y)
     y -= 12
 
-    # Rutas
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "Rutas Autorizadas:")
+    p.drawString(50, y, "RUTAS AUTORIZADAS:")
     p.setFont("Helvetica", 8)
     y -= 12
-    p.drawString(70, y, capitalizar_palabras(detalle.rutas))
+    p.drawString(70, y, str(detalle.rutas).upper())
     y -= 18
 
-    # Validez
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "Licencia válida de:")
+    p.drawString(50, y, "LICENCIA VÁLIDA DE:")
     p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}")
-    y -= 30
+    p.drawString(140, y, f"{detalle.tramite.fecha_validezI} AL {detalle.tramite.fecha_validezF}")
 
-    # Código QR
-    qr_code = qr.QrCodeWidget(qr_texto)
-    qr_code.barWidth = 90
-    qr_code.barHeight = 90
-    d = Drawing(100, 100)
-    d.add(qr_code)
-
-    renderPDF.draw(d, p, width - 150, 120)
-
-    # Firmas
     p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, 60, "Abog. Guido Soux Velasquez")
+    p.drawString(50, 60, "ABOG. GUIDO SOUX VELASQUEZ")
     p.setFont("Helvetica", 7)
     p.drawString(50, 50, "SECRETARIO DEPARTAMENTAL")
     p.drawString(50, 40, "DE JURÍDICA")
 
     p.setFont("Helvetica-Bold", 8)
-    p.drawRightString(width - 50, 60, "Oscar Mendoza Mamani")
+    p.drawRightString(width - 50, 60, "OSCAR MENDOZA MAMANI")
     p.setFont("Helvetica", 7)
     p.drawRightString(width - 50, 50, "SECRETARIO DEPARTAMENTAL")
     p.drawRightString(width - 50, 40, "DE COORDINACIÓN GENERAL")
@@ -560,6 +550,7 @@ def generar_licencia_pdf(request, id):
     p.showPage()
     p.save()
     return response
+
 
 def capitalizar_palabras(texto):
     if not texto:
