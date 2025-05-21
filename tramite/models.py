@@ -25,6 +25,7 @@ class Tramite(models.Model):
     fecha_pago = models.DateField(blank=True, null=True)
     banco = models.CharField(blank=True, null=True, max_length=255)
     operador = models.ForeignKey(Operador, on_delete=models.CASCADE, blank=False, null=False)
+    
     estado = models.CharField(max_length=50,
             choices=[('verificado', 'verificado'), ('observado', 'observado'),('ingresado','ingresado')],
         default='ingresado')
