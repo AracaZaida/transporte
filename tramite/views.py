@@ -286,7 +286,7 @@ def verificarPago(request, id):
         tramite.numero_comprobante= numeroComprobante
         tramite.fecha_pago= fechaPago
         tramite.monto = monto
-        tramite.banco= banco
+        tramite.banco= banco.upper()
         tramite.verificarPago= True
         tramite.save()
         registrar_log('tramite',request.user.username, f'Realizo el pago de tramite   {tramite.numero_tramite}')
@@ -423,7 +423,7 @@ def descargarDetalleCompleto(request, id):
     p.drawString(margin + 10, footer_y + 67, "b) Si encuentra algún error, resaltarlo y devolverlo a Unidad Registro y Regulación de Transporte")
     p.drawString(margin + 25, footer_y + 56, "para su corrección sin firmar.")
     p.drawString(margin + 10, footer_y + 45, "c) Si todos los datos están correctos, firmar el formulario y proceder a realizar el depósito")
-    p.drawString(margin + 25, footer_y + 34, f"correspondiente en la cuenta N: {tramite.numero_comprobante} del {tramite.banco.upper()} por el total de las tarjetas, luego")
+    p.drawString(margin + 25, footer_y + 34, f"correspondiente en la cuenta N: {tramite.numero_comprobante} del {tramite.banco} por el total de las tarjetas, luego")
     p.drawString(margin + 25, footer_y + 23, "entregar fotocopia del presente formulario y del comprobante de depósito a Tesorería de la")
     p.drawString(margin + 25, footer_y + 12, "Gobernación.")
 
