@@ -9,42 +9,60 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
   <style>
-    .navbar-custom {
-      background-color: #4CAF50;
-    }
+ /* Estilos generales para html y body */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-    .navbar-custom .navbar-brand,
-    .navbar-custom .nav-link,
-    .navbar-custom .dropdown-toggle {
-      color: #fff;
-      font-weight: 500;
-    }
+body {
+  background: linear-gradient(135deg, #f7f4f3, #d32405); /* fondo suave hacia rojo */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
 
-    .navbar-custom .nav-link:hover,
-    .navbar-custom .dropdown-item:hover {
-      background-color: rgba(255, 255, 255, 0.15);
-      color: #776fe6;
-    }
+/* Estilo personalizado para la barra de navegación */
+.navbar-custom {
+  background: linear-gradient(135deg, #968683, #d32405); /* colores similares al fondo */
+}
 
-    .dropdown-menu {
-      background-color: #f8f9fa;
-      border: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link,
+.navbar-custom .dropdown-toggle {
+  color: #fff;
+  font-weight: 500;
+}
 
-    .dropdown-item {
-      color: #4CAF50;
-      font-weight: 500;
-    }
+.navbar-custom .nav-link:hover,
+.navbar-custom .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffe6e1; /* tono claro que combina con el degradado */
+}
 
-    .dropdown-item:hover {
-      background-color: #4CAF50;
-      color: white;
-    }
+/* Estilo para el menú desplegable */
+.dropdown-menu {
+  background-color: #f8f9fa;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-    main.container {
-      padding-top: 30px;
-    }
+.dropdown-item {
+  color: #2597d4;  /* rojo principal */
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background-color: #d32405;
+  color: white;
+}
+
+/* Espaciado principal */
+main.container {
+  padding-top: 30px;
+}
+
   </style>
 </head>
 

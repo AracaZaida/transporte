@@ -1,8 +1,16 @@
 from django.db import models
 from afiliados.models import Afiliado 
 
+class Marca(models.Model):
+    nombre=models.CharField(null=True, blank=True, max_length=255)
+    flag=models.CharField(max_length=20,
+        choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
+        default='nuevo')
+    fecha_creacion = models.DateField(auto_now_add=True)
+     
+
 class Vehiculo(models.Model):
-    marca=models.CharField(max_length=50, blank=False, null=False)
+    marca=models.CharField(max_length=255, blank=False, null=False)
     color=models.CharField(max_length=50, blank=False, null=False)
     modelo=models.CharField(max_length=100, blank=False, null=False)
     placa=models.CharField(max_length=50, blank=False, null=False)
@@ -13,6 +21,7 @@ class Vehiculo(models.Model):
   
     tipo_vehiculo=models.CharField(max_length=100, blank=False, null=False)
     fecha_creacion = models.DateField(auto_now_add=True)
+
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
         default='nuevo')
