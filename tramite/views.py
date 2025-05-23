@@ -1,37 +1,34 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from federacion.models import Federacion
-from log.views import registrar_log
-from operador.models import Operador
-from tramite.models import Tramite ,Rutas
-from utils.context_processors import verificarRol
-from vehiculo.models import Vehiculo
-from datetime import  datetime
-import json
-from usuarios.models import Usuario
-
-from  afiliados.models import Afiliado
-
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from datetime import datetime
-from .models import DetalleTramite, Tramite, Usuario, Afiliado
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator
+from django.template.loader import get_template
+from django.utils import timezone
+
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from django.core.paginator import Paginator
-
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.http import HttpResponse
-from io import BytesIO
-
 from reportlab.graphics.barcode import qr
 from reportlab.graphics.shapes import Drawing
 from reportlab.graphics import renderPDF
 
-from django.utils import timezone
+from xhtml2pdf import pisa
+
+from io import BytesIO
+import qrcode
+import base64
+import json
+from datetime import datetime
+
+from federacion.models import Federacion
+from log.views import registrar_log
+from operador.models import Operador
+from tramite.models import Tramite, Rutas
+from vehiculo.models import Vehiculo
+from usuarios.models import Usuario
+from afiliados.models import Afiliado
+from .models import DetalleTramite
+from utils.context_processors import verificarRol
 
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
@@ -304,10 +301,12 @@ def crearRuta(request):  # Usa el `id` si lo necesitas
             return JsonResponse({'estatus': 201})
         except Exception as e:
             return JsonResponse({'estatus': 500, 'mensaje': str(e)}, status=500)
+        
 def listarRuta(request):
     rutas = Rutas.objects.all()  
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
+
 def dibujar_encabezado(p, width, height, margin):
     y_encabezado = height - 50
     p.setFont("Helvetica-Bold", 11)
@@ -319,6 +318,7 @@ def dibujar_encabezado(p, width, height, margin):
     p.setFont("Helvetica-Bold", 10)
     p.drawCentredString(width / 2, y_encabezado, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
     return y_encabezado - 2
+
 
 def descargarDetalleCompleto(request, id):
     tramite = get_object_or_404(Tramite, pk=id)
@@ -440,7 +440,7 @@ def descargarDetalleCompleto(request, id):
     p.save()
     return response
 
-def generar_licencia_pdf(request, id):
+""""def generar_licencia_pdf(request, id):
     detalle = get_object_or_404(DetalleTramite, pk=id)
     qr_texto = (
         f"PLACA: {str(detalle.vehiculo.placa).upper()}\n"
@@ -549,8 +549,129 @@ def generar_licencia_pdf(request, id):
 
     p.showPage()
     p.save()
-    return response
+    return response"""
 
+
+
+def generar_licencia_pdf(request, id):
+    detalle = get_object_or_404(DetalleTramite, pk=id)
+
+    # Texto para el QR
+    qr_texto = (
+        f"PLACA: {str(detalle.vehiculo.placa).upper()}\n"
+        f"TRÁMITE: {str(detalle.tramite.numero_tramite).upper()}\n"
+        f"OPERADOR: {str(detalle.afiliado).upper()}\n"
+        f"MODELO: {str(detalle.vehiculo.modelo).upper()}\n"
+        f"MARCA: {str(detalle.vehiculo.marca).upper()}\n"
+        f"CHASIS: {str(detalle.vehiculo.chasis).upper()}\n"
+        f"CAPACIDAD: {str(detalle.vehiculo.capacidad).upper()}\n"
+        f"RUTAS: {str(detalle.rutas).upper()}\n"
+        f"VÁLIDA DEL: {detalle.tramite.fecha_validezI} AL {detalle.tramite.fecha_validezF}"
+    )
+
+    # Generar QR
+    qr_img = qrcode.make(qr_texto)
+    buffer = BytesIO()
+    qr_img.save(buffer, format="PNG")
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+
+    # HTML con QR embebido
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                margin: 0;
+                padding: 0;
+            }}
+            table {{
+                width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
+            }}
+            td, th {{
+                border: 1px solid #000;
+                padding: 6px;
+                vertical-align: top;
+            }}
+            .titulo {{
+                text-align: center;
+                font-weight: bold;
+                font-size: 14px;
+                padding: 10px;
+             
+            }}
+            .operador {{
+                font-weight: bold;
+                border: 1px solid black;
+                padding: 6px;
+            }}
+            .qr {{
+                text-align: center;
+                
+            }}
+            .no-border {{
+             
+            }}
+        </style>
+    </head>
+    <body>
+       <table>
+    <tr>
+        <td colspan="4" class="titulo">
+            LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
+            AUTOMOTOR INTERPROVINCIAL - ATL
+        </td>
+        <td rowspan="6" class="qr" style="vertical-align: middle;">
+            <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
+            <strong>{str(detalle.vehiculo.placa).upper()}</strong><br>
+            FECHA DE VALIDEZ<br>
+            {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" class="operador">
+            OPERADOR: {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3"><strong>AFILIADO</strong><br>{detalle.afiliado}</td>
+        <td><strong>MODELO</strong><br>{detalle.vehiculo.modelo}</td>
+       
+    </tr>
+    <tr>
+        <td><strong>CATEGORÍA</strong><br>PASAJEROS</td>
+        <td><strong>MARCA</strong><br>{detalle.vehiculo.marca}</td>
+        <td><strong>CAPACIDAD</strong><br>{detalle.vehiculo.capacidad}</td>
+        <td colspan="1"><strong>REGISTRO</strong><br>{detalle.tramite.pk}</td>
+    </tr>
+    <tr>
+        <td colspan="4"><strong>RUTAS</strong><br>{detalle.rutas}</td>
+    </tr>
+    <tr>
+        <td colspan="4" class="no-border">&nbsp;</td> <!-- Espacio extra para altura -->
+    </tr>
+</table>
+
+    </body>
+    </html>
+    """
+
+    # Generar el PDF
+    resultado = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), resultado)
+
+    if not pdf.err:
+        response = HttpResponse(resultado.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="licencia.pdf"'
+        response['X-Frame-Options'] = 'SAMEORIGIN'
+        return response
+    else:
+        return HttpResponse("Error al generar el PDF", status=500)
 
 def capitalizar_palabras(texto):
     if not texto:

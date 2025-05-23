@@ -43,10 +43,16 @@
                 </div>
             </div>
         </div>
+
         <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
     data-bs-toggle="modal" data-bs-target="#modalRuta"><strong>Añadir Ruta</strong>
     
 </button>
+
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMarca">
+            Añadir marca
+        </button>
 
     </div>
 
@@ -63,8 +69,10 @@
             <div class="card-body">
                 <div class="col-md-4">
                     <!--   <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>-->
+
                     <label for="afiliado" class="form-label" ><strong>Propietario</strong></label>
                     <input type="text" class="form-control" required id="afiliado" name="afiliado"style="text-transform: capitalize;">
+
                     <input type="text" hidden id="idTramite" value="{{tramite.id}}">
                 </div>
 
@@ -92,8 +100,10 @@
 
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="marca" class="form-label"><strong>Marca</strong></label>
-                        <input type="text" required class="form-control" id="marca" name="marca">
+
+                        <label for="marca" class="form-label">Marca</label>
+                        <input type="text" required class="form-control" id="marca" name="marca" disabled>
+
                     </div>
                     <div class="col-md-4">
                         <label for="chasis" class="form-label"><strong>Número de Chasis</strong></label>
@@ -131,6 +141,12 @@
 </button>
 
                     </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                            data-bs-target="#modalMarca1">
+                            Listar Marcas
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Hidden input para guardar el ID de la ruta -->
@@ -142,6 +158,31 @@
             </div>
         </div>
     </form>
+</div>
+
+
+<!-- Modal: Añadir Ruta -->
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalMarcaLabel">Añadir Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="formMarca">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre de la marca</label>
+                        <input class="form-control" id="nombre_marca" name="nombre_marca" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Modal: Añadir Ruta -->
@@ -156,8 +197,9 @@
             <form id="formRuta">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="nombre" class="form-label"><strong>Nombre de la Ruta</strong></label>
-                        <textarea class="form-control" id="nombre" name="nombre" rows="3" required></textarea>
+
+                        <label for="nombre" class="form-label">Nombre de la Ruta</label>
+                        <textarea class="form-control" id="nombre_ruta" name="nombre_ruta" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -188,6 +230,31 @@
                         </tr>
                     </thead>
                     <tbody id="tabla_rutas_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMarca1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Marcas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_marca_body">
                         <!-- Filas insertadas dinámicamente -->
                     </tbody>
                 </table>
@@ -401,7 +468,9 @@
 
     document.getElementById('formRuta').addEventListener('submit', function (e) {
         e.preventDefault();
-        const nombre = document.getElementById('nombre').value;
+        const nombre = document.getElementById('nombre_ruta').value;
+        console.log('rura', nombre);
+
         axios.post("{% url 'crearRuta' %}", {
             nombre: nombre
         }, {
@@ -424,6 +493,36 @@
                 alert('Hubo un error al guardar la ruta');
             });
     });
+
+
+    document.getElementById('formMarca').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre_marca').value;
+        console.log('marca', nombre);
+
+        axios.post("{% url 'crearMarca' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.data.estatus === 201) {
+                    alert('Marca guardada correctamente');
+                    document.getElementById('formMarca').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalMarca')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+
 
 
     const rutasSeleccionadas = [];
@@ -486,6 +585,44 @@
                         }
 
                         bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+
+
+    document.getElementById('modalMarca1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarMarcas' %}")
+            .then(response => {
+                const rutas = response.data;
+
+
+                const tbody = document.getElementById('tabla_marca_body');
+                tbody.innerHTML = '';
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-marca" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.seleccionar-marca').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rutaId = this.getAttribute('data-id');
+                        const marcaNombre = this.getAttribute('data-nombre');
+
+                        //document.getElementById('ruta_id').value = rutaId;
+                        document.getElementById('marca').value = marcaNombre;
+
+
+                        bootstrap.Modal.getInstance(document.getElementById('modalMarca1')).hide();
                     });
                 });
             })
