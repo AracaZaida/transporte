@@ -1,46 +1,34 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from federacion.models import Federacion
-from log.views import registrar_log
-from operador.models import Operador
-from tramite.models import Tramite ,Rutas
-from utils.context_processors import verificarRol
-from vehiculo.models import Vehiculo
-from datetime import  datetime
-import json
-from usuarios.models import Usuario
-
-from  afiliados.models import Afiliado
-
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from datetime import datetime
-from .models import DetalleTramite, Tramite, Usuario, Afiliado
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator
+from django.template.loader import get_template
+from django.utils import timezone
+
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from django.core.paginator import Paginator
-
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-from django.http import HttpResponse
-from io import BytesIO
-
 from reportlab.graphics.barcode import qr
 from reportlab.graphics.shapes import Drawing
 from reportlab.graphics import renderPDF
+
 from xhtml2pdf import pisa
 
+from io import BytesIO
 import qrcode
 import base64
-from io import BytesIO
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from xhtml2pdf import pisa
+import json
+from datetime import datetime
 
-
-from django.utils import timezone
+from federacion.models import Federacion
+from log.views import registrar_log
+from operador.models import Operador
+from tramite.models import Tramite, Rutas
+from vehiculo.models import Vehiculo
+from usuarios.models import Usuario
+from afiliados.models import Afiliado
+from .models import DetalleTramite
+from utils.context_processors import verificarRol
 
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
@@ -647,7 +635,7 @@ def generar_licencia_pdf(request, id):
     </tr>
     <tr>
         <td colspan="4" class="operador">
-            OPERADOR: ASOCIACIÓN DE AUTO TRANSPORTE MIXTO TUPIZA 1 AFILIADA A LA FEDERACIÓN DEPARTAMENTAL DE AUTO TRANSPORTE LIBRE POTOSÍ
+            OPERADOR: {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
         </td>
     </tr>
     <tr>
