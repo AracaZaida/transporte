@@ -2,11 +2,15 @@
 {% block content %}
 <div class="container">
     <h1 class="my-4">Lista de Operador</h1>
-
+<style>
+    thead {
+        background-color: #DC5D44;
+    }
+</style>
 
     <table class="table table-striped">
-        <a class="btn btn-success" href="{% url 'crearOperdor' %}">registrar</a>
-        <thead>
+        <a class="btn btn-success" href="{% url 'crearOperdor' %}">registrar</a><br>
+        <thead class="table-dark">
             <tr>
 
                 <th>Nombre</th>

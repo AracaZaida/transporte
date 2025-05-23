@@ -6,9 +6,10 @@
         Ver Afiliados
     </button> -->
     <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Datos</h5>
-        </div>
+        <div class="card-header text-white" style="background-color: #FFA500;">
+    <h5 class="mb-0 text-center">Datos</h5>
+</div>
+
         <div class="card-body">
             <!-- <div class="row mb-3">
                 <div class="col-md-4">
@@ -42,12 +43,17 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRuta">
-            Añadir Ruta
-        </button>
+
+        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
+    data-bs-toggle="modal" data-bs-target="#modalRuta"><strong>Añadir Ruta</strong>
+    
+</button>
+
+
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMarca">
             Añadir marca
         </button>
+
     </div>
 
     <!-- Formulario del Vehículo -->
@@ -56,15 +62,17 @@
         {% csrf_token %}
         <div class="card shadow-sm border-0">
 
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">Formulario del Vehículo</h5>
-            </div>
+            <div class="card-header text-white" style="background-color: #87D4C8;">
+    <h5 class="mb-0 text-center">Formulario del Vehículo</h5>
+</div>
+
             <div class="card-body">
                 <div class="col-md-4">
                     <!--   <strong>Afiliado seleccionado:</strong> <span id="afiliadoSeleccionado">Ninguno</span><br>-->
-                    <label for="afiliado" class="form-label">Propietario</label>
-                    <input type="text" class="form-control" required id="afiliado" name="afiliado"
-                        style="text-transform: capitalize;">
+
+                    <label for="afiliado" class="form-label" ><strong>Propietario</strong></label>
+                    <input type="text" class="form-control" required id="afiliado" name="afiliado"style="text-transform: capitalize;">
+
                     <input type="text" hidden id="idTramite" value="{{tramite.id}}">
                 </div>
 
@@ -73,34 +81,36 @@
 
 
                     <div class="col-md-4">
-                        <label for="placa" class="form-label">Placa</label>
+                        <label for="placa" class="form-label"><strong>Placa</strong></label>
                         <input type="text" class="form-control" required id="placa" name="placa">
                     </div>
                     <div class="col-md-4">
-                        <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
+                        <label for="tipo_transporte" class="form-label"><strong>Tipo de Transporte</strong></label>
                         <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
-                            <option value="" disabled selected>Seleccione una opción</option>
-                            <option value="Pasajeros">Pasajeros</option>
-                            <option value="Carga">Carga</option>
+                            <option value="" disabled selected><strong>una opción</strong> </option>
+                            <option value="Pasajeros"><strong>Pasajeros</strong></option>
+                            <option value="Carga"><strong>Carga</strong></option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="modelo" class="form-label">Modelo</label>
+                        <label for="modelo" class="form-label"><strong>Modelo</strong></label>
                         <input type="text" required class="form-control" id="modelo" name="modelo">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-4">
+
                         <label for="marca" class="form-label">Marca</label>
                         <input type="text" required class="form-control" id="marca" name="marca" disabled>
+
                     </div>
                     <div class="col-md-4">
-                        <label for="chasis" class="form-label">Número de Chasis</label>
+                        <label for="chasis" class="form-label"><strong>Número de Chasis</strong></label>
                         <input type="text" required class="form-control" id="chasis" name="chasis">
                     </div>
                     <div class="col-md-4">
-                        <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
+                        <label for="tipo_tarjeta" class="form-label"><strong>Tipo de Tarjeta</strong></label>
                         <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
                             <option selected disabled>Seleccionar tipo...</option>
                             <option value="InterProvincial">InterProvincial</option>
@@ -114,21 +124,22 @@
 
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="capacidad" class="form-label">Capacidad</label>
+                        <label for="capacidad" class="form-label"><strong>Capacidad</strong></label>
                         <input type="number" required class="form-control" id="capacidad" name="capacidad">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Ruta Seleccionada</label>
+                        <label class="form-label"><strong>Ruta Seleccionada</strong></label>
 
                         <input type="text" hidden readonly class="form-control" id="ruta_nombre_mostrar" required>
                         <div id="rutas_seleccionadas_lista" class="mt-2">
                         </div>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
-                            data-bs-target="#modalRuta1">
-                            Listar Rutas Autorizadas
-                        </button>
+                        <button type="button" class="btn w-100" style="background-color: #AAC85F; color: black; border: none;"
+    data-bs-toggle="modal" data-bs-target="#modalRuta1">
+    Listar Rutas Autorizadas
+</button>
+
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
@@ -178,20 +189,22 @@
 <div class="modal fade" id="modalRuta" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content rounded-4 shadow">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalRutaLabel">Añadir Ruta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
+            <div class="modal-header" style="background-color: #F8C170; color: black;">
+    <h5 class="modal-title" id="modalRutaLabel">Añadir Ruta</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+</div>
+
             <form id="formRuta">
                 <div class="modal-body">
                     <div class="mb-3">
+
                         <label for="nombre" class="form-label">Nombre de la Ruta</label>
                         <textarea class="form-control" id="nombre_ruta" name="nombre_ruta" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+                    <button type="submit" style="background-color: #AAC85F; color: white; border: none;" class="btn">Guardar Ruta</button>
                 </div>
             </form>
         </div>
@@ -202,13 +215,14 @@
 <div class="modal fade" id="modalRuta1" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Rutas Autorizadas</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+            <div class="modal-header" style="background-color: #F8C170; color: black;">
+    <h5 class="modal-title">Rutas Autorizadas</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
                             <th>#</th>
                             <th>Nombre</th>
@@ -304,7 +318,7 @@
 
 <div>
     <table id="tablaRegistros" class="table table-bordered mt-3">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Afiliado ID</th>
                 <th>Placa</th>

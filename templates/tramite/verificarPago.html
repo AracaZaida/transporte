@@ -3,41 +3,42 @@
 {% block content %}
 <div class="container mt-5">
     <div class="card shadow rounded-4">
-        <div class="card-header bg-primary text-white rounded-top-4">
-            <h4 class="mb-0">Resumen del Comprobante</h4>
-        </div>
+        <div class="card-header text-white rounded-top-4" style="background-color: #F8C170; color: black;">
+    <h4 class="mb-0">Resumen del Comprobante</h4>
+</div>
+
         <div class="card-body">
             <form action="{% url 'verificarPago' id %}" method="POST">
                 {% csrf_token %}
                 <div class="mb-3 row">
-                    <label for="numeroComprobante" class="col-sm-4 col-form-label fw-semibold">Número de
-                        Comprobante:</label>
+                    <label for="numeroComprobante" class="col-sm-4 col-form-label fw-semibold"><strong>Número de
+                        Comprobante:</strong></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control rounded-3" id="numeroComprobante"
                             name="numeroComprobante" placeholder="Ej. 001-123456" required>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="banco" class="col-sm-4 col-form-label fw-semibold">Banco:</label>
+                    <label for="banco" class="col-sm-4 col-form-label fw-semibold"><strong>Banco:</strong></label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control rounded-3" id="banco" name="banco" required>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="fechaPago" class="col-sm-4 col-form-label fw-semibold">Fecha de Pago:</label>
+                    <label for="fechaPago" class="col-sm-4 col-form-label fw-semibold"><strong>Fecha de Pago:</strong></label>
                     <div class="col-sm-8">
                         <input type="date" class="form-control rounded-3" id="fechaPago" name="fechaPago" required>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="monto" class="col-sm-4 col-form-label fw-semibold">Monto:</label>
+                    <label for="monto" class="col-sm-4 col-form-label fw-semibold"><strong>Monto:</strong></label>
                     <div class="col-sm-8">
                         <input type="number" class="form-control rounded-3" id="monto" name="monto"
                             placeholder="Ej. 150.00" required>
                     </div>
                 </div>
                 <div class="text-end">
-                    <button type="submit" class="btn btn-success rounded-3 px-4">Guardar</button>
+                    <button type="submit" style="background-color: #AAC85F; color: white; border: none;" class="btn">Guardar</button>
                 </div>
             </form>
         </div>
