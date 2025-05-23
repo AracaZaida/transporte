@@ -11,7 +11,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <strong>Número de Trámite:</strong> {{ tramite.numero_tramite }}
+                    <strong>Número de Trámite:</strong> {{ tramite.tramite.numero_tramite }}
                 </div>
                 <div class="col-md-4">
                     <strong>Fecha:</strong> {{ tramite.fecha_creacion }}
@@ -22,7 +22,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <strong>Federación:</strong> {{ tramite.afiliado.federacion.nombre }}
+                    <strong>Federación:</strong> {{ tramite.tramite.operador.federacion.nombre }}
                 </div>
                 <div class="col-md-4">
                     <strong>Fecha de validez:</strong> {{ tramite.tramite.fecha_validezI }} -
