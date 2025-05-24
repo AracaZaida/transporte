@@ -5,9 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-lg rounded">
-                <div class="card-header bg-info text-white text-center">
-                    <h4 class="mb-0">Editar Federación</h4>
-                </div>
+                <div class="card-header text-white text-center" style="background-color: #FFE5B4;">
+    <h4 class="mb-0">Editar Federación</h4>
+</div>
+
                 <div class="card-body">
                     <form action="{% url 'editar_federacion' id %}" method="POST">
                         {% csrf_token %}
@@ -25,7 +26,8 @@
                         {% endfor %}
                         
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">Guardar</button>
+                            <button type="submit" class="btn text-white" style="background-color: #AAC85F;">Guardar</button>
+
                         </div>
                     </form>
                 </div>
