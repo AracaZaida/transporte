@@ -35,5 +35,8 @@ def listar_log(request):
         filtros['fecha_creacion__date'] = hoy
      
     log= Log.objects.filter(**filtros)
-    return render(request, 'log/listar.html', {'log': log})
+    return render(request, 'log/listar.html', {
+    'log': log,
+    'today': date.today()
+    })
     
