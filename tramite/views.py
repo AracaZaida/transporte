@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
@@ -29,7 +30,9 @@ from usuarios.models import Usuario
 from afiliados.models import Afiliado
 from .models import DetalleTramite
 from utils.context_processors import verificarRol
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def crearTramite(request):
     resultado = verificarRol(request, ['super_admin','administrador'])
     if resultado is not True:
@@ -62,7 +65,7 @@ def crearTramite(request):
                 numero_fojas= fojas,
                 fecha_creacion=timezone.now()
             )
-            registrar_log('tramite',request.user.username, f'se registro un tramite con el numero {t.numero_tramite}')
+            registrar_log(request,'tramite',request.user.username, f'se registro un tramite con el numero {t.numero_tramite}')
 
             return redirect(reverse('listarTramite'))
         
@@ -81,7 +84,8 @@ def crearTramite(request):
     }
     return render(request, 'tramite/crearTramite.html', context)
 
-    
+
+@login_required
 def verTramite(request, id):
     resultado = verificarRol(request, ['super_admin','administrador','tecnico'])
     if resultado is not True:
@@ -91,14 +95,15 @@ def verTramite(request, id):
     if request.method =='POST':
             estado = request.POST.get('estado')
             detalle = request.POST.get('detalle')
-            tramite.estado = estado
-            tramite.observaciones = detalle
             if estado == 'verificado':
+                tramite.estado = estado
                 tramite.fecha_verificacion = timezone.now()
             if estado == 'observado':
+                tramite.estado = estado
+                tramite.observaciones = detalle
                 tramite.fecha_observacion = timezone.now()
             tramite.save()
-            registrar_log('tramite',request.user.username, f'El numero de tramite {tramite.numero_tramite} cambio de estado  {estado}')
+            registrar_log(request,'tramite',request.user.username, f'El numero de tramite {tramite.numero_tramite} cambio de estado  {estado}')
             return redirect(reverse('listarTramite'))
     else:
        
@@ -106,6 +111,7 @@ def verTramite(request, id):
 
         return render(request,'tramite/verTramite.html', context)
 
+@login_required
 def listarTramite(request):
     resultado = verificarRol(request, ['tecnico','administrador'])
     if resultado is not True:
@@ -130,6 +136,7 @@ def listarTramite(request):
    
     context = {'page_obj': page_obj}
     return render(request, 'tramite/listarT.html', context)
+@login_required
 def verificadoTramite(request):
     resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
@@ -158,7 +165,7 @@ def verificadoTramite(request):
     }
     return render(request, 'tramite/verificado.html', context)
 
-
+@login_required
 def observadosramite(request):
     resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
@@ -176,6 +183,7 @@ def observadosramite(request):
     context = {'page_obj': page_obj}
     return render(request, 'tramite/observado.html', context)
 
+@login_required
 def detalleTramite (request, id):
     tramite = get_object_or_404(Tramite, pk=id)
     detalle = DetalleTramite.objects.filter(tramite= tramite)
@@ -184,7 +192,7 @@ def detalleTramite (request, id):
         'detalle':detalle
     }
     return render(request,'tramite/detalleTramite.html', context)
-
+@login_required
 def tarjeta_tramite (request, id):
     resultado = verificarRol(request, ['super_admin','administrador'])
     if resultado is not True:
@@ -209,7 +217,7 @@ def tarjeta_tramite (request, id):
         
 
             DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite, tipo_tarjeta=d['tipoTarjeta'])
-            registrar_log('vehiculo',request.user.username, f'se registro un vehiculo con la placa  {d["placa"]}')
+            registrar_log(request,'vehiculo',request.user.username, f'se registro un vehiculo con la placa  {d["placa"]}')
           
 
         print('registrado')
@@ -221,7 +229,7 @@ def tarjeta_tramite (request, id):
         'afiliados':afiliado
     }
     return render(request,'tramite/tarjeta.html', context)
-
+@login_required
 def editarTramite(request, id):
     tramite = get_object_or_404(DetalleTramite, pk=id)
     
@@ -236,7 +244,7 @@ def editarTramite(request, id):
         chasis = request.POST.get('chasis')
         tipo_tarjeta = request.POST.get('tipo_tarjeta')
         capacidad = request.POST.get('capacidad')
-        
+        print('marca',marca)
     
         tramite.vehiculo.placa = placa
         tramite.vehiculo.tipo_transporte= tipo_transporte
@@ -249,14 +257,14 @@ def editarTramite(request, id):
         tramite.afiliado = afiliado
         tramite.vehiculo.save()
         tramite.save()
-        registrar_log('tramite',request.user.username, f'se edito el tramite con el numero  {tramite.tramite.numero_tramite}')
+        registrar_log(request,'tramite',request.user.username, f'se edito el tramite con el numero  {tramite.tramite.numero_tramite}')
         return redirect(reverse('verificadoTramite'))
 
     context  = {
         'tramite':tramite
     }
     return  render(request,'tramite/editarTramite.html',context)
-
+@login_required
 def aprobarTramite(request, id):
     tramite= get_object_or_404(Tramite, pk=id)
     tramite.estado ='aprobado'
@@ -264,13 +272,13 @@ def aprobarTramite(request, id):
     tramite.save()
     
     return redirect(reverse('listarTramite'))
-
+@login_required
 def anularTramite(request, id):
     tramite= get_object_or_404(Tramite, pk=id)
     tramite.estado ='anulado'
     tramite.save()
     return redirect(reverse('listarTramite'))
-
+@login_required
 def verificarPago(request, id):
     tramite = get_object_or_404(Tramite, pk= id)
     if request.method =='POST':
@@ -286,10 +294,11 @@ def verificarPago(request, id):
         tramite.banco= banco.upper()
         tramite.verificarPago= True
         tramite.save()
-        registrar_log('tramite',request.user.username, f'Realizo el pago de tramite   {tramite.numero_tramite}')
+        registrar_log(request,'tramite',request.user.username, f'Realizo el pago de tramite   {tramite.numero_tramite}')
         return redirect(reverse('verificadoTramite'))
     return render(request, 'tramite/verificarPago.html', {'id':tramite.id})
 
+@login_required
 def crearRuta(request):  # Usa el `id` si lo necesitas
     if request.method == 'POST':
         try:
@@ -301,14 +310,21 @@ def crearRuta(request):  # Usa el `id` si lo necesitas
             return JsonResponse({'estatus': 201})
         except Exception as e:
             return JsonResponse({'estatus': 500, 'mensaje': str(e)}, status=500)
-        
+@login_required
 def listarRuta(request):
     rutas = Rutas.objects.all()  
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
 
+
 def dibujar_encabezado(p, width, height, margin):
-    y_encabezado = height - 50
+    y_encabezado = height - 20
+    ruta_logo = os.path.join("static", "imagen", "log.png")
+    ancho_logo = 50
+    alto_logo = 50
+    x_logo = margin
+    y_logo = height - alto_logo - 10
+    p.drawImage(ruta_logo, x_logo, y_logo, width=ancho_logo, height=alto_logo, mask='log')
     p.setFont("Helvetica-Bold", 11)
     p.drawCentredString(width / 2, y_encabezado, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
     y_encabezado -= 15
@@ -319,7 +335,7 @@ def dibujar_encabezado(p, width, height, margin):
     p.drawCentredString(width / 2, y_encabezado, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
     return y_encabezado - 2
 
-
+@login_required
 def descargarDetalleCompleto(request, id):
     tramite = get_object_or_404(Tramite, pk=id)
     detalles = DetalleTramite.objects.filter(tramite=tramite)
@@ -365,11 +381,11 @@ def descargarDetalleCompleto(request, id):
         y -= 15
 
         qr_code = qr.QrCodeWidget(qr_texto)
-        qr_code.barWidth = 90
-        qr_code.barHeight = 90
-        d = Drawing(90, 90)
+        qr_code.barWidth = 120
+        qr_code.barHeight = 120
+        d = Drawing(120, 120)
         d.add(qr_code)
-        renderPDF.draw(d, p, width - 150, y - 50)
+        renderPDF.draw(d, p, width - 150, y - 70)
 
         col1 = margin
         col2 = margin + 230
@@ -411,13 +427,14 @@ def descargarDetalleCompleto(request, id):
     p.drawRightString(width - margin, 30, f"Potosí - {datetime.now().strftime('%d/%m/%Y')}")
 
     # NUEVA HOJA PARA EL INSTRUCTIVO
-    p.showPage()
+   
     width, height = letter
     footer_y = 100
 
     p.setFont("Helvetica-Bold", 9)
     p.drawString(margin, footer_y + 90, "Instructivo:")
-
+    if y < 150:
+        y = 150
     p.setFont("Helvetica", 8)
     p.drawString(margin + 10, footer_y + 78, "a) Lea detalladamente los datos de cada uno de los vehículos en el presente formulario.")
     p.drawString(margin + 10, footer_y + 67, "b) Si encuentra algún error, resaltarlo y devolverlo a Unidad Registro y Regulación de Transporte")
@@ -440,119 +457,9 @@ def descargarDetalleCompleto(request, id):
     p.save()
     return response
 
-""""def generar_licencia_pdf(request, id):
-    detalle = get_object_or_404(DetalleTramite, pk=id)
-    qr_texto = (
-        f"PLACA: {str(detalle.vehiculo.placa).upper()}\n"
-        f"TRÁMITE: {str(detalle.tramite.numero_tramite).upper()}\n"
-        f"OPERADOR: {str(detalle.afiliado).upper()}\n"
-        f"MODELO: {str(detalle.vehiculo.modelo).upper()}\n"
-        f"MARCA: {str(detalle.vehiculo.marca).upper()}\n"
-        f"CHASIS: {str(detalle.vehiculo.chasis).upper()}\n"
-        f"CAPACIDAD: {str(detalle.vehiculo.capacidad).upper()}\n"
-        f"RUTAS: {str(detalle.rutas).upper()}\n"
-        f"VÁLIDA DEL: {detalle.tramite.fecha_validezI} AL {detalle.tramite.fecha_validezF}"
-    )
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="LICENCIA_OPERACION.PDF"'
-    response['X-Frame-Options'] = 'SAMEORIGIN'
-
-    width, height = letter
-    height = height / 2
-    p = canvas.Canvas(response, pagesize=(width, height))
-
-    p.setLineWidth(0.5)
-    p.rect(30, 20, width - 60, height - 40)
-
-    p.setFont("Helvetica-Bold", 10)
-    p.drawCentredString(width / 2, height - 35, "LICENCIA DE OPERACIÓN PARA EL TRANSPORTE AUTOMOTOR")
-    p.drawCentredString(width / 2, height - 50, "INTERPROVINCIAL - CONFEDERADO")
-
-    p.setStrokeColor(colors.grey)
-    p.line(40, height - 60, width - 40, height - 60)
-
-    y = height - 75
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "LÍNEA SINDICAL:")
-    p.setFont("Helvetica", 8)
-    p.drawString(140, y, str(detalle.tramite.operador.federacion).upper())
-    y -= 18
-
-    datos_col1 = [
-        ("OPERADOR:", str(detalle.afiliado).upper()),
-        ("MODELO:", str(detalle.vehiculo.modelo).upper()),
-        ("REGISTRO:", str(detalle.tramite.numero_tramite).upper()),
-    ]
-    datos_col2 = [
-        ("CAPACIDAD:", str(detalle.vehiculo.capacidad).upper()),
-        ("CHASIS:", str(detalle.vehiculo.chasis).upper()),
-        ("MARCA:", str(detalle.vehiculo.marca).upper()),
-    ]
-
-    x1 = 50
-    x2 = width / 2 + 10
-    for i in range(3):
-        p.setFont("Helvetica-Bold", 8)
-        p.drawString(x1, y, datos_col1[i][0])
-        p.setFont("Helvetica", 8)
-        p.drawString(x1 + 90, y, datos_col1[i][1])
-
-        p.setFont("Helvetica-Bold", 8)
-        p.drawString(x2, y, datos_col2[i][0])
-        p.setFont("Helvetica", 8)
-        p.drawString(x2 + 80, y, datos_col2[i][1])
-        y -= 14
-
-    altura_qr = height - 75 - (14 * 1) - 10
-
-    qr_code = qr.QrCodeWidget(qr_texto)
-    qr_code.barWidth = 90
-    qr_code.barHeight = 90
-    d = Drawing(100, 100)
-    d.add(qr_code)
-    renderPDF.draw(d, p, width - 150, 240)
-
-    p.setFont("Helvetica-Bold", 12)
-    p.setFillColor(colors.black)
-    p.drawCentredString(width / 2, y - 10, str(detalle.vehiculo.placa).upper())
-    y -= 25
-
-    p.setStrokeColor(colors.black)
-    p.line(40, y, width - 40, y)
-    y -= 12
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "RUTAS AUTORIZADAS:")
-    p.setFont("Helvetica", 8)
-    y -= 12
-    p.drawString(70, y, str(detalle.rutas).upper())
-    y -= 18
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, y, "LICENCIA VÁLIDA DE:")
-    p.setFont("Helvetica", 8)
-    p.drawString(140, y, f"{detalle.tramite.fecha_validezI} AL {detalle.tramite.fecha_validezF}")
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawString(50, 60, "ABOG. GUIDO SOUX VELASQUEZ")
-    p.setFont("Helvetica", 7)
-    p.drawString(50, 50, "SECRETARIO DEPARTAMENTAL")
-    p.drawString(50, 40, "DE JURÍDICA")
-
-    p.setFont("Helvetica-Bold", 8)
-    p.drawRightString(width - 50, 60, "OSCAR MENDOZA MAMANI")
-    p.setFont("Helvetica", 7)
-    p.drawRightString(width - 50, 50, "SECRETARIO DEPARTAMENTAL")
-    p.drawRightString(width - 50, 40, "DE COORDINACIÓN GENERAL")
-
-    p.showPage()
-    p.save()
-    return response"""
 
 
-
+@login_required
 def generar_licencia_pdf(request, id):
     detalle = get_object_or_404(DetalleTramite, pk=id)
 
