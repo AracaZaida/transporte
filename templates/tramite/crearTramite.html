@@ -11,19 +11,29 @@
 
     <!-- Botones para abrir modales -->
     <div class="d-flex justify-content-center gap-3 mb-4">
-        <button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
+
+        <!-- <button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
+            Ver Afiliados
+        </button>-->
+
+        <button class="btn btn-lg" style="background-color: #87D4C8; color: white; border: none;" data-bs-toggle="modal"
+            data-bs-target="#modalAfiliados">
             Operador
         </button>
-        <button class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#modalTecnicos">
+
+        <button class="btn btn-lg" style="background-color: #D2E6EC; color: #000; border: none;" data-bs-toggle="modal"
+            data-bs-target="#modalTecnicos">
             Ver Técnicos
         </button>
+
     </div>
 
     <!-- Formulario tipo de trámite -->
     <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Crear Tipo de Trámite</h5>
+        <div class="card-header text-white" style="background-color: #DC5D44;">
+            <h5 class="mb-0 text-center">Crear Tipo de Trámite</h5>
         </div>
+
         <div class="card-body">
             <form method="POST" action="{% url 'crearTramite' %}">
                 {% csrf_token %}
@@ -39,32 +49,41 @@
                 </div>
 
                 <div class="row mb-3">
-                    <label for="fojas" class="col-sm-3 col-form-label">Número de fojas</label>
+
+                    <label for="fojas" class="col-sm-3 col-form-label"><strong>Numero de fojas</strong></label>
+
                     <div class="col-sm-9">
                         <input type="text" class="form-control" id="fojas" name="fojas" required>
                     </div>
                 </div>
 
                 <div class="row mb-3">
-                    <label for="tipo" class="col-sm-3 col-form-label">Tipo de Trámite</label>
+                    <label for="tipo" class="col-sm-3 col-form-label"><strong>Tipo de Trámite</strong></label>
                     <div class="col-sm-9">
-                        <select required name="tipo" id="tipo" class="form-select">
-                            <option value="Adquisición de tarjeta de operacion">Adquisición de tarjeta de operación
-                            </option>
-                            <option value="Extencion de tarjeta de operacion">Extensión de tarjeta de operación</option>
-                        </select>
+
+                        <div class="form-group">
+                            <label for="tipo" class="form-label fw-bold"><strong>Tipo de trámite</strong></label>
+                            <select required name="tipo" id="tipo" class="form-select">
+                                <option value="Adquisición de tarjeta de operacion">Adquisición de tarjeta de operación
+                                </option>
+                                <option value="Extencion de tarjeta de operacion">Extensión de tarjeta de operación
+                                </option>
+                            </select>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="row mb-3">
-                    <label for="fecha" class="col-sm-3 col-form-label">Fecha de inicio</label>
+                    <label for="fecha" class="col-sm-3 col-form-label"><strong>Fecha de inicio</strong></label>
                     <div class="col-sm-9">
                         <input type="date" class="form-control" id="fecha" name="fecha">
                     </div>
                 </div>
 
                 <div class="text-end">
-                    <button type="submit" class="btn btn-success">Guardar Trámite</button>
+                    <button type="submit" style="background-color: #AAC85F; color: white; border: none;"
+                        class="btn">Guardar Trámite</button>
                 </div>
             </form>
         </div>
@@ -75,17 +94,78 @@
 <div class="modal fade" id="modalAfiliados" tabindex="-1" aria-labelledby="modalAfiliadosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="modalAfiliadosLabel">Listado de Operadores</h5>
+
+
+            <div class="modal-header text-white" style="background-color: #DC5D44;">
+                <h5 class="modal-title" id="modalAfiliadosLabel text-center"><strong>Listado de Operadores</strong></h5>
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <table id="tablaAfiliados" class="table table-striped table-hover">
                     <thead class="table-light">
-                        <tr>
+
+                        <tr class="table-dark">
+
                             <th>Nombre</th>
                             <th>Celular</th>
                             <th>Dirección</th>
+                            <th>Federacion</th>
+                            <th>Accion</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for op in operador %}
+                        <tr>
+
+                            <td>{{ op.nombre }}</td>
+
+                            <td>{{ op.celular }}</td>
+                            <td>{{ op.direccion }}</td>
+                            <td>{{ op.federacion }}</td>
+
+                            <td>
+                                <button type="submit" style="background-color: #AAC85F; color: white; border: none;"
+                                    class="btn seleccionar-afiliado" data-id="{{  op.id }}"
+                                    data-nombre="{{  op.nombre }} {{  op.apellido }}" data-bs-dismiss="modal">
+                                    Seleccionar
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No hay federacion registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+<div class="modal fade" id="modalAfiliados" tabindex="-1" aria-labelledby="modalAfiliadosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalAfiliadosLabel">Listado de Afiliados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Carnet</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Celular</th>
+                            <th>Dirección</th>
+>>>>>>> ae132f7680e183b4a76f14fb76f9356f6f6d526b
                             <th>Federación</th>
                             <th>Acción</th>
                         </tr>
@@ -120,13 +200,16 @@
 <div class="modal fade" id="modalTecnicos" tabindex="-1" aria-labelledby="modalTecnicosLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-warning">
+            <div class="modal-header text-white" style="background-color: #F8C170;">
                 <h5 class="modal-title" id="modalTecnicosLabel">Listado de Técnicos</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
+
             <div class="modal-body">
+
                 <table id="tablaTecnicos" class="table table-striped table-hover">
-                    <thead class="table-light">
+                    <thead class="table-dark">
+
                         <tr>
                             <th>Carnet</th>
                             <th>Nombre</th>
@@ -143,8 +226,8 @@
                             <td>{{ tecnico.apellidos }}</td>
                             <td>{{ tecnico.rol }}</td>
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning seleccionar-tecnico"
-                                    data-id="{{ tecnico.id }}"
+                                <button type="submit" style="background-color: #AAC85F; color: white; border: none;"
+                                    class="btn seleccionar-tecnico" data-id="{{ tecnico.id }}"
                                     data-nombre="{{ tecnico.nombre }} {{ tecnico.apellidos }}" data-bs-dismiss="modal">
                                     Seleccionar
                                 </button>

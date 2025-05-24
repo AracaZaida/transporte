@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -71,9 +73,14 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom">
+  <nav class="navbar navbar-expand-lg navbar-custom">    
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'home' %}">🌿 SISTEMA DE TRANSPORTE</a>
+       
+    <a class="navbar-brand" href="{% url 'home' %}">
+    <img src="{% static 'imagen/ESCUDO TEXTO NEGRO HORIZONTAL.png' %}" alt="Login Icon" width="150" height="50" class="d-inline-block align-text-top">
+    <strong></strong>
+    </a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon bg-light rounded"></span>
