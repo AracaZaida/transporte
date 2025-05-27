@@ -8,40 +8,43 @@
         <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn btn-success">
             📥 Descargar detalle completo
         </a>
-        <button class="btn btn-success" onclick="printLicencias('{{tramite.id }}')">
+        <button class="btn btn-success" onclick="printLicencias('{{ tramite.id }}')">
             🖨️ Imprimir
         </button>
     </div>
-
-    <!-- … (todo el bloque de cabecera que ya tenías) … -->
 
     {% for detalle_item in detalle %}
     <div class="card shadow-sm rounded-4 border-0 mt-5 p-4">
         <h5 class="text-secondary">🗂️ Detalle del Trámite N° {{ detalle_item.tramite.numero_tramite }}</h5>
 
-        <div class="text-end">
+        <div class="text-end mb-3">
             <a href="{% url 'editarTramite' detalle_item.id %}" class="btn btn-outline-info btn-sm">✏️ Editar</a>
         </div>
 
-        <!-- Afiliado -->
         <h5 class="text-primary mt-4">👤 Afiliado</h5>
         <div class="row mb-2">
-            <div class="col-md-4"><strong>Nombre completo:</strong> {{ detalle_item.afiliado }}</div>
-            <div class="col-md-4"><strong>Tipo tarjeta:</strong> {{ detalle_item.tipo_tarjeta }}</div>
+            <div class="col-md-6"><strong>Nombre completo:</strong> {{ detalle_item.afiliado }}</div>
+            <div class="col-md-6"><strong>Tipo tarjeta:</strong> {{ detalle_item.tipo_tarjeta }}</div>
         </div>
 
-        <!-- Vehículo -->
         <h5 class="text-success mt-4">🚗 Vehículo</h5>
+
         <div class="row mb-2">
             <div class="col-md-3"><strong>Placa:</strong> {{ detalle_item.vehiculo.placa }}</div>
             <div class="col-md-3"><strong>Marca:</strong> {{ detalle_item.vehiculo.marca }}</div>
             <div class="col-md-3"><strong>Modelo:</strong> {{ detalle_item.vehiculo.modelo }}</div>
             <div class="col-md-3"><strong>Capacidad:</strong> {{ detalle_item.vehiculo.capacidad }}</div>
         </div>
+
         <div class="row mb-2">
             <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ detalle_item.vehiculo.tipo_transporte }}</div>
             <div class="col-md-3"><strong>Chasis:</strong> {{ detalle_item.vehiculo.chasis }}</div>
-            <div class="col-md-6"><strong>Rutas a Operar:</strong> {{ detalle_item.rutas }}</div>
+            <div class="col-md-3"><strong>Costo de tarjeta:</strong> {{ detalle_item.costo_tarjeta }}</div>
+            <div class="col-md-3"><strong>Estado:</strong> {{ detalle_item.tramite.estado }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-12"><strong>Rutas a Operar:</strong> {{ detalle_item.rutas }}</div>
         </div>
 
         <div class="text-end mt-3">
@@ -55,6 +58,7 @@
     </div>
     {% endfor %}
 </div>
+
 
 <script>
     function printLicencia(detalleId) {

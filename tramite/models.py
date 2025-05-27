@@ -60,6 +60,7 @@ class DetalleTramite(models.Model):
     afiliado = models.CharField(blank=True, null=True)  #models.ForeignKey(Afiliado, on_delete=models.CASCADE, blank=False, null=False)
     tramite = models.ForeignKey(Tramite, on_delete=models.CASCADE, blank=False, null=False)
     tipo_tarjeta = models.CharField(max_length=100, blank=True, null=True)
+    costo_tarjeta= models.IntegerField(default=0)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
