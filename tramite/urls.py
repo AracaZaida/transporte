@@ -22,7 +22,8 @@ urlpatterns = [
     path('verificarPago/<int:id>',views.verificarPago, name='verificarPago'),
         path('crearRuta',views.crearRuta, name='crearRuta'),
   
-   path('listarRuta',views.listarRuta, name='listarRuta')
+   path('listarRuta',views.listarRuta, name='listarRuta'),
+      path('tramitesVigentes',views.tramitesVigentes, name='tramitesVigentes')
   
 
 ]
