@@ -216,7 +216,7 @@ def tarjeta_tramite (request, id):
             
         
 
-            DetalleTramite.objects.create(vehiculo= vehiculo , rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite, tipo_tarjeta=d['tipoTarjeta'])
+            DetalleTramite.objects.create(vehiculo= vehiculo , costo_tarjeta = d["costo_tarjeta"], rutas=d["ruta_nombre_mostrar"] , afiliado= d["afiliado"].title(), tramite= tramite, tipo_tarjeta=d['tipoTarjeta'])
             registrar_log(request,'vehiculo',request.user.username, f'se registro un vehiculo con la placa  {d["placa"]}')
           
 
@@ -244,12 +244,14 @@ def editarTramite(request, id):
         chasis = request.POST.get('chasis')
         tipo_tarjeta = request.POST.get('tipo_tarjeta')
         capacidad = request.POST.get('capacidad')
-        print('marca',marca)
+        costo_tarjeta = request.POST.get('costo_tarjeta')
+        print('costo_tarjeta',costo_tarjeta)
     
         tramite.vehiculo.placa = placa
         tramite.vehiculo.tipo_transporte= tipo_transporte
         tramite.vehiculo.modelo = modelo
         tramite.vehiculo.marca = marca
+        tramite.costo_tarjeta=costo_tarjeta
         tramite.vehiculo.chasis =chasis
         tramite.tipo_tarjeta= tipo_tarjeta
         tramite.vehiculo.capacidad = capacidad
@@ -316,14 +318,36 @@ def listarRuta(request):
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
 
+@login_required
+def tramitesVigentes(request):
+    today = datetime.today() 
+
+    filtros = {
+        'flag': 'nuevo',
+        'estado': 'verificado',
+        'fecha_validezI__lte': today,  
+        'fecha_validezF__gte': today,
+    }
+
+    tramites = Tramite.objects.filter(**filtros)
+
+    paginator = Paginator(tramites, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+    }
+
+    return render(request, 'tramite/tramitesVigentes.html', context)
 
 def dibujar_encabezado(p, width, height, margin):
-    y_encabezado = height - 20
+    y_encabezado = height - 50
     ruta_logo = os.path.join("static", "imagen", "log.png")
     ancho_logo = 50
     alto_logo = 50
     x_logo = margin
-    y_logo = height - alto_logo - 10
+    y_logo = height - alto_logo - 35
     p.drawImage(ruta_logo, x_logo, y_logo, width=ancho_logo, height=alto_logo, mask='log')
     p.setFont("Helvetica-Bold", 11)
     p.drawCentredString(width / 2, y_encabezado, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
@@ -345,12 +369,9 @@ def descargarDetalleCompleto(request, id):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
-    margin = 40
+    margin = 70
     y = height - 100
-
-    # Encabezado inicial
     y = dibujar_encabezado(p, width, height, margin)
-
     for detalle in detalles:
         if y < 200:
             p.showPage()
@@ -408,7 +429,7 @@ def descargarDetalleCompleto(request, id):
         y -= 12
         p.drawString(margin, y, f"Validez:")
         p.drawString(margin + 50, y, f"{detalle.tramite.fecha_validezI} a {detalle.tramite.fecha_validezF}")
-        p.drawRightString(width - margin, y, f"Monto: {tramite.monto} Bs.")
+        p.drawRightString(width - margin, y, f"Monto: {detalle.costo_tarjeta} Bs.")
         y -= 20
 
         p.setFont("Helvetica", 9)
@@ -433,26 +454,27 @@ def descargarDetalleCompleto(request, id):
 
     p.setFont("Helvetica-Bold", 9)
     p.drawString(margin, footer_y + 90, "Instructivo:")
-    if y < 150:
-        y = 150
+    if y < 200:
+        p.showPage()
+        y  = height - 40
     p.setFont("Helvetica", 8)
     p.drawString(margin + 10, footer_y + 78, "a) Lea detalladamente los datos de cada uno de los vehículos en el presente formulario.")
     p.drawString(margin + 10, footer_y + 67, "b) Si encuentra algún error, resaltarlo y devolverlo a Unidad Registro y Regulación de Transporte")
     p.drawString(margin + 25, footer_y + 56, "para su corrección sin firmar.")
     p.drawString(margin + 10, footer_y + 45, "c) Si todos los datos están correctos, firmar el formulario y proceder a realizar el depósito")
-    p.drawString(margin + 25, footer_y + 34, f"correspondiente en la cuenta N: {tramite.numero_comprobante} del {tramite.banco} por el total de las tarjetas, luego")
+    p.drawString(margin + 25, footer_y + 34, f"correspondiente en la cuenta N: 1-6024553 del BANCO UNION por el total de las tarjetas, luego")
     p.drawString(margin + 25, footer_y + 23, "entregar fotocopia del presente formulario y del comprobante de depósito a Tesorería de la")
     p.drawString(margin + 25, footer_y + 12, "Gobernación.")
-
+    
     p.setFont("Helvetica-Bold", 8)
     p.drawString(margin, footer_y - 8, "JURO LA EXACTITUD DE LOS DATOS DEL PRESENTE FORMULARIO")
     p.drawString(width - 230, footer_y - 8, "ACLARACIÓN DE LA FIRMA")
-
+    footer_y = 80
     p.setFont("Helvetica", 8)
     p.line(margin, footer_y - 20, margin + 150, footer_y - 20)
     p.drawString(margin + 40, footer_y - 32, "Firma Rep. legal")
     p.drawString(width - 210, footer_y - 20, "Nombre: __________________________")
-    p.drawString(width - 210, footer_y - 32, "C.I.: __________________________")
+    p.drawString(width - 210, footer_y - 38, "C.I.: __________________________")
 
     p.save()
     return response
@@ -499,6 +521,7 @@ def generar_licencia_pdf(request, id):
                 width: 100%;
                 border-collapse: collapse;
                 table-layout: fixed;
+                 
             }}
             td, th {{
                 border: 1px solid #000;
@@ -527,18 +550,20 @@ def generar_licencia_pdf(request, id):
         </style>
     </head>
     <body>
+        <br>
+        <br><br><br><br><br><br><br>
        <table>
     <tr>
         <td colspan="4" class="titulo">
             LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
             AUTOMOTOR INTERPROVINCIAL - ATL
         </td>
-        <td rowspan="6" class="qr" style="vertical-align: middle;">
-            <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
-            <strong>{str(detalle.vehiculo.placa).upper()}</strong><br>
-            FECHA DE VALIDEZ<br>
-            {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}
-        </td>
+       <td rowspan="6" class="qr" style="vertical-align: middle;">
+    <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
+    <div style="font-size: 20px; font-weight: bold;">{str(detalle.vehiculo.placa).upper()}</div><br>
+    FECHA DE VALIDEZ<br>
+    {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}
+</td>
     </tr>
     <tr>
         <td colspan="4" class="operador">
@@ -546,22 +571,41 @@ def generar_licencia_pdf(request, id):
         </td>
     </tr>
     <tr>
-        <td colspan="3"><strong>AFILIADO</strong><br>{detalle.afiliado}</td>
-        <td><strong>MODELO</strong><br>{detalle.vehiculo.modelo}</td>
+        <td colspan="3"><strong>AFILIADO</strong><br>{detalle.afiliado.upper()}</td>
+        <td><strong>MODELO</strong><br>{detalle.vehiculo.modelo.upper()}</td>
        
     </tr>
     <tr>
         <td><strong>CATEGORÍA</strong><br>PASAJEROS</td>
-        <td><strong>MARCA</strong><br>{detalle.vehiculo.marca}</td>
+        <td><strong>MARCA</strong><br>{detalle.vehiculo.marca.upper()}</td>
         <td><strong>CAPACIDAD</strong><br>{detalle.vehiculo.capacidad}</td>
         <td colspan="1"><strong>REGISTRO</strong><br>{detalle.tramite.pk}</td>
     </tr>
     <tr>
-        <td colspan="4"><strong>RUTAS</strong><br>{detalle.rutas}</td>
+        <td colspan="4"><strong>RUTAS</strong><br>{detalle.rutas.upper()}</td>
     </tr>
     <tr>
         <td colspan="4" class="no-border">&nbsp;</td> <!-- Espacio extra para altura -->
     </tr>
+    <tr>
+    <td colspan="5" style="border: none; padding-top: 40px;">
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 50%; text-align: center; border: none;">
+                    ...............................................<br>
+                    <strong>Abog. Guido Velazquez</strong><br>
+                      <strong>SECRETARIO DEPARTAMENTE DE JUDIRICA</strong>
+                </td>
+                <td style="width: 50%; text-align: center; border: none;">
+                    ...............................................<br>
+                    <strong>Oscar mendoza Mamani</strong><br>
+                    <strong>SECRETARIO DEPARTARTAMENTAL DE COORDINACION GENERAL</strong>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+
 </table>
 
     </body>

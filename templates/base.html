@@ -73,13 +73,14 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-custom">    
+  <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-       
-    <a class="navbar-brand" href="{% url 'home' %}">
-    <img src="{% static 'imagen/ESCUDO TEXTO NEGRO HORIZONTAL.png' %}" alt="Login Icon" width="150" height="50" class="d-inline-block align-text-top">
-    <strong></strong>
-    </a>
+
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'imagen/ESCUDO TEXTO NEGRO HORIZONTAL.png' %}" alt="Login Icon" width="150" height="50"
+          class="d-inline-block align-text-top">
+        <strong></strong>
+      </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,7 +113,9 @@
               <li><a class="dropdown-item" href="{% url 'listarTramite' %}">📂 Trámites ingresados</a></li>
               {% if user.rol == "administrador" or user.rol == "super_admin" %}
               <li><a class="dropdown-item" href="{% url 'verificadoTramite' %}">✅ Trámites verificados</a></li>
+
               <li><a class="dropdown-item" href="{% url 'observadosramite' %}">⚠️ Trámites observados</a></li>
+              <li><a class="dropdown-item" href="{% url 'tramitesVigentes' %}">✅ Trámites vigentes</a></li>
               {% endif %}
             </ul>
           </li>
