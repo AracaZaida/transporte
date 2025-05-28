@@ -167,6 +167,7 @@ def verificadoTramite(request):
 
 @login_required
 def observadosramite(request):
+
     resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
         return resultado
@@ -185,6 +186,9 @@ def observadosramite(request):
 
 @login_required
 def detalleTramite (request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     detalle = DetalleTramite.objects.filter(tramite= tramite)
     context  = {
@@ -194,6 +198,7 @@ def detalleTramite (request, id):
     return render(request,'tramite/detalleTramite.html', context)
 @login_required
 def tarjeta_tramite (request, id):
+
     resultado = verificarRol(request, ['super_admin','administrador'])
     if resultado is not True:
         return resultado
@@ -231,6 +236,9 @@ def tarjeta_tramite (request, id):
     return render(request,'tramite/tarjeta.html', context)
 @login_required
 def editarTramite(request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(DetalleTramite, pk=id)
     
     if request.method =='POST':
@@ -282,6 +290,9 @@ def anularTramite(request, id):
     return redirect(reverse('listarTramite'))
 @login_required
 def verificarPago(request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(Tramite, pk= id)
     if request.method =='POST':
         
@@ -302,6 +313,9 @@ def verificarPago(request, id):
 
 @login_required
 def crearRuta(request):  # Usa el `id` si lo necesitas
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -314,12 +328,18 @@ def crearRuta(request):  # Usa el `id` si lo necesitas
             return JsonResponse({'estatus': 500, 'mensaje': str(e)}, status=500)
 @login_required
 def listarRuta(request):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     rutas = Rutas.objects.all()  
     rutas_data = list(rutas.values('id', 'nombre'))  
     return JsonResponse(rutas_data, safe=False)
 
 @login_required
 def tramitesVigentes(request):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     today = datetime.today() 
 
     filtros = {
@@ -343,12 +363,23 @@ def tramitesVigentes(request):
 
 def dibujar_encabezado(p, width, height, margin):
     y_encabezado = height - 50
-    ruta_logo = os.path.join("static", "imagen", "log.png")
+
+    # Ruta y tamaño de los logos
+    ruta_logo_izq = os.path.join("static", "imagen", "ESCUDO TEXTO NEGRO (1).png")
+    ruta_logo_der = os.path.join("static", "imagen", "log.png")
     ancho_logo = 50
     alto_logo = 50
-    x_logo = margin
+
+    # Posiciones de los logos
+    x_logo_izq = margin
+    x_logo_der = width - margin - ancho_logo
     y_logo = height - alto_logo - 35
-    p.drawImage(ruta_logo, x_logo, y_logo, width=ancho_logo, height=alto_logo, mask='log')
+
+    # Dibujar logos
+    p.drawImage(ruta_logo_izq, x_logo_izq, y_logo, width=50, height=60, mask='auto')
+    p.drawImage(ruta_logo_der, x_logo_der, y_logo, width=ancho_logo, height=alto_logo, mask='auto')
+
+    # Texto centrado
     p.setFont("Helvetica-Bold", 11)
     p.drawCentredString(width / 2, y_encabezado, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
     y_encabezado -= 15
@@ -357,10 +388,14 @@ def dibujar_encabezado(p, width, height, margin):
     y_encabezado -= 15
     p.setFont("Helvetica-Bold", 10)
     p.drawCentredString(width / 2, y_encabezado, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
+
     return y_encabezado - 2
 
 @login_required
 def descargarDetalleCompleto(request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     tramite = get_object_or_404(Tramite, pk=id)
     detalles = DetalleTramite.objects.filter(tramite=tramite)
 
@@ -483,6 +518,9 @@ def descargarDetalleCompleto(request, id):
 
 @login_required
 def generar_licencia_pdf(request, id):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
     detalle = get_object_or_404(DetalleTramite, pk=id)
 
     # Texto para el QR
@@ -551,18 +589,17 @@ def generar_licencia_pdf(request, id):
     </head>
     <body>
         <br>
-        <br><br><br><br><br><br><br>
+        <br><br><br><br>
        <table>
     <tr>
         <td colspan="4" class="titulo">
             LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
             AUTOMOTOR INTERPROVINCIAL - ATL
         </td>
-       <td rowspan="6" class="qr" style="vertical-align: middle;">
+       <td rowspan="4" class="qr" style="vertical-align: middle;">
     <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
     <div style="font-size: 20px; font-weight: bold;">{str(detalle.vehiculo.placa).upper()}</div><br>
-    FECHA DE VALIDEZ<br>
-    {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}
+   
 </td>
     </tr>
     <tr>
@@ -582,10 +619,10 @@ def generar_licencia_pdf(request, id):
         <td colspan="1"><strong>REGISTRO</strong><br>{detalle.tramite.pk}</td>
     </tr>
     <tr>
-        <td colspan="4"><strong>RUTAS</strong><br>{detalle.rutas.upper()}</td>
+        <td colspan="5"><strong>RUTAS</strong> {detalle.rutas.upper()}</td>
     </tr>
     <tr>
-        <td colspan="4" class="no-border">&nbsp;</td> <!-- Espacio extra para altura -->
+        <td colspan="5" class="no-border"> <strong> FECHA DE VALIDEZ</strong> {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}  </td> <!-- Espacio extra para altura -->
     </tr>
     <tr>
     <td colspan="5" style="border: none; padding-top: 40px;">

@@ -7,8 +7,8 @@
     </button> -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header text-white" style="background-color: #FFA500;">
-    <h5 class="mb-0 text-center">Datos</h5>
-</div>
+            <h5 class="mb-0 text-center">Datos</h5>
+        </div>
 
         <div class="card-body">
             <!-- <div class="row mb-3">
@@ -44,15 +44,7 @@
             </div>
         </div>
 
-        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
-            data-bs-toggle="modal" data-bs-target="#modalRuta"><strong>Añadir Ruta</strong>
-
         </button>
-
-
-        <button type="button" class="btn text-white" style="background-color: #87D4C8;" data-bs-toggle="modal" data-bs-target="#modalMarca">
-    <strong>Añadir marca</strong>
-</button>
 
 
     </div>
@@ -64,8 +56,8 @@
         <div class="card shadow-sm border-0">
 
             <div class="card-header text-white" style="background-color: #87D4C8;">
-    <h5 class="mb-0 text-center">Formulario del Vehículo</h5>
-</div>
+                <h5 class="mb-0 text-center">Formulario del Vehículo</h5>
+            </div>
 
             <div class="card-body">
                 <input type="hidden" id="idTramite" value="{{ tramite.id }}">
@@ -140,18 +132,35 @@
 
                 <!-- Fila 4 (botones) -->
                 <div class="row mb-3">
-                    <div class="col-md-6 d-grid">
+                    <div class="col-md-2 d-grid">
                         <button type="button" class="btn" style="background-color: #AAC85F; color: black; border: none;"
                             data-bs-toggle="modal" data-bs-target="#modalRuta1">
-                            Listar Rutas Autorizadas
+                            Listar Rutas
                         </button>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-2 d-flex align-items-end">
+
+
+                        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#modalRuta"><strong>Añadir Ruta</strong>
+
+                        </button>
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
                             data-bs-target="#modalMarca1">
                             Listar Marcas
                         </button>
                     </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn text-white" style="background-color: #3944e0;"
+                            data-bs-toggle="modal" data-bs-target="#modalMarca">
+                            <strong>Añadir marca</strong>
+                        </button>
+                    </div>
+
                 </div>
 
                 <input type="hidden" id="ruta_id" name="ruta_id">
@@ -170,7 +179,7 @@
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content rounded-4 shadow">
-             <div class="modal-header" style="background-color: #FB8257;">
+            <div class="modal-header" style="background-color: #FB8257;">
                 <h5 class="modal-title" id="modalMarcaLabel"><strong>Añadir Marca</strong></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
@@ -185,7 +194,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                    <button type="submit" class="btn text-white" style="background-color: #AAC85F;">Guardar Marca</button>
+                    <button type="submit" class="btn text-white" style="background-color: #AAC85F;">Guardar
+                        Marca</button>
 
                 </div>
             </form>
@@ -225,9 +235,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #F8C170; color: black;">
-    <h5 class="modal-title">Rutas Autorizadas</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
+                <h5 class="modal-title">Rutas Autorizadas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
@@ -251,9 +261,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="background-color: #FB8257;">
-    <h5 class="modal-title"><strong>Marcas</strong></h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
+                <h5 class="modal-title"><strong>Marcas</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
