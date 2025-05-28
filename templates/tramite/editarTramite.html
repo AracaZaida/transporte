@@ -31,15 +31,7 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn" style="background-color: #FB8257; color: white; border: none;"
-        data-bs-toggle="modal" data-bs-target="#modalRuta">
-    Añadir Ruta
-</button>
-
-        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
-        data-bs-toggle="modal" data-bs-target="#modalMarca">
-    Añadir marca
-</button>
+ 
 
     </div>
 
@@ -132,18 +124,32 @@
                         <div id="rutas_seleccionadas_lista" class="mt-2">
                         </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
-                            data-bs-target="#modalRuta1">
-                            Listar Rutas Autorizadas
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn" style="background-color: #FB8257; color: white; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#modalRuta">
+                            Añadir Ruta
                         </button>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                            data-bs-target="#modalRuta1">
+                            Listar Rutas 
+                        </button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
                             data-bs-target="#modalMarca1">
                             Listar Marcas
                         </button>
                     </div>
+                   
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;" data-bs-toggle="modal"
+                            data-bs-target="#modalMarca">
+                            Añadir marca </button>
+                    </div>
+                 
+                    
                     <input value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
 
                 </div>
