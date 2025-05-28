@@ -604,7 +604,7 @@ def generar_licencia_pdf(request, id):
             </tr>
             <tr>
                 <td colspan="4" class="operador">
-                    OPERADOR: {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
+                    OPERADOR:<br> {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
                 </td>
             </tr>
             <tr>
