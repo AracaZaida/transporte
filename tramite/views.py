@@ -544,110 +544,110 @@ def generar_licencia_pdf(request, id):
 
     # HTML con QR embebido
     html = f"""
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-                margin: 0;
-                padding: 0;
-            }}
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-                table-layout: fixed;
-                 
-            }}
-            td, th {{
-                border: 1px solid #000;
-                padding: 6px;
-                vertical-align: top;
-            }}
-            .titulo {{
-                text-align: center;
-                font-weight: bold;
-                font-size: 14px;
-                padding: 10px;
-             
-            }}
-            .operador {{
-                font-weight: bold;
-                border: 1px solid black;
-                padding: 6px;
-            }}
-            .qr {{
-                text-align: center;
-                
-            }}
-            .no-border {{
-             
-            }}
-        </style>
-    </head>
-    <body>
-        <br>
-        <br><br><br><br>
-       <table>
-    <tr>
-        <td colspan="4" class="titulo">
-            LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
-            AUTOMOTOR INTERPROVINCIAL - ATL
-        </td>
-       <td rowspan="4" class="qr" style="vertical-align: middle;">
-    <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
-    <div style="font-size: 20px; font-weight: bold;">{str(detalle.vehiculo.placa).upper()}</div><br>
-   
-</td>
-    </tr>
-    <tr>
-        <td colspan="4" class="operador">
-            OPERADOR: {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
-        </td>
-    </tr>
-    <tr>
-        <td colspan="3"><strong>AFILIADO</strong><br>{detalle.afiliado.upper()}</td>
-        <td><strong>MODELO</strong><br>{detalle.vehiculo.modelo.upper()}</td>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }}
+        table {{
+            width: 90%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin: auto;
+        }}
+        td, th {{
+            border: 1px solid #000;
+            padding: 6px;
+            vertical-align: top;
+        }}
+        .titulo {{
+            font-weight: bold;
+            font-size: 14px;
+            padding: 10px;
+        }}
+        .operador {{
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 6px;
+        }}
+        .qr {{
+            text-align: center;
+        }}
        
-    </tr>
-    <tr>
-        <td><strong>CATEGORÍA</strong><br>PASAJEROS</td>
-        <td><strong>MARCA</strong><br>{detalle.vehiculo.marca.upper()}</td>
-        <td><strong>CAPACIDAD</strong><br>{detalle.vehiculo.capacidad}</td>
-        <td colspan="1"><strong>REGISTRO</strong><br>{detalle.tramite.pk}</td>
-    </tr>
-    <tr>
-        <td colspan="5"><strong>RUTAS</strong> {detalle.rutas.upper()}</td>
-    </tr>
-    <tr>
-        <td colspan="5" class="no-border"> <strong> FECHA DE VALIDEZ</strong> {detalle.tramite.fecha_validezI} : {detalle.tramite.fecha_validezF}  </td> <!-- Espacio extra para altura -->
-    </tr>
-    <tr>
-    <td colspan="5" style="border: none; padding-top: 40px;">
-        <table style="width: 100%; border: none;">
+    </style>
+</head>
+<body>
+<br>
+        <br><br><br><br>
+    <div>
+        <table>
             <tr>
-                <td style="width: 50%; text-align: center; border: none;">
-                    ...............................................<br>
-                    <strong>Abog. Guido Velazquez</strong><br>
-                      <strong>SECRETARIO DEPARTAMENTE DE JUDIRICA</strong>
+                <td colspan="4" class="titulo">
+                    LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
+                    AUTOMOTOR INTERPROVINCIAL - ATL
                 </td>
-                <td style="width: 50%; text-align: center; border: none;">
-                    ...............................................<br>
-                    <strong>Oscar mendoza Mamani</strong><br>
-                    <strong>SECRETARIO DEPARTARTAMENTAL DE COORDINACION GENERAL</strong>
+                <td rowspan="4" class="qr" style="vertical-align: middle;">
+                    <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
+                    <div style="font-size: 20px; font-weight: bold;">{str(detalle.vehiculo.placa).upper()}</div><br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="operador">
+                    OPERADOR: {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>AFILIADO:</strong><br>{detalle.afiliado.upper()}</td>
+                <td><strong>MODELO:</strong><br>{detalle.vehiculo.modelo.upper()}</td>
+            </tr>
+            <tr>
+                <td><strong>CATEGORÍA:</strong><br>PASAJEROS</td>
+                <td><strong>MARCA:</strong><br>{detalle.vehiculo.marca.upper()}</td>
+                <td><strong>CAPACIDAD:</strong><br>{detalle.vehiculo.capacidad}</td>
+                <td><strong>REGISTRO:</strong><br>{detalle.tramite.numero_tramite}</td>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>RUTAS:</strong> <br> {detalle.rutas.upper()}</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="no-border">
+                    <strong>FECHA DE VALIDEZ: </strong> {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" style="border: none; padding-top: 40px;">
+                    <table style="width: 100%; border: none;">
+                        <tr>
+                            <td style="width: 50%; text-align: center; border: none;">
+                                ...............................................<br>
+                                <strong>Abog. Guido Velazquez</strong><br>
+                                <strong>SECRETARIO DEPARTAMENTE DE JUDIRICA</strong>
+                            </td>
+                            <td style="width: 50%; text-align: center; border: none;">
+                                ...............................................<br>
+                                <strong>Oscar Mendoza Mamani</strong><br>
+                                <strong>SECRETARIO DEPARTAMENTAL DE COORDINACION GENERAL</strong>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
-    </td>
-</tr>
-
-</table>
-
-    </body>
-    </html>
-    """
+    </div>
+</body>
+</html>
+"""
 
     # Generar el PDF
     resultado = BytesIO()
