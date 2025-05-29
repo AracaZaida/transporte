@@ -557,9 +557,10 @@ def generar_licencia_pdf(request, id):
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             text-align: center;
+           
         }}
+       
         table {{
             width: 90%;
             border-collapse: collapse;
@@ -584,18 +585,14 @@ def generar_licencia_pdf(request, id):
         .qr {{
             text-align: center;
         }}
-          .page {{
-            width: 19cm;
-            margin-top: 3.5cm;
-            margin-left: auto;
-            margin-right: auto;
-        }}
+       
        
     </style>
 </head>
 <body>
-<br>
-        
+
+  <br><br><br><br><br><br><br><br><br><br><br>  <!-- 11 br -->
+
     <div class="page">
         <table>
             <tr>
