@@ -584,13 +584,19 @@ def generar_licencia_pdf(request, id):
         .qr {{
             text-align: center;
         }}
+          .page {{
+            width: 19cm;
+            margin-top: 3.5cm;
+            margin-left: auto;
+            margin-right: auto;
+        }}
        
     </style>
 </head>
 <body>
 <br>
-        <br><br><br><br>
-    <div>
+        
+    <div class="page">
         <table>
             <tr>
                 <td colspan="4" class="titulo">
