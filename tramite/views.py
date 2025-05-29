@@ -551,7 +551,7 @@ def generar_licencia_pdf(request, id):
     <style>
         body {{
             font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-size: 7px;
             margin: 0;
             padding: 0;
             display: flex;
@@ -562,7 +562,7 @@ def generar_licencia_pdf(request, id):
         }}
        
         table {{
-            width: 90%;
+            width: 50%;
             border-collapse: collapse;
             table-layout: fixed;
             margin: auto;
@@ -591,7 +591,7 @@ def generar_licencia_pdf(request, id):
 </head>
 <body>
 
-  <br><br><br><br><br><br><br><br><br><br><br>  <!-- 11 br -->
+  <br><br><br><br><br><br><br><br><br>  <!-- 11 br -->
 
     <div class="page">
         <table>
