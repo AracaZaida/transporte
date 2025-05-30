@@ -362,34 +362,44 @@ def tramitesVigentes(request):
     return render(request, 'tramite/tramitesVigentes.html', context)
 
 def dibujar_encabezado(p, width, height, margin):
-    y_encabezado = height - 50
-
-    # Ruta y tamaño de los logos
+    # Calcular el centro vertical del encabezado
+    altura_encabezado = 80  # Altura total del área de encabezado
+    y_centro_encabezado = height - (altura_encabezado / 2) - 20
+    
+    # Configuración de logos
     ruta_logo_izq = os.path.join("static", "imagen", "ESCUDO TEXTO NEGRO (1).png")
     ruta_logo_der = os.path.join("static", "imagen", "log.png")
     ancho_logo = 50
     alto_logo = 50
-
-    # Posiciones de los logos
+    
+    # Calcular posiciones para centrar verticalmente logos con el texto
+    y_logo_centrado = y_centro_encabezado - (alto_logo / 2)
+    
+    
     x_logo_izq = margin
     x_logo_der = width - margin - ancho_logo
-    y_logo = height - alto_logo - 35
-
-    # Dibujar logos
-    p.drawImage(ruta_logo_izq, x_logo_izq, y_logo, width=50, height=60, mask='auto')
-    p.drawImage(ruta_logo_der, x_logo_der, y_logo, width=ancho_logo, height=alto_logo, mask='auto')
-
-    # Texto centrado
+    
+    
+    p.drawImage(ruta_logo_izq, x_logo_izq, y_logo_centrado - 5, width=50, height=60, mask='auto')
+    p.drawImage(ruta_logo_der, x_logo_der, y_logo_centrado, width=ancho_logo, height=alto_logo, mask='auto')
+    
+    
+    area_texto_inicio = x_logo_izq + 60  
+    area_texto_fin = x_logo_der - 10     
+    centro_texto = (area_texto_inicio + area_texto_fin) / 2
+    
+    y_texto_base = y_centro_encabezado + 10 
+    
     p.setFont("Helvetica-Bold", 11)
-    p.drawCentredString(width / 2, y_encabezado, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
-    y_encabezado -= 15
+    p.drawCentredString(centro_texto, y_texto_base, "GOBIERNO AUTÓNOMO DEPARTAMENTAL DE POTOSÍ")
+    
     p.setFont("Helvetica", 10)
-    p.drawCentredString(width / 2, y_encabezado, "UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE")
-    y_encabezado -= 15
+    p.drawCentredString(centro_texto, y_texto_base - 15, "UNIDAD DE REGISTRO Y REGULACIÓN DE TRANSPORTE")
+    
     p.setFont("Helvetica-Bold", 10)
-    p.drawCentredString(width / 2, y_encabezado, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
-
-    return y_encabezado - 2
+    p.drawCentredString(centro_texto, y_texto_base - 30, "FORMULARIO DE VERIFICACIÓN DE DATOS - TARJETA INTERPROVINCIAL")
+    
+    return y_texto_base - 50  
 
 @login_required
 def descargarDetalleCompleto(request, id):
@@ -542,112 +552,143 @@ def generar_licencia_pdf(request, id):
     qr_img.save(buffer, format="PNG")
     qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-    # HTML con QR embebido
+    # HTML con QR embebido y dimensiones específicas
     html = f"""
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            font-size: 7px;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-           
-        }}
-       
-        table {{
-            width: 50%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin: auto;
-        }}
-        td, th {{
-            border: 1px solid #000;
-            padding: 6px;
-            vertical-align: top;
-        }}
-        .titulo {{
-            font-weight: bold;
-            font-size: 14px;
-            padding: 10px;
-        }}
-        .operador {{
-            font-weight: bold;
-            border: 1px solid black;
-            padding: 6px;
-        }}
-        .qr {{
-            text-align: center;
-        }}
-       
-       
-    </style>
+   <style>
+  
+   @page {{
+    size: 8cm 11cm;
+    margin: 1cm 0.5cm 0.5cm 0.5cm;
+}}
+
+
+    body {{
+        font-family: Arial, sans-serif;
+        font-size: 6px;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .titulo {{
+        font-weight: bold;
+        font-size: 6px;
+        padding: 2px;
+        text-align: center;
+    }}
+
+    .operador {{
+        font-weight: bold;
+        border: 1px solid black;
+        padding: 2px;
+        font-size: 5px;
+        text-align: center;
+    }}
+
+    .info-cell {{
+        font-size: 5px;
+        padding: 1px;
+        text-align: center;
+    }}
+
+    .firma-cell {{
+        border: none;
+        text-align: center;
+        font-size: 5px;
+        padding: 2px;
+    }}
+
+    .qr {{
+        text-align: center;
+        width: 25%;
+    }}
+
+    .no-border {{
+        border: none;
+        padding: 2px;
+        text-align: center;
+    }}
+
+    .firmas-table {{
+        width: 100%;
+        border: none;
+        margin-top: 10px;
+    }}
+
+    table {{
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }}
+
+    td, th {{
+        border: 1px solid #000;
+        padding: 2px;
+        vertical-align: top;
+        text-align: center;
+    }}
+</style>
+
+
+
 </head>
 <body>
-
-  <br><br><br><br><br><br><br><br><br>  <!-- 11 br -->
-
-    <div class="page">
-        <table>
-            <tr>
-                <td colspan="4" class="titulo">
-                    LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
-                    AUTOMOTOR INTERPROVINCIAL - ATL
-                </td>
-                <td rowspan="4" class="qr" style="vertical-align: middle;">
-                    <img src="data:image/png;base64,{qr_base64}" width="120"><br><br>
-                    <div style="font-size: 20px; font-weight: bold;">{str(detalle.vehiculo.placa).upper()}</div><br>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" class="operador">
-                    OPERADOR:<br> {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3"><strong>AFILIADO:</strong><br>{detalle.afiliado.upper()}</td>
-                <td><strong>MODELO:</strong><br>{detalle.vehiculo.modelo.upper()}</td>
-            </tr>
-            <tr>
-                <td><strong>CATEGORÍA:</strong><br>PASAJEROS</td>
-                <td><strong>MARCA:</strong><br>{detalle.vehiculo.marca.upper()}</td>
-                <td><strong>CAPACIDAD:</strong><br>{detalle.vehiculo.capacidad}</td>
-                <td><strong>REGISTRO:</strong><br>{detalle.tramite.numero_tramite}</td>
-            </tr>
-            <tr>
-                <td colspan="5"><strong>RUTAS:</strong> <br> {detalle.rutas.upper()}</td>
-            </tr>
-            <tr>
-                <td colspan="5" class="no-border">
-                    <strong>FECHA DE VALIDEZ: </strong> {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5" style="border: none; padding-top: 40px;">
-                    <table style="width: 100%; border: none;">
-                        <tr>
-                            <td style="width: 50%; text-align: center; border: none;">
-                                ...............................................<br>
-                                <strong>Abog. Guido Velazquez</strong><br>
-                                <strong>SECRETARIO DEPARTAMENTE DE JUDIRICA</strong>
-                            </td>
-                            <td style="width: 50%; text-align: center; border: none;">
-                                ...............................................<br>
-                                <strong>Oscar Mendoza Mamani</strong><br>
-                                <strong>SECRETARIO DEPARTAMENTAL DE COORDINACION GENERAL</strong>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <table>
+        <tr>
+            <td colspan="4" class="titulo">
+                LICENCIA DE OPERACIÓN PARA EL TRANSPORTE<br>
+                AUTOMOTOR INTERPROVINCIAL - ATL
+            </td>
+            <td rowspan="4" class="qr">
+                <img src="data:image/png;base64,{qr_base64}" width="70"><br>
+                <div style="font-size: 12px; font-weight: bold; margin-top: 2px;">{str(detalle.vehiculo.placa).upper()}</div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="operador">
+                OPERADOR:<br> {detalle.tramite.operador.nombre.upper()} AFILIADA A LA FEDERACIÓN {detalle.tramite.operador.federacion.nombre.upper()}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="info-cell"><strong>AFILIADO:</strong><br>{detalle.afiliado.upper()}</td>
+            <td class="info-cell"><strong>MODELO:</strong><br>{detalle.vehiculo.modelo.upper()}</td>
+        </tr>
+        <tr>
+            <td class="info-cell"><strong>CATEGORÍA:</strong><br>PASAJEROS</td>
+            <td class="info-cell"><strong>MARCA:</strong><br>{detalle.vehiculo.marca.upper()}</td>
+            <td class="info-cell"><strong>CAPACIDAD:</strong><br>{detalle.vehiculo.capacidad}</td>
+            <td class="info-cell"><strong>REGISTRO:</strong><br>{detalle.tramite.numero_tramite}</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="info-cell"><strong>RUTAS:</strong> <br> {detalle.rutas.upper()}</td>
+        </tr>
+        <tr>
+            <td colspan="5" class="info-cell">
+                <strong>FECHA DE VALIDEZ: </strong> {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" class="no-border">
+                <table class="firmas-table">
+                    <tr>
+                        <td class="firma-cell"><br>
+                            ...............................................<br>
+                            <strong>Abog. Guido Velazquez</strong><br>
+                            <strong>SECRETARIO DEPARTAMENTE DE JUDIRICA</strong>
+                        </td>
+                        <td class="firma-cell"><br>
+                            ...............................................<br>
+                            <strong>Oscar Mendoza Mamani</strong><br>
+                            <strong>SECRETARIO DEPARTAMENTAL DE COORDINACION GENERAL</strong>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 """
