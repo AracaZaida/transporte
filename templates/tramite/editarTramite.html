@@ -76,10 +76,11 @@
                         value="{{ tramite.vehiculo.modelo }}">
                 </div>
                 <div class="col-md-4">
-                    <label for="marca" class="form-label">Marca</label>
-                    <input type="text" readonly value="{{ tramite.vehiculo.marca }}" required class="form-control"
-                        id="marca" name="marca">
+                    <label for="costo_tarjeta" class="form-label">Costo de Tarjeta</label>
+                    <input type="number" step="0.01" min="0" value="{{ tramite.costo_tarjeta }}" required
+                        class="form-control" id="costo_tarjeta" name="costo_tarjeta">
                 </div>
+                
                 <div class="col-md-4">
                     <label for="chasis" class="form-label">Número de Chasis</label>
                     <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control" id="chasis"
@@ -110,9 +111,9 @@
                         id="capacidad" name="capacidad">
                 </div>
                 <div class="col-md-4">
-                    <label for="costo_tarjeta" class="form-label">Costo de Tarjeta</label>
-                    <input type="number" step="0.01" min="0" value="{{ tramite.costo_tarjeta }}" required
-                        class="form-control" id="costo_tarjeta" name="costo_tarjeta">
+                    <label for="marca" class="form-label">Marca</label>
+                    <input type="text" readonly value="{{ tramite.vehiculo.marca }}" required class="form-control"
+                        id="marca" name="marca">
                 </div>
             </div>
 
@@ -131,13 +132,13 @@
                         </button>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary w-100" style="background-color: #D2E6EC;" data-bs-toggle="modal"
                             data-bs-target="#modalRuta1">
                             Listar Rutas 
                         </button>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-primary w-100" style="background-color: #87D4C8;" data-bs-toggle="modal"
                             data-bs-target="#modalMarca1">
                             Listar Marcas
                         </button>
@@ -155,7 +156,7 @@
                 </div>
 
             <div class="text-end">
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="submit" style="background-color: #AAC85F;" class="btn btn-success">Guardar</button>
             </div>
         </div>
     </div>
@@ -180,7 +181,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+                    <button type="submit" style="background-color: #AAC85F;" class="btn btn-primary">Guardar Ruta</button>
                 </div>
 
             </form>
@@ -197,7 +198,7 @@
             </div>
             <div class="modal-body">
                 <table class="table table-bordered table-striped">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
                             <th>#</th>
                             <th>Nombre</th>
@@ -257,7 +258,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+                    <button type="submit" style="background-color: #AAC85F;" class="btn btn-primary">Guardar Marca</button>
                 </div>
             </form>
         </div>
