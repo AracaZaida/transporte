@@ -113,7 +113,7 @@ def verTramite(request, id):
 
 @login_required
 def listarTramite(request):
-    resultado = verificarRol(request, ['tecnico','administrador'])
+    resultado = verificarRol(request, ['tecnico','administrador','super_admin'])
     if resultado is not True:
         return resultado
     fecha_inicio = request.GET.get('fecha_inicio')
@@ -253,7 +253,7 @@ def editarTramite(request, id):
         tipo_tarjeta = request.POST.get('tipo_tarjeta')
         capacidad = request.POST.get('capacidad')
         costo_tarjeta = request.POST.get('costo_tarjeta')
-        print('costo_tarjeta',costo_tarjeta)
+        print('costo_tarjeta',marca)
     
         tramite.vehiculo.placa = placa
         tramite.vehiculo.tipo_transporte= tipo_transporte

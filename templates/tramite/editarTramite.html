@@ -46,85 +46,112 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="placa" class="form-label">Propietario</label>
-                        <input type="text" value="{{ tramite.afiliado }}" class="form-control" required id="afiliado"
-                            name="afiliado">
+                        <input type="text"  value="{{ tramite.afiliado }}" class="form-control" required id="afiliado"
+                            name="afiliado"   {% if user.rol == "super_admin" %}readonly{% endif %}>
                     </div>
                     <div class="col-md-4">
                         <label for="placa" class="form-label">Placa</label>
                         <input type="text" value="{{ tramite.vehiculo.placa }}" class="form-control" required id="placa"
-                            name="placa">
+                            name="placa" {% if user.rol == "super_admin" %}readonly{% endif %}>
                     </div>
 
                     <div class="col-md-4">
                         <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
-                        <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
-                            <option value="" disabled {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>
-                                Seleccione una opción</option>
-                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}
-                                selected{%endif %}>Pasajeros</option>
-                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>
-                                Carga</option>
+                    
+                        {% if user.rol == "super_admin" %}
+                        <select class="form-control" id="tipo_transporte" name="tipo_transporte" disabled>
+                            <option value="" {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>Seleccione una opción</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros
+                            </option>
+                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>Carga</option>
                         </select>
-
+                        <!-- Campo oculto para enviar el valor al backend -->
+                        <input type="hidden" name="tipo_transporte" value="{{ tramite.vehiculo.tipo_transporte }}">
+                        {% else %}
+                        <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
+                            <option value="" {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>Seleccione una opción</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros
+                            </option>
+                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>Carga</option>
+                        </select>
+                        {% endif %}
                     </div>
+                    
 
             <!-- Fila 2 -->
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="modelo" class="form-label">Modelo</label>
                     <input type="text" required class="form-control" id="modelo" name="modelo"
-                        value="{{ tramite.vehiculo.modelo }}">
+                        value="{{ tramite.vehiculo.modelo }}" {% if user.rol == "super_admin" %}readonly{% endif %}>
                 </div>
                 <div class="col-md-4">
                     <label for="costo_tarjeta" class="form-label">Costo de Tarjeta</label>
                     <input type="number" step="0.01" min="0" value="{{ tramite.costo_tarjeta }}" required
-                        class="form-control" id="costo_tarjeta" name="costo_tarjeta">
+                        class="form-control" id="costo_tarjeta" name="costo_tarjeta" {% if user.rol == "administrador" %}readonly{% endif %}>
                 </div>
                 
                 <div class="col-md-4">
                     <label for="chasis" class="form-label">Número de Chasis</label>
                     <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control" id="chasis"
-                        name="chasis">
+                        name="chasis" {% if user.rol == "super_admin" %}readonly{% endif %} {% if user.rol == "super_admin" %}readonly{% endif %}>
                 </div>
             </div>
 
             <!-- Fila 3 -->
             <div class="row mb-3">
+
                 <div class="col-md-4">
                     <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
-                    <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
-                        <option value="" disabled {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar
-                            tipo...</option>
-                        <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>InterProvincial</option>
-                        <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>InterProvincial ATL</option>
-                        <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado" %}selected{% endif %}>InterProvincial
-                            Confederado</option>
-                        <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{% endif %}>InterProvConfederado
-                            SCZ</option>
-                        <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial
-                            Coopertivas</option>
+                
+                    {% if user.rol == "super_admin" %}
+                    <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" disabled>
+                        <option value="" {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar tipo...</option>
+                        <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>
+                            InterProvincial</option>
+                        <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>
+                            InterProvincial ATL</option>
+                        <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado"%}selected{% endif %}>InterProvincial Confederado</option>
+                        <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{%endif %}>InterProvConfederado SCZ</option>
+                        <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial Coopertivas</option>
                     </select>
+                    <!-- Campo oculto para enviar el valor -->
+                    <input type="hidden" name="tipo_tarjeta" value="{{ tramite.tipo_tarjeta }}">
+                    {% else %}
+                    <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
+                        <option value="" {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar tipo...</option>
+                        <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>
+                            InterProvincial</option>
+                        <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>
+                            InterProvincial ATL</option>
+                        <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado" %}selected{% endif %}>InterProvincial Confederado</option>
+                        <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{%endif %}>InterProvConfederado SCZ</option>
+                        <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial Coopertivas</option>
+                    </select>
+                    {% endif %}
                 </div>
+                
                 <div class="col-md-4">
                     <label for="capacidad" class="form-label">Capacidad</label>
                     <input type="number" value="{{ tramite.vehiculo.capacidad }}" required class="form-control"
-                        id="capacidad" name="capacidad">
+                        id="capacidad" name="capacidad" {% if user.rol == "super_admin" %}readonly{% endif %}>
                 </div>
                 <div class="col-md-4">
                     <label for="marca" class="form-label">Marca</label>
                     <input type="text" readonly value="{{ tramite.vehiculo.marca }}" required class="form-control"
-                        id="marca" name="marca">
+                        id="marca" name="marca" {% if user.rol == "super_admin" %}readonly{% endif %}>
                 </div>
             </div>
-
+           
                     <div class="col-md-4">
                         <label class="form-label">Ruta Seleccionada</label>
 
                         <input type="text" readonly class="form-control" name="rutas" id="ruta_nombre_mostrar"
-                            value="{{tramite.rutas}}" required>
+                            value="{{tramite.rutas}}" required {% if user.rol == "super_admin" %}readonly{% endif %}>
                         <div id="rutas_seleccionadas_lista" class="mt-2">
                         </div>
                     </div>
+                {% if user.rol != "super_admin" %}
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn" style="background-color: #FB8257; color: white; border: none;"
                             data-bs-toggle="modal" data-bs-target="#modalRuta">
@@ -152,7 +179,7 @@
                  
                     
                     <input value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
-
+                    {% endif %}
                 </div>
 
             <div class="text-end">
