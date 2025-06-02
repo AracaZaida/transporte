@@ -5,10 +5,10 @@
     <h2 class="text-center mb-4">📄 Detalle Completo del Trámite</h2>
 
     <div class="text-end mb-4">
-        <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn btn-success">
+        <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;">
             📥 Descargar detalle completo
         </a>
-        <button class="btn btn-success" onclick="printLicencias('{{ tramite.id }}')">
+        <button  class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;" onclick="printLicencias('{{ tramite.id }}')">
             🖨️ Imprimir
         </button>
     </div>
@@ -48,10 +48,10 @@
         </div>
 
         <div class="text-end mt-3">
-            <a href="{% url 'generar_licencia_pdf' detalle_item.id %}" class="btn btn-outline-success">
+            <a href="{% url 'generar_licencia_pdf' detalle_item.id %}" class="btn btn-outline" style="background-color: #87D4C8; border-color: #87D4C8;">
                 📥 Descargar Tarjeta
             </a>
-            <button class="btn btn-success" onclick="printLicencia('{{ detalle_item.id }}')">
+            <button  class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;"onclick="printLicencia('{{ detalle_item.id }}')">
                 🖨️ Imprimir
             </button>
         </div>
