@@ -14,5 +14,7 @@ urlpatterns = [
 
        path('logout/', views.cerrar_sesion, name='logout'),
 
+       path('ayuda', views.ayuda, name='ayuda'),
+
  
 ]

@@ -102,3 +102,7 @@ def eliminar_usuario(request, usuario_id):
 def cerrar_sesion(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def ayuda(request):
+    return render(request, 'usuario/ayuda.html')
