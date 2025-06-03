@@ -7,6 +7,14 @@ from usuarios.models import Usuario
 from vehiculo.models import Vehiculo
 
 
+class Costo(models.Model):
+    precio=models.IntegerField(blank=True , null=False)
+    fecha_creacion = models.DateTimeField(blank=True , null=True)
+    flag=models.CharField(max_length=20,
+        choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
+        default='nuevo')
+    
+
 class Rutas(models.Model):
     nombre=models.TextField(null=True, blank=True)
 

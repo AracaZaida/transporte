@@ -24,7 +24,7 @@ from datetime import datetime
 from federacion.models import Federacion
 from log.views import registrar_log
 from operador.models import Operador
-from tramite.models import Tramite, Rutas
+from tramite.models import Tramite, Rutas ,Costo
 from vehiculo.models import Vehiculo
 from usuarios.models import Usuario
 from afiliados.models import Afiliado
@@ -229,9 +229,14 @@ def tarjeta_tramite (request, id):
         
         return JsonResponse({"status": "success"}, status=201)
     afiliado = Afiliado.objects.filter(federacion = tramite.operador.federacion)
+    costo= Costo.objects.filter(flag='nuevo').first()
+    precio = 0
+    if costo:
+        precio = costo.precio
     context  = {
         'tramite':tramite,
-        'afiliados':afiliado
+        'afiliados':afiliado,
+        'costo':precio
     }
     return render(request,'tramite/tarjeta.html', context)
 @login_required
@@ -711,3 +716,31 @@ def capitalizar_palabras(texto):
     if not isinstance(texto, str):
         texto = str(texto)
     return " ".join(palabra.capitalize() for palabra in texto.split())
+def crearCosto(request):
+    if request.method == 'POST':
+        costo = request.POST.get('costo_tramite')
+        Costo.objects.create(precio= costo, fecha_creacion= timezone.now())
+        return redirect('listarCosto')
+    return render(request, 'costo/crear.html')
+
+def editarCosto(request, id):
+    costo = get_object_or_404(Costo, pk=id)
+    if request.method == 'POST':
+        costo_form = request.POST.get('costo_tramite')
+        costo.precio = costo_form
+        costo.save()
+        return redirect('listarCosto')
+    return render(request, 'costo/editar.html', {'costo':costo})
+
+
+def eliminarCosto(request, id):
+    costo = get_object_or_404(Costo, pk=id)
+    costo.flag='eliminado'
+    costo.save()
+    return redirect('listarCosto')
+
+
+def listarCosto(request):
+    costo= Costo.objects.filter(flag='nuevo')
+   
+    return render(request, 'costo/listar.html', {'costo':costo})

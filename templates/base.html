@@ -132,6 +132,12 @@
           </li>
           {% endif %}
 
+          {% if user.rol == "super_admin" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listarCosto' %}">COSTO</a>
+          </li>
+          {% endif %}
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">SALIR</a>
           </li>
