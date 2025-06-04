@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
 <div class="container mt-5">
     <!--<button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
         Ver Afiliados
@@ -242,7 +247,7 @@
             </div>
 
             <div class="modal-body">
-                <table class="table table-bordered table-striped">
+                <table id="tablaRutas" class="table table-bordered table-striped">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
@@ -268,7 +273,7 @@
             </div>
 
             <div class="modal-body">
-                <table class="table table-bordered table-striped">
+                <table id="tablaMarcas" class="table table-bordered table-striped">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
@@ -657,5 +662,15 @@
             });
     });
 
+    $('#tablaRutas').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+        }
+    });
+    $('#tablaMarcas').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+        }
+    });
 </script>
 {% endblock %}

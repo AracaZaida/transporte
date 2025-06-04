@@ -101,17 +101,21 @@
           </li>
           {% endif %}
 
+          {% if user.rol == "administrador" or user.rol == "tecnico" %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="tramitesDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               TRAMITES
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="tramitesDropdown">
-              {% if user.rol == "administrador" or user.rol == "super_admin" %}
+              {% if user.rol == "administrador"%}
               <li><a class="dropdown-item" href="{% url 'crearTramite' %}">📄 Registrar trámite</a></li>
               {% endif %}
+              {% if user.rol == "administrador" or user.rol == "tecnico" %}
               <li><a class="dropdown-item" href="{% url 'listarTramite' %}">📂 Trámites ingresados</a></li>
-              {% if user.rol == "administrador" or user.rol == "super_admin" %}
+              {% endif %}
+
+              {% if user.rol == "administrador"%}
               <li><a class="dropdown-item" href="{% url 'verificadoTramite' %}">✅ Trámites verificados</a></li>
 
               <li><a class="dropdown-item" href="{% url 'observadosramite' %}">⚠️ Trámites observados</a></li>
@@ -119,20 +123,21 @@
               {% endif %}
             </ul>
           </li>
-
-          {% if user.rol == "administrador" or user.rol == "super_admin" %}
+          {% endif %}
+          {% if user.rol == "administrador" %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listarFedeacion' %}">FEDERACIONES</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listarOperador' %}">OPERADORES</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'ayuda' %}">AYUDA</a>
-          </li>
+
           {% endif %}
 
           {% if user.rol == "super_admin" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ayuda' %}">AYUDA</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listarCosto' %}">COSTO</a>
           </li>
