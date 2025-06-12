@@ -385,7 +385,7 @@ def dibujar_encabezado(p, width, height, margin):
     x_logo_der = width - margin - ancho_logo
     
     
-    p.drawImage(ruta_logo_izq, x_logo_izq, y_logo_centrado - 5, width=50, height=60, mask='auto')
+    p.drawImage(ruta_logo_izq, x_logo_izq, y_logo_centrado - 5, width=55, height=70, mask='auto')
     p.drawImage(ruta_logo_der, x_logo_der, y_logo_centrado, width=ancho_logo, height=alto_logo, mask='auto')
     
     
@@ -566,7 +566,7 @@ def generar_licencia_pdf(request, id):
    <style>
   
    @page {{
-    size: 8cm 11cm;
+    size: 7cm 10cm;
     margin: 1cm 0.5cm 0.5cm 0.5cm;
 }}
 
@@ -580,35 +580,35 @@ def generar_licencia_pdf(request, id):
 
     .titulo {{
         font-weight: bold;
-        font-size: 6px;
-        padding: 2px;
+        font-size: 5px;
+        
         text-align: center;
     }}
 
     .operador {{
         font-weight: bold;
         border: 1px solid black;
-        padding: 2px;
-        font-size: 5px;
+        
+        font-size: 4px;
         text-align: center;
     }}
 
     .info-cell {{
-        font-size: 5px;
-        padding: 1px;
+        font-size: 4px;
+        
         text-align: center;
     }}
 
     .firma-cell {{
         border: none;
         text-align: center;
-        font-size: 5px;
-        padding: 2px;
+        font-size: 4px;
+        padding: 1px;
     }}
 
     .qr {{
         text-align: center;
-        width: 25%;
+        width: 20%;
     }}
 
     .no-border {{
@@ -631,7 +631,8 @@ def generar_licencia_pdf(request, id):
 
     td, th {{
         border: 1px solid #000;
-        padding: 2px;
+        box-sizing: border-box;
+        padding: 1px;
         vertical-align: top;
         text-align: center;
     }}
@@ -649,7 +650,7 @@ def generar_licencia_pdf(request, id):
             </td>
             <td rowspan="4" class="qr">
                 <img src="data:image/png;base64,{qr_base64}" width="70"><br>
-                <div style="font-size: 12px; font-weight: bold; margin-top: 2px;">{str(detalle.vehiculo.placa).upper()}</div>
+                <div style="font-size: 10px; font-weight: bold; margin-top: 1px;">{str(detalle.vehiculo.placa).upper()}</div>
             </td>
         </tr>
         <tr>
@@ -672,7 +673,7 @@ def generar_licencia_pdf(request, id):
         </tr>
         <tr>
             <td colspan="5" class="info-cell">
-                <strong>FECHA DE VALIDEZ: </strong> {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}
+                <strong>FECHA DE VALIDEZ:<br></strong> {detalle.tramite.fecha_validezI} al {detalle.tramite.fecha_validezF}
             </td>
         </tr>
         <tr>
