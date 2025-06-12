@@ -20,8 +20,11 @@
     }
 
     body {
+      background-image: url('static/imagen/d.png');
+      
+      background-size: cover;
+   
       background: linear-gradient(135deg, #f7f4f3, #d32405);
-      /* fondo suave hacia rojo */
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
@@ -29,6 +32,7 @@
 
     /* Estilo personalizado para la barra de navegación */
     .navbar-custom {
+       background-image: url('static/imagen/fondo.svg');
       background: linear-gradient(135deg, #968683, #d32405);
       /* colores similares al fondo */
     }
@@ -44,10 +48,10 @@
     .navbar-custom .dropdown-item:hover {
       background-color: rgba(255, 255, 255, 0.15);
       color: #ffe6e1;
-      /* tono claro que combina con el degradado */
+      
     }
 
-    /* Estilo para el menú desplegable */
+    
     .dropdown-menu {
       background-color: #f8f9fa;
       border: none;
@@ -101,21 +105,17 @@
           </li>
           {% endif %}
 
-          {% if user.rol == "administrador" or user.rol == "tecnico" %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="tramitesDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               TRAMITES
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="tramitesDropdown">
-              {% if user.rol == "administrador"%}
+              {% if user.rol == "administrador" or user.rol == "super_admin" %}
               <li><a class="dropdown-item" href="{% url 'crearTramite' %}">📄 Registrar trámite</a></li>
               {% endif %}
-              {% if user.rol == "administrador" or user.rol == "tecnico" %}
               <li><a class="dropdown-item" href="{% url 'listarTramite' %}">📂 Trámites ingresados</a></li>
-              {% endif %}
-
-              {% if user.rol == "administrador"%}
+              {% if user.rol == "administrador" or user.rol == "super_admin" %}
               <li><a class="dropdown-item" href="{% url 'verificadoTramite' %}">✅ Trámites verificados</a></li>
 
               <li><a class="dropdown-item" href="{% url 'observadosramite' %}">⚠️ Trámites observados</a></li>
@@ -123,23 +123,16 @@
               {% endif %}
             </ul>
           </li>
-          {% endif %}
-          {% if user.rol == "administrador" %}
+
+          {% if user.rol == "administrador" or user.rol == "super_admin" %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listarFedeacion' %}">FEDERACIONES</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listarOperador' %}">OPERADORES</a>
           </li>
-
-          {% endif %}
-
-          {% if user.rol == "super_admin" %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'ayuda' %}">AYUDA</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'listarCosto' %}">COSTO</a>
           </li>
           {% endif %}
 
