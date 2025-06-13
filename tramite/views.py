@@ -366,6 +366,32 @@ def tramitesVigentes(request):
 
     return render(request, 'tramite/tramitesVigentes.html', context)
 
+@login_required
+def tramitesNoVigentes(request):
+    resultado = verificarRol(request, ['super_admin','administrador'])
+    if resultado is not True:
+        return resultado
+    today = datetime.today() 
+
+    filtros = {
+        'flag': 'nuevo',
+        'estado': 'verificado',
+        'fecha_validezI__lte': today,  
+        'fecha_validezF__gte': today,
+    }
+
+    tramites = Tramite.objects.filter(**filtros)
+
+    paginator = Paginator(tramites, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+    }
+
+    return render(request, 'tramite/tramitesVigentes.html', context)
+
 def dibujar_encabezado(p, width, height, margin):
     # Calcular el centro vertical del encabezado
     altura_encabezado = 80  # Altura total del área de encabezado
@@ -743,5 +769,4 @@ def eliminarCosto(request, id):
 
 def listarCosto(request):
     costo= Costo.objects.filter(flag='nuevo')
-   
     return render(request, 'costo/listar.html', {'costo':costo})
