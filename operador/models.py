@@ -9,6 +9,7 @@ class Operador(models.Model):
     celular=models.CharField(max_length=100, blank=False, null=False)
     federacion = models.ForeignKey(Federacion, on_delete=models.CASCADE, blank=False, null=False)
     fecha_creacion = models.DateField(auto_now_add=True)
+    region=models.CharField(max_length=255, null=True, blank=True)
     flag=models.CharField(max_length=20,
         choices=[('nuevo', 'nuevo'), ('eliminado', 'eliminado')],
         default='nuevo')

@@ -4,7 +4,7 @@ from operador.models import Operador
 class OperadorF(forms.ModelForm):
     class Meta:
         model = Operador
-        fields = ['nombre', 'direccion', 'celular', 'federacion']
+        fields = ['nombre', 'direccion', 'celular','region', 'federacion']
         widgets = {
             'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -17,6 +17,10 @@ class OperadorF(forms.ModelForm):
             'celular': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ingrese el número de celular'
+            }),
+            'region': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ingrese la region'
             }),
             'federacion': forms.Select(attrs={
                 'class': 'form-select'
