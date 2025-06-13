@@ -1,0 +1,683 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<div class="container mt-5">
+    <!--<button class="btn btn-info btn-lg text-white" data-bs-toggle="modal" data-bs-target="#modalAfiliados">
+        Ver Afiliados
+    </button> -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header text-white" style="background-color: #FB8257;">
+            <h5 class="mb-0 text-center">Datos</h5>
+        </div>
+
+        <div class="card-body">
+            <!-- <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Nombre:</strong> {{ tramite.afiliado.nombre }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Apellido:</strong> {{ tramite.afiliado.apellido }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Dirección:</strong> {{ tramite.afiliado.direccion }}
+                </div>
+            </div> -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Número de Trámite:</strong> {{ tramite.numero_tramite }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Fecha:</strong> {{ tramite.fecha_creacion }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Usuario:</strong> {{ tramite.usuario.username }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Federación:</strong> {{ tramite.operador.federacion.nombre }}
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Fecha de validez:</strong> {{ tramite.fecha_validezI }} - {{ tramite.fecha_validezF }}
+                </div>
+            </div>
+        </div>
+
+        </button>
+
+
+    </div>
+
+    <!-- Formulario del Vehículo -->
+
+    <form method="POST" action="#">
+        {% csrf_token %}
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header text-white" style="background-color: #87D4C8;">
+                <h5 class="mb-0 text-center">Formulario del Vehículo</h5>
+            </div>
+
+            <div class="card-body">
+                <input type="hidden" id="idTramite" value="{{ tramite.id }}">
+                <input type="hidden" name="afiliado_id" id="afiliado_id">
+
+                <!-- Fila 1 -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="afiliado" class="form-label"><strong>Propietario</strong></label>
+                        <input type="text" class="form-control" required id="afiliado" name="afiliado"
+                            style="text-transform: capitalize;">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="placa" class="form-label"><strong>Placa</strong></label>
+                        <input type="text" class="form-control" required id="placa" name="placa">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="tipo_transporte" class="form-label"><strong>Tipo de Transporte</strong></label>
+                        <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
+                            <option value="" disabled selected>una opción</option>
+                            <option value="Pasajeros">Pasajeros</option>
+                            <option value="Carga">Carga</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="costo_tarjeta" class="form-label"><strong>Costo de Tarjeta</strong></label>
+                        <input type="number" class="form-control" required id="costo_tarjeta" name="costo_tarjeta"
+                            step="0.01" min="0" value="{{costo}}" readonly>
+                    </div>
+                </div>
+
+                <!-- Fila 2 -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="modelo" class="form-label"><strong>Modelo</strong></label>
+                        <input type="text" required class="form-control" id="modelo" name="modelo">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="capacidad" class="form-label"><strong>Capacidad</strong></label>
+                        <input type="number" required class="form-control" id="capacidad" name="capacidad">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="chasis" class="form-label"><strong>Número de Chasis</strong></label>
+                        <input type="text" required class="form-control" id="chasis" name="chasis">
+                    </div>
+                </div>
+
+                <!-- Fila 3 -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="tipo_tarjeta" class="form-label"><strong>Tipo de Tarjeta</strong></label>
+                        <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
+                            <option selected disabled>Seleccionar tipo...</option>
+                            <option value="InterProvincial">InterProvincial</option>
+                            <option value="InterProvincial ATL">InterProvincial ATL</option>
+                            <option value="InterProvincial Confederado">InterProvincial Confederado</option>
+                            <option value="InterProv Confederado SCZ">InterProv Confederado SCZ</option>
+                            <option value="InterProvincial Coopertivas">InterProvincial Coopertivas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+
+                        <label for="marca" class="form-label">Marca</label>
+                        <input type="text" required class="form-control" id="marca" name="marca" disabled>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="ruta_nombre_mostrar" class="form-label"><strong>Ruta Seleccionada</strong></label>
+                        <input type="text" hidden readonly class="form-control" id="ruta_nombre_mostrar" required>
+                        <div id="rutas_seleccionadas_lista" class="mt-2"></div>
+                    </div>
+                </div>
+
+                <!-- Fila 4 (botones) -->
+                <div class="row mb-3">
+                    <div class="col-md-2 d-grid">
+                        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#modalRuta1">
+                            <strong>Listar Rutas</strong>
+                        </button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+
+
+                        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#modalRuta"><strong>Añadir Ruta</strong>
+
+                        </button>
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn w-100" 
+        style="background-color: #F8C170; border-color: #F8C170; color: #000;" 
+        data-bs-toggle="modal" data-bs-target="#modalMarca1">
+   <strong> Listar Marcas</strong>
+</button>
+
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn w-100" style="background-color: #F8C170;"
+                            data-bs-toggle="modal" data-bs-target="#modalMarca">
+                            <strong>Añadir marca</strong>
+                        </button>
+                    </div>
+
+                </div>
+
+                <input type="hidden" id="ruta_id" name="ruta_id">
+
+                <div class="text-end">
+    <button type="button" id="registrar" class="btn btn-success"
+            style="background-color: #AAC85F; border-color: #AAC85F;">
+        Registrar
+    </button>
+</div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+<!-- Modal: Añadir Ruta -->
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header" style="background-color: #FB8257;">
+                <h5 class="modal-title" id="modalMarcaLabel"><strong>Añadir Marca</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form id="formMarca">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label"><strong>Nombre de la marca</strong></label>
+                        <input class="form-control" id="nombre_marca" name="nombre_marca" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <button type="submit" class="btn text-white" style="background-color: #AAC85F;">Guardar
+                        Marca</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Añadir Ruta -->
+<div class="modal fade" id="modalRuta" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header" style="background-color: #F8C170; color: black;">
+                <h5 class="modal-title" id="modalRutaLabel">Añadir Ruta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <form id="formRuta">
+                <div class="modal-body">
+                    <div class="mb-3">
+
+                        <label for="nombre" class="form-label"><strong>Nombre de la Ruta</strong></label>
+                        <textarea class="form-control" id="nombre_ruta" name="nombre_ruta" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" style="background-color: #AAC85F; color: white; border: none;"
+                        class="btn">Guardar Ruta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Listar Rutas -->
+<div class="modal fade" id="modalRuta1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #F8C170; color: black;">
+                <h5 class="modal-title">Rutas Autorizadas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <table id="tablaRutas" class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_rutas_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMarca1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #FB8257;">
+                <h5 class="modal-title"><strong>Marcas</strong></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <table id="tablaMarcas" class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_marca_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalAfiliados" tabindex="-1" aria-labelledby="modalAfiliadosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalAfiliadosLabel">Listado de Afiliados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Carnet</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Celular</th>
+                            <th>Dirección</th>
+                            <th>Federación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for afiliado in afiliados %}
+                        <tr>
+                            <td>{{ afiliado.carnet }}</td>
+                            <td>{{ afiliado.nombre }}</td>
+                            <td>{{ afiliado.apellido }}</td>
+                            <td>{{ afiliado.celular }}</td>
+                            <td>{{ afiliado.direccion }}</td>
+                            <td>{{ afiliado.federacion.nombre }}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-success seleccionar-afiliado"
+                                    data-id="{{ afiliado.id }}"
+                                    data-nombre="{{ afiliado.nombre }} {{ afiliado.apellido }}" data-bs-dismiss="modal">
+                                    Seleccionar
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No hay afiliados registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <table id="tablaRegistros" class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Afiliado ID</th>
+                <th>Placa</th>
+                <th>Tipo de Transporte</th>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Chasis</th>
+                <!--<th>Tipo de Servicio</th>-->
+                <th>Capacidad</th>
+                <th>Ruta</th>
+                <th>tipo tarjeta</th>
+                <th>costo tarjeta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se agregarán las filas -->
+        </tbody>
+
+    </table>
+
+    <div style="text-align: center;">
+  <button type="submit" id="guardar" class="btn" style="background-color: #AAC85F; color: white;">Guardar</button>
+</div>
+
+</div>
+
+
+
+{% endblock %}
+{% block js %}
+
+<script>
+    let dataTarjeta = []
+
+
+
+    document.getElementById('registrar').addEventListener('click', function (e) {
+
+        e.preventDefault();
+        //const afiliado_id = document.getElementById('afiliado_id').value;
+        // const afiliadoSeleccionado = document.getElementById('afiliadoSeleccionado').textContent;
+        const afiliado = document.getElementById('afiliado').value;
+        const placa = document.getElementById('placa').value;
+        const tipo_transporte = document.getElementById('tipo_transporte').value;
+        const modelo = document.getElementById('modelo').value;
+        const marca = document.getElementById('marca').value;
+        const chasis = document.getElementById('chasis').value;
+        const tipoTarjeta = document.getElementById("tipo_tarjeta").value;
+        //const tipo_servicio = document.getElementById('tipo_servicio').value;
+        const capacidad = document.getElementById('capacidad').value;
+        const ruta_nombre_mostrar = document.getElementById('ruta_nombre_mostrar').value;
+        const ruta_id = document.getElementById('ruta_id').value;
+        const costo_tarjeta = document.getElementById('costo_tarjeta').value;
+        if (!costo_tarjeta || !afiliado || !placa || !tipo_transporte || !modelo || !marca || !chasis || !capacidad || !ruta_nombre_mostrar || !ruta_id) {
+            alert("Por favor, complete todos los campos obligatorios.");
+            return;
+        }
+        const data = {
+            //afiliadoSeleccionado,
+            //afiliado_id,
+            tipoTarjeta,
+            afiliado,
+            placa,
+            tipo_transporte,
+            modelo,
+            marca,
+            chasis,
+            costo_tarjeta,
+            // tipo_servicio,
+            capacidad,
+            ruta_nombre_mostrar,
+            ruta_id
+        }
+        dataTarjeta.push(data)
+        actualizarTabla()
+    });
+    function actualizarTabla() {
+
+        const tablaBody = document.querySelector('#tablaRegistros tbody');
+        tablaBody.innerHTML = '';
+
+
+        dataTarjeta.forEach(item => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+            <td>${item.afiliado}</td>
+            <td>${item.placa}</td>
+            <td>${item.tipo_transporte}</td>
+            <td>${item.modelo}</td>
+            <td>${item.marca}</td>
+            <td>${item.chasis}</td>
+           
+            <td>${item.capacidad}</td>
+            <td>${item.ruta_nombre_mostrar}</td>
+                    <td>${item.tipoTarjeta}</td>
+                     <td>${item.costo_tarjeta}</td>
+            <td><button class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
+        `;
+            tablaBody.appendChild(fila);
+        });
+    }
+
+    function eliminarFila(button) {
+
+        const fila = button.closest('tr');
+
+        const index = Array.from(fila.parentNode.children).indexOf(fila);
+
+
+        dataTarjeta.splice(index, 1);
+
+
+        actualizarTabla();
+    }
+
+    document.getElementById('guardar').addEventListener('click', function (e) {
+        const idTramite = document.getElementById('idTramite').value;
+
+        // Genera la URL correctamente en Django
+        const url = "{% url 'tarjeta_tramite' id=0 %}".replace('0', idTramite);
+        axios.post(url, dataTarjeta, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.status === 201) {
+                    alert('guardada correctamente');
+                    window.location.href = "{% url 'verificadoTramite' %}"
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+
+    });
+
+
+    document.querySelectorAll('.seleccionar-afiliado').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            document.getElementById('afiliado_id').value = id;
+            document.getElementById('afiliadoSeleccionado').textContent = nombre;
+        });
+    });
+
+    document.getElementById('formRuta').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre_ruta').value;
+        console.log('rura', nombre);
+
+        axios.post("{% url 'crearRuta' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.data.estatus === 201) {
+                    alert('Ruta guardada correctamente');
+                    document.getElementById('formRuta').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalRuta')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+
+
+    document.getElementById('formMarca').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre_marca').value;
+        console.log('marca', nombre);
+
+        axios.post("{% url 'crearMarca' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.data.estatus === 201) {
+                    alert('Marca guardada correctamente');
+                    document.getElementById('formMarca').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalMarca')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+
+
+
+    const rutasSeleccionadas = [];
+    function renderizarRutasSeleccionadas() {
+        const contenedor = document.getElementById('rutas_seleccionadas_lista');
+        contenedor.innerHTML = '';
+
+        rutasSeleccionadas.forEach((ruta, index) => {
+            const rutaDiv = document.createElement('div');
+            rutaDiv.classList.add('d-flex', 'align-items-center', 'mb-1');
+            rutaDiv.innerHTML = `
+            <span class="me-2">${ruta}</span>
+            <button class="btn btn-sm btn-danger eliminar-ruta" data-index="${index}">Eliminar</button>
+        `;
+            contenedor.appendChild(rutaDiv);
+        });
+
+        // Mostrar en input también
+        document.getElementById('ruta_nombre_mostrar').value = rutasSeleccionadas.join(', ');
+
+        // Botones de eliminar
+        document.querySelectorAll('.eliminar-ruta').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const index = parseInt(this.getAttribute('data-index'));
+                rutasSeleccionadas.splice(index, 1); // Elimina del array
+                renderizarRutasSeleccionadas(); // Redibuja
+            });
+        });
+    }
+
+    document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarRuta' %}")
+            .then(response => {
+                const rutas = response.data;
+                const tbody = document.getElementById('tabla_rutas_body');
+                tbody.innerHTML = '';
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-ruta" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rutaId = this.getAttribute('data-id');
+                        const rutaNombre = this.getAttribute('data-nombre');
+
+                        // Guardar último seleccionado (opcional)
+                        document.getElementById('ruta_id').value = rutaId;
+
+                        // Agregar si no está ya en la lista
+                        if (!rutasSeleccionadas.includes(rutaNombre)) {
+                            rutasSeleccionadas.push(rutaNombre);
+                            renderizarRutasSeleccionadas();
+                        }
+
+                        bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+
+
+    document.getElementById('modalMarca1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarMarcas' %}")
+            .then(response => {
+                const rutas = response.data;
+
+
+                const tbody = document.getElementById('tabla_marca_body');
+                tbody.innerHTML = '';
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-marca" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.seleccionar-marca').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rutaId = this.getAttribute('data-id');
+                        const marcaNombre = this.getAttribute('data-nombre');
+
+                        //document.getElementById('ruta_id').value = rutaId;
+                        document.getElementById('marca').value = marcaNombre;
+
+
+                        bootstrap.Modal.getInstance(document.getElementById('modalMarca1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+
+    $('#tablaRutas').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+        }
+    });
+    $('#tablaMarcas').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+        }
+    });
+</script>
+{% endblock %}

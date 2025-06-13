@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Información del Afiliado -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header" style="background-color: #DC3545; color: white;">
+    <h5 class="mb-0 text-center"><strong>Datos</strong></h5>
+</div>
+
+        <div class="card-body">
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Número de Trámite:</strong> {{ tramite.tramite.numero_tramite }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Fecha:</strong> {{ tramite.fecha_creacion }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Usuario:</strong> {{ tramite.tramite.usuario.username }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Federación:</strong> {{ tramite.tramite.operador.federacion.nombre }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Fecha de validez:</strong> {{ tramite.tramite.fecha_validezI }} -
+                    {{tramite.tramite.fecha_validezF }}
+                </div>
+            </div>
+        </div>
+ 
+
+    </div>
+
+    <!-- Formulario del Vehículo -->
+    <form method="POST" action="#">
+        {% csrf_token %}
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Formulario del Vehículo</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="placa" class="form-label">Propietario</label>
+                        <input type="text"  value="{{ tramite.afiliado }}" class="form-control" required id="afiliado"
+                            name="afiliado"   {% if user.rol == "super_admin" %}readonly{% endif %}>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="placa" class="form-label">Placa</label>
+                        <input type="text" value="{{ tramite.vehiculo.placa }}" class="form-control" required id="placa"
+                            name="placa" {% if user.rol == "super_admin" %}readonly{% endif %}>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
+                    
+                        {% if user.rol == "super_admin" %}
+                        <select class="form-control" id="tipo_transporte" name="tipo_transporte" disabled>
+                            <option value="" {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>Seleccione una opción</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros
+                            </option>
+                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>Carga</option>
+                        </select>
+                        <!-- Campo oculto para enviar el valor al backend -->
+                        <input type="hidden" name="tipo_transporte" value="{{ tramite.vehiculo.tipo_transporte }}">
+                        {% else %}
+                        <select class="form-control" required id="tipo_transporte" name="tipo_transporte">
+                            <option value="" {% if not tramite.vehiculo.tipo_transporte %}selected{% endif %}>Seleccione una opción</option>
+                            <option value="Pasajeros" {% if tramite.vehiculo.tipo_transporte == "Pasajeros" %}selected{% endif %}>Pasajeros
+                            </option>
+                            <option value="Carga" {% if tramite.vehiculo.tipo_transporte == "Carga" %}selected{% endif %}>Carga</option>
+                        </select>
+                        {% endif %}
+                    </div>
+                    
+
+            <!-- Fila 2 -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" required class="form-control" id="modelo" name="modelo"
+                        value="{{ tramite.vehiculo.modelo }}" {% if user.rol == "super_admin" %}readonly{% endif %}>
+                </div>
+                <div class="col-md-4">
+                    <label for="costo_tarjeta" class="form-label">Costo de Tarjeta</label>
+                    <input type="number" step="0.01" min="0" value="{{ tramite.costo_tarjeta }}" required
+                        class="form-control" id="costo_tarjeta" name="costo_tarjeta" {% if user.rol == "administrador" %}readonly{% endif %}>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="chasis" class="form-label">Número de Chasis</label>
+                    <input type="text" value="{{ tramite.vehiculo.chasis }}" required class="form-control" id="chasis"
+                        name="chasis" {% if user.rol == "super_admin" %}readonly{% endif %} {% if user.rol == "super_admin" %}readonly{% endif %}>
+                </div>
+            </div>
+
+            <!-- Fila 3 -->
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta</label>
+                
+                    {% if user.rol == "super_admin" %}
+                    <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" disabled>
+                        <option value="" {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar tipo...</option>
+                        <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>
+                            InterProvincial</option>
+                        <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>
+                            InterProvincial ATL</option>
+                        <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado"%}selected{% endif %}>InterProvincial Confederado</option>
+                        <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{%endif %}>InterProvConfederado SCZ</option>
+                        <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial Coopertivas</option>
+                    </select>
+                    <!-- Campo oculto para enviar el valor -->
+                    <input type="hidden" name="tipo_tarjeta" value="{{ tramite.tipo_tarjeta }}">
+                    {% else %}
+                    <select name="tipo_tarjeta" id="tipo_tarjeta" class="form-select" required>
+                        <option value="" {% if not tramite.tipo_tarjeta %}selected{% endif %}>Seleccionar tipo...</option>
+                        <option value="InterProvincial" {% if tramite.tipo_tarjeta == "InterProvincial" %}selected{% endif %}>
+                            InterProvincial</option>
+                        <option value="InterProvincial ATL" {% if tramite.tipo_tarjeta == "InterProvincial ATL" %}selected{% endif %}>
+                            InterProvincial ATL</option>
+                        <option value="InterProvincial Confederado" {% if tramite.tipo_tarjeta == "InterProvincial Confederado" %}selected{% endif %}>InterProvincial Confederado</option>
+                        <option value="InterProv Confederado SCZ" {% if tramite.tipo_tarjeta == "InterProv Confederado SCZ" %}selected{%endif %}>InterProvConfederado SCZ</option>
+                        <option value="InterProvincial Coopertivas" {% if tramite.tipo_tarjeta == "InterProvincial Coopertivas" %}selected{% endif %}>InterProvincial Coopertivas</option>
+                    </select>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="capacidad" class="form-label">Capacidad</label>
+                    <input type="number" value="{{ tramite.vehiculo.capacidad }}" required class="form-control"
+                        id="capacidad" name="capacidad" {% if user.rol == "super_admin" %}readonly{% endif %}>
+                </div>
+                <div class="col-md-4">
+                    <label for="marca" class="form-label">Marca</label>
+                    <input type="text" readonly value="{{ tramite.vehiculo.marca }}" required class="form-control"
+                        id="marca" name="marca" {% if user.rol == "super_admin" %}readonly{% endif %}>
+                </div>
+            </div>
+           
+                    <div class="col-md-4">
+                        <label class="form-label">Ruta Seleccionada</label>
+
+                        <input type="text" readonly class="form-control" name="rutas" id="ruta_nombre_mostrar"
+                            value="{{tramite.rutas}}" required {% if user.rol == "super_admin" %}readonly{% endif %}>
+                        <div id="rutas_seleccionadas_lista" class="mt-2">
+                        </div>
+                    </div>
+                {% if user.rol != "super_admin" %}
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn" style="background-color: #FB8257; color: white; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#modalRuta">
+                            Añadir Ruta
+                        </button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" style="background-color: #87D4C8;" data-bs-toggle="modal"
+                            data-bs-target="#modalRuta1">
+                            Listar Rutas 
+                        </button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary w-100" style="background-color: #87D4C8;" data-bs-toggle="modal"
+                            data-bs-target="#modalMarca1">
+                            Listar Marcas
+                        </button>
+                    </div>
+                   
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn" style="background-color: #F8C170; color: black; border: none;" data-bs-toggle="modal"
+                            data-bs-target="#modalMarca">
+                            Añadir marca </button>
+                    </div>
+                 
+                    
+                    <input value="{{tramite.rutas.id}}" type="hidden" id="ruta_id" name="ruta_id">
+                    {% endif %}
+                </div>
+
+            <div class="text-end">
+                <button type="submit" style="background-color: #AAC85F;" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+</div>
+<!-- Modal: Añadir Ruta -->
+<div class="modal fade" id="modalRuta" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header" style="background-color: #87D4C8; border-color: #87D4C8;">
+                <h5 class="modal-title"  id="modalRutaLabel" >Añadir Ruta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" ></button>
+            </div>
+
+            <form id="formRuta">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label"><strong>Nombre de la Ruta</strong></label>
+                        <textarea class="form-control" id="nombre" name="nombre" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" style="background-color: #AAC85F;" class="btn btn-primary">Guardar Ruta</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMarca1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #87D4C8; border-color: #87D4C8;">
+                <h5 class="modal-title" >Marcas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_marca_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal: Listar Rutas -->
+<div class="modal fade" id="modalRuta1" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #87D4C8; border-color: #87D4C8;">
+                <h5 class="modal-title">Rutas Autorizadas</h5>
+                <button type="button" style="background-color: #AAC85F; border-color: #AAC85F;" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla_rutas_body">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="modalRutaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header" style="background-color: #87D4C8; border-color: #87D4C8;">
+                <h5 class="modal-title"  id="modalMarcaLabel">Añadir Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form id="formMarca">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label"><strong>Nombre de la marca</strong></label>
+                        <input class="form-control" id="nombre_marca" name="nombre_marca" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" style="background-color: #AAC85F;" class="btn btn-primary">Guardar Marca</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Crear ruta
+    document.getElementById('formRuta').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value;
+        axios.post("{% url 'crearRuta' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.data.estatus === 201) {
+                    alert('Ruta guardada correctamente');
+                    document.getElementById('formRuta').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalRuta')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+    const rutasSeleccionadas = [];
+    function renderizarRutasSeleccionadas() {
+        const contenedor = document.getElementById('rutas_seleccionadas_lista');
+        contenedor.innerHTML = '';
+
+        rutasSeleccionadas.forEach((ruta, index) => {
+            const rutaDiv = document.createElement('div');
+            rutaDiv.classList.add('d-flex', 'align-items-center', 'mb-1');
+            rutaDiv.innerHTML = `
+            <span class="me-2">${ruta}</span>
+            <button class="btn btn-sm btn-danger eliminar-ruta" data-index="${index}">Eliminar</button>
+        `;
+            contenedor.appendChild(rutaDiv);
+        });
+
+        // Mostrar en input también
+        document.getElementById('ruta_nombre_mostrar').value = rutasSeleccionadas.join(' - ');
+
+        // Botones de eliminar
+        document.querySelectorAll('.eliminar-ruta').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const index = parseInt(this.getAttribute('data-index'));
+                rutasSeleccionadas.splice(index, 1); // Elimina del array
+                renderizarRutasSeleccionadas(); // Redibuja
+            });
+        });
+    }
+
+    document.getElementById('modalRuta1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarRuta' %}")
+            .then(response => {
+                const rutas = response.data;
+                const tbody = document.getElementById('tabla_rutas_body');
+                tbody.innerHTML = '';
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-ruta" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.seleccionar-ruta').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rutaId = this.getAttribute('data-id');
+                        const rutaNombre = this.getAttribute('data-nombre');
+
+                        // Guardar último seleccionado (opcional)
+                        document.getElementById('ruta_id').value = rutaId;
+
+                        // Agregar si no está ya en la lista
+                        if (!rutasSeleccionadas.includes(rutaNombre)) {
+                            rutasSeleccionadas.push(rutaNombre);
+                            renderizarRutasSeleccionadas();
+                        }
+
+                        bootstrap.Modal.getInstance(document.getElementById('modalRuta1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+
+
+    document.getElementById('formMarca').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre_marca').value;
+        console.log('marca', nombre);
+
+        axios.post("{% url 'crearMarca' %}", {
+            nombre: nombre
+        }, {
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                console.log(response);
+
+                if (response.data.estatus === 201) {
+                    alert('Marca guardada correctamente');
+                    document.getElementById('formMarca').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('modalMarca')).hide();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Hubo un error al guardar la ruta');
+            });
+    });
+
+    document.getElementById('modalMarca1').addEventListener('show.bs.modal', function () {
+        axios.get("{% url 'listarMarcas' %}")
+            .then(response => {
+                const rutas = response.data;
+
+
+                const tbody = document.getElementById('tabla_marca_body');
+                tbody.innerHTML = '';
+
+                rutas.forEach((ruta, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ruta.nombre}</td>
+                    <td><button class="btn btn-sm btn-success seleccionar-marca" data-id="${ruta.id}" data-nombre="${ruta.nombre}">Seleccionar</button></td>
+                `;
+                    tbody.appendChild(row);
+                });
+
+                document.querySelectorAll('.seleccionar-marca').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const rutaId = this.getAttribute('data-id');
+                        const marcaNombre = this.getAttribute('data-nombre');
+
+                        //document.getElementById('ruta_id').value = rutaId;
+                        document.getElementById('marca').value = marcaNombre;
+
+
+                        bootstrap.Modal.getInstance(document.getElementById('modalMarca1')).hide();
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Error al cargar las rutas:", error);
+            });
+    });
+</script>
+{% endblock %}

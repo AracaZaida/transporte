@@ -1,80 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Mi Sitio{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}SISTEMA DE TRANSPORTE{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <style>
+    /* Estilos generales para html y body */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-image: url('static/imagen/d.png');
+      
+      background-size: cover;
+   
+      background: linear-gradient(135deg, #f7f4f3, #d32405);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    /* Estilo personalizado para la barra de navegación */
+    .navbar-custom {
+       background-image: url('static/imagen/fondo.svg');
+      background: linear-gradient(135deg, #968683, #d32405);
+      /* colores similares al fondo */
+    }
+
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link,
+    .navbar-custom .dropdown-toggle {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .navbar-custom .nav-link:hover,
+    .navbar-custom .dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffe6e1;
+      
+    }
+
+    
+    .dropdown-menu {
+      background-color: #f8f9fa;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-item {
+      color: #2597d4;
+      /* rojo principal */
+      font-weight: 500;
+    }
+
+    .dropdown-item:hover {
+      background-color: #d32405;
+      color: white;
+    }
+
+    /* Espaciado principal */
+    main.container {
+      padding-top: 30px;
+    }
+  </style>
 </head>
 
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #b3ccb3;
-    }
-
-    .sidebar-custom {
-        background-color: rgb(187, 238, 191);
-    }
-
-    .sidebar-custom .nav-link {
-        color: #000; /* negro para buen contraste */
-    }
-
-    .sidebar-custom .nav-link:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-    }
-</style>
-
 <body>
+  <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid">
-        <div class="row">
 
-            <button class="btn btn-primary d-lg-none m-3" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#sidebar" aria-controls="sidebar">
-                ☰ Menú
-            </button>
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'imagen/ESCUDO TEXTO NEGRO HORIZONTAL.png' %}" alt="Login Icon" width="150" height="50"
+          class="d-inline-block align-text-top">
+        <strong></strong>
+      </a>
 
-            <!-- Sidebar de escritorio -->
-            <div class="col-lg-2 d-none d-lg-block vh-100 p-3 sidebar-custom">
-                <h5> ☰ Menú</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a href="" class="nav-link">🏠 Inicio</a></li>
-                    <li class="nav-item"><a href="{% url 'listarUsuario' %}" class="nav-link">usuarios</a></li>
-                    <li class="nav-item"><a href="{% url 'listaVehiculo' %}" class="nav-link">vehiculo</a></li>
-                    <li class="nav-item"><a href="{% url 'afiliadoLista' %}" class="nav-link">afiliados</a></li>
-                    <li class="nav-item"><a href="{% url 'listarTramite' %}" class="nav-link">tramite</a></li>
-                    
-                    <li class="nav-item"><a href="{% url 'listarFedeacion' %}" class="nav-link">Federaciones</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">⚙ Configuración</a></li>
-                </ul>
-            </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon bg-light rounded"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}">INICIO</a>
+          </li>
 
-            <!-- Sidebar en modo Offcanvas para móviles -->
-            <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
-                <div class="offcanvas-header">
-                    <h5 id="sidebarLabel">Menú</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link">🏠 Inicio</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">📄 Acerca de</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">📞 Contacto</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link">⚙ Configuración</a></li>
-                    </ul>
-                </div>
-            </div>
+          {% if user.rol == "super_admin" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listarUsuario' %}">USUARIOS</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listar_log' %}">BITACORA</a>
+          </li>
+          {% endif %}
 
-            <main class="col-lg-10 p-4">
-                {% block content %}
-                {% endblock %}
-            </main>
-        </div>
+{% if user.rol == "administrador" or user.rol == "tecnico" %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="tramitesDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              TRAMITES
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="tramitesDropdown">
+              {% if user.rol == "administrador"%}
+              <li><a class="dropdown-item" href="{% url 'crearTramite' %}">📄 Registrar trámite</a></li>
+              {% endif %}
+               {% if user.rol == "administrador" or user.rol == "tecnico" %}
+              <li><a class="dropdown-item" href="{% url 'listarTramite' %}">📂 Trámites ingresados</a></li>
+              {% endif %}
+              {% if user.rol == "administrador" %}
+              <li><a class="dropdown-item" href="{% url 'verificadoTramite' %}">✅ Trámites verificados</a></li>
+
+              <li><a class="dropdown-item" href="{% url 'observadosramite' %}">⚠️ Trámites observados</a></li>
+              <li><a class="dropdown-item" href="{% url 'tramitesVigentes' %}">✅ Trámites vigentes</a></li>
+              {% endif %}
+            </ul>
+          </li>
+{% endif %}
+          {% if user.rol == "administrador" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listarFedeacion' %}">FEDERACIONES</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listarOperador' %}">OPERADORES</a>
+          </li>
+        
+          
+
+          {% endif %}
+          {% if user.rol == "super_admin" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listarCosto' %}">CREAR COSTO</a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'ayuda' %}">AYUDA</a>
+          </li>
+
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">SALIR</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+  <main class="container">
+    {% block content %}
+    {% endblock %}
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+  {% block js %}
+  {% endblock %}
 </body>
+
 </html>

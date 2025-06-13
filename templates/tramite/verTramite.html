@@ -1,13 +1,79 @@
 {% extends "base.html" %}
+
 {% block content %}
 <form action="{% url 'verTramite' id %}" method="POST">
     {% csrf_token %}
-    <div class="row">
+    <div class="container mt-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header  text-white" style="background-color:  #F8C170;">
+                <h5 class="mb-0">Ver Trámite</h5>
+            </div>
+            <div class="card-body">
 
-        <div class="col-6">{{tramite}}</div>
+                <div class="row mb-3">
+                    <label for="fecha_validez" class="col-sm-3 col-form-label">Fecha de Validez</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="fecha_validez">{{ tramite.fecha_validezI }}
+                            -{{tramite.fecha_validezF }} </p>
+                    </div>
+                </div>
 
+
+                
+
+                <div class="row mb-3">
+                    <label for="tipo_tramite" class="col-sm-3 col-form-label">Tipo de Trámite</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="tipo_tramite">{{ tramite.tipo_tramite }}</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="numero_tramite" class="col-sm-3 col-form-label">Número de Trámite</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="numero_tramite">{{ tramite.numero_tramite }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="numero_tramite" class="col-sm-3 col-form-label">Fecha de Registro</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-plaintext" id="numero_tramite">
+                            {{ tramite.fecha_creacion|date:"d/m/Y" }}
+                        </p>
+                    </div>
+                </div>
+
+                {% if user.rol == "tecnico" %}
+                <div class="row mb-3">
+                    <label for="estado" class="col-sm-3 col-form-label">Estado</label>
+                    <div class="col-sm-9">
+                        <select class="form-select" id="estado" name="estado">
+                            <option value="verificado">
+                                Verificado</option>
+                            <option value="observado">Observado
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="detalles" class="col-sm-3 col-form-label">Detalles</label>
+                    <div class="col-sm-9">
+                        <textarea class="form-control" id="detalles" name="detalle"
+                            rows="3">{{ tramite.detalles }}</textarea>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                       <button id="guardar" class="btn btn-success"
+        style="background-color: #AAC85F; border-color: #AAC85F;">
+    Guardar
+</button>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <Button>guardad</Button>
 </form>
-
 {% endblock %}

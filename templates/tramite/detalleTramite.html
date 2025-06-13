@@ -4,88 +4,105 @@
 <div class="container my-5">
     <h2 class="text-center mb-4">📄 Detalle Completo del Trámite</h2>
 
-    <div class="card shadow rounded-4 border-0 p-4">
-        <!-- Sección: Afiliado -->
-        <div class="mb-4">
-            <h4 class="text-primary mb-3">👤 Afiliado</h4>
-            <div class="row">
-                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.vehiculo.afiliado.nombre }}</div>
-                <div class="col-md-4"><strong>CI:</strong> {{ tramite.vehiculo.afiliado.carnet }}</div>
-                <div class="col-md-4"><strong>celular:</strong> {{ tramite.vehiculo.afiliado.celular }}</div>
-            </div>
+    <div class="text-end mb-4">
+        <a href="{% url 'descargarDetalleCompleto' tramite.id %}" class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;">
+            📥 Descargar detalle completo
+        </a>
+        <button  class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;" onclick="printLicencias('{{ tramite.id }}')">
+            🖨️ Imprimir
+        </button>
+    </div>
+
+    {% for detalle_item in detalle %}
+    <div class="card shadow-sm rounded-4 border-0 mt-5 p-4">
+        <h5 class="text-secondary">🗂️ Detalle del Trámite N° {{ detalle_item.tramite.numero_tramite }}</h5>
+
+        <div class="text-end mb-3">
+            <a href="{% url 'editarTramite' detalle_item.id %}" class="btn btn-outline-info btn-sm">✏️ Editar</a>
         </div>
 
-        <div class="mb-4">
-            <h4 class="text-primary mb-3">👤 Federacion</h4>
-            <div class="row">
-                <div class="col-md-4"><strong>Nombre:</strong> {{ tramite.vehiculo.afiliado.federacion.nombre }}</div>
-                <div class="col-md-4"><strong>direccion:</strong> {{ tramite.vehiculo.afiliado.federacion.direccion }}
-                </div>
-                <div class="col-md-4"><strong>celular:</strong> {{ tramite.vehiculo.afiliado.federacion.celular }}</div>
-            </div>
-        </div>
-        <!-- Sección: Vehículo -->
-        <div class="mb-4">
-            <h4 class="text-success mb-3">🚗 Vehículo</h4>
-            <div class="row">
-                <div class="col-md-3"><strong>Placa:</strong> {{ tramite.vehiculo.placa }}</div>
-                <div class="col-md-3"><strong>Marca:</strong> {{ tramite.vehiculo.marca }}</div>
-                <div class="col-md-3"><strong>Modelo:</strong> {{ tramite.vehiculo.modelo }}</div>
-                <div class="col-md-3"><strong>Color:</strong> {{ tramite.vehiculo.color }}</div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3"><strong>Tipo Vehículo:</strong> {{ tramite.vehiculo.tipo_vehiculo }}</div>
-                <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ tramite.vehiculo.tipo_transporte }}</div>
-                <div class="col-md-3"><strong>Chasis:</strong> {{ tramite.vehiculo.chasis }}</div>
-                <div class="col-md-3"><strong>Capacidad:</strong> {{ tramite.vehiculo.capacidad }}</div>
-            </div>
+        <h5 class="text-primary mt-4">👤 Afiliado</h5>
+        <div class="row mb-2">
+            <div class="col-md-6"><strong>Nombre completo:</strong> {{ detalle_item.afiliado }}</div>
+            <div class="col-md-6"><strong>Tipo tarjeta:</strong> {{ detalle_item.tipo_tarjeta }}</div>
         </div>
 
-        <!-- Sección: Trámite -->
-        <div>
-            <h4 class="text-info mb-3">📝 Trámite</h4>
-            <div class="row">
-                <div class="col-md-3"><strong>Tipo:</strong> {{ tramite.tipo_tramite.nombre }}</div>
-                <div class="col-md-3"><strong>Gestión:</strong> {{ tramite.gestion }}</div>
-                <div class="col-md-3"><strong>Monto:</strong> {{ tramite.monto }}</div>
-                
-            </div>
-            <div class="row mt-2">
-                <div class="col-md-3"><strong>Rutas a Operar:</strong> {{ tramite.rutasOperar }}</div>
-                <div class="col-md-3"><strong>Depósito:</strong> {{ tramite.numero_deposito }}</div>
-                <div class="col-md-3"><strong>Fecha Validez Inicio:</strong> {{ tramite.fecha_validezI|date:"d/m/Y" }}
-                </div>
-                <div class="col-md-3"><strong>Fecha Validez Fin:</strong> {{ tramite.fecha_validezF|date:"d/m/Y" }}
-                </div>
-            </div>
-            <div class="row mt-2">
-                
-                <div class="col-md-3"><strong>Fecha Creación:</strong> {{ tramite.fecha_creacion|date:"d/m/Y" }}</div>
-                <div class="col-md-6">
-                    <strong>Estado:</strong>
-                    <span class="badge 
-                        {% if tramite.estado == 'ingresado' %} bg-secondary 
-                        {% elif tramite.estado == 'aprobado' %} bg-success text-dark 
-                        {% elif tramite.estado == 'entregado' %} bg-success 
-                        {% elif tramite.estado == 'anulado' %} bg-danger 
-                        {% endif %}">
-                        {{ tramite.estado|capfirst }}
-                    </span>
-                </div>
-            </div>
-            {% if tramite.observaciones %}
-            <div class="mt-3">
-                <strong>Observaciones:</strong>
-                <div class="alert alert-light border">{{ tramite.observaciones }}</div>
-            </div>
-            {% endif %}
-            {% if tramite.estado == 'ingresado' %}
-            <div class="col-md-6">
-                <a href="{% url 'aprobarTramite'  tramite.id %}" class="btn btn-success">Verificar</a>
-                <a href="{% url 'anularTramite'  tramite.id %}" class="btn btn-danger">Observado</a>
-            </div>
-            {% endif %}
+        <h5 class="text-success mt-4">🚗 Vehículo</h5>
+
+        <div class="row mb-2">
+            <div class="col-md-3"><strong>Placa:</strong> {{ detalle_item.vehiculo.placa }}</div>
+            <div class="col-md-3"><strong>Marca:</strong> {{ detalle_item.vehiculo.marca }}</div>
+            <div class="col-md-3"><strong>Modelo:</strong> {{ detalle_item.vehiculo.modelo }}</div>
+            <div class="col-md-3"><strong>Capacidad:</strong> {{ detalle_item.vehiculo.capacidad }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3"><strong>Tipo Transporte:</strong> {{ detalle_item.vehiculo.tipo_transporte }}</div>
+            <div class="col-md-3"><strong>Chasis:</strong> {{ detalle_item.vehiculo.chasis }}</div>
+            <div class="col-md-3"><strong>Costo de tarjeta:</strong> {{ detalle_item.costo_tarjeta }}</div>
+            <div class="col-md-3"><strong>Estado:</strong> {{ detalle_item.tramite.estado }}</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-12"><strong>Rutas a Operar:</strong> {{ detalle_item.rutas }}</div>
+        </div>
+
+        <div class="text-end mt-3">
+            <a href="{% url 'generar_licencia_pdf' detalle_item.id %}" class="btn btn-outline" style="background-color: #87D4C8; border-color: #87D4C8;">
+                📥 Descargar Tarjeta
+            </a>
+            <button  class="btn"  style="background-color: #87D4C8; border-color: #87D4C8;"onclick="printLicencia('{{ detalle_item.id }}')">
+                🖨️ Imprimir
+            </button>
         </div>
     </div>
+    {% endfor %}
 </div>
+
+
+<script>
+    function printLicencia(detalleId) {
+        // Elimina iframe anterior si existe
+        let frame = document.getElementById('printFrame');
+        if (frame) frame.remove();
+
+        // Crea iframe oculto
+        frame = document.createElement('iframe');
+        frame.id = 'printFrame';
+        frame.style.display = 'none';
+        document.body.appendChild(frame);
+
+        frame.onload = () => {
+            setTimeout(() => {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+            }, 100);
+        };
+
+        // URL que genera la licencia en modo inline
+        frame.src = `{% url 'generar_licencia_pdf' 0 %}`.replace('0', detalleId);
+    }
+
+    function printLicencias(detalleId) {
+
+        let frame = document.getElementById('printFrame');
+        if (frame) frame.remove();
+
+        // Crea iframe oculto
+        frame = document.createElement('iframe');
+        frame.id = 'printFrame';
+        frame.style.display = 'none';
+        document.body.appendChild(frame);
+
+        frame.onload = () => {
+            setTimeout(() => {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+            }, 100);
+        };
+
+        // URL que genera la licencia en modo inline
+        frame.src = `{% url 'descargarDetalleCompleto' 0 %}`.replace('0', detalleId);
+    }
+</script>
 {% endblock %}

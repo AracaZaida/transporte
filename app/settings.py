@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'tramite',
     'vehiculo',
     'usuarios',
+    'operador',
+    'log'
  
 
 ]
@@ -65,10 +67,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'utils.context_processors.datos_usuario',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                 
             ],
         },
     },
@@ -85,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'trans',
         'USER':'postgres',
-        'PASSWORD':'kanna',
+        'PASSWORD':'80804',
         'HOST':'localhost',
         'PORT':'5432',
     }
@@ -127,6 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

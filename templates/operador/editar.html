@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header text-white text-center "style="background-color: #FFE5B4;">
+                    <h4>Editar Operador</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'editar_operador' id %}" method="POST">
+                        {% csrf_token %}
+                        {{ form }}
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" style="background-color: #AAC85F; color: white; border: none;" class="btn">Guardad Cambios</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

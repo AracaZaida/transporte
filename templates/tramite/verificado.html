@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Lista de Trámite Verificados</h1>
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Fecha inicio</label>
+            <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control"
+                value="{{ request.GET.fecha_inicio }}">
+        </div>
+        <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Fecha fin</label>
+            <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ request.GET.fecha_fin }}">
+        </div>
+        <div class="col-md-4 align-self-end">
+            <button type="submit" style="background-color: #AAC85F;" class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
+
+    <table id="tablaTramites" class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Número Trámite</th>
+                <th>Tipo de Trámite</th>
+
+                <th>Solicitante</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tra in page_obj %}
+            <tr>
+                <td>{{ tra.numero_tramite }}</td>
+                <td>{{ tra.tipo_tramite }}</td>
+                <td>{{ tra.operador }}</td>
+                <td>{{ tra.estado }}</td>
+                <td>{{ tra.fecha_verificacion }}</td>
+                <td>
+                    <a href="{% url 'tarjeta_tramite' tra.id %}"  class="btn btn-sm" style="background-color: #FB8257; color: white;">Vehiculo</a>
+                    <a href="{% url 'detalleTramite' tra.id %}"  class="btn btn-sm" style="background-color: #F8C170; color: white;">Detalle</a>
+                    {% if tra.verificarPago %}
+                    <a href="#" class="btn btn-success btn-sm">Verificado</a>
+                    {% else %}
+                    <a href="{% url 'verificarPago' tra.id %}" class="btn btn-warning btn-sm">Verificar Pago</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No hay trámites registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

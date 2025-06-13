@@ -1,3 +1,4 @@
+
 from django import forms
 from .models import  Tramite
 from usuarios.models import Usuario
@@ -27,5 +28,7 @@ class TramiteF(forms.ModelForm):
         self.fields['usuario'].widget = forms.Select(choices=tecnicos, attrs={'class': 'form-select'})
         self.fields['usuario'].widget.attrs.update({'class': 'form-select'})
         print(tecnicos)
-        
+
+
+
 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Lista de Operador</h1>
+<style>
+    thead {
+        background-color: #DC5D44;
+    }
+</style>
+
+    <table class="table table-striped">
+        <a class="btn btn-success" href="{% url 'crearOperdor' %}">registrar</a><br>
+        <thead class="table-dark">
+            <tr>
+
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Celular</th>
+                <th>Federacion</th>
+                <th>Fecha creacion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in operador %}
+            <tr>
+
+                <td>{{ o.nombre }}</td>
+                <td>{{ o.direccion }}</td>
+                <td>{{ o.celular }}</td>
+                <td>{{ o.federacion }}</td>
+                <td>{{ o.fecha_creacion }}</td>
+                <td>
+                   
+                    <a href="{% url 'editar_operador' o.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'eliminar_operador' o.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="13" class="text-center">No hay afiliados registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
