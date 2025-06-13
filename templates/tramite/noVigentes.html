@@ -1,35 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 <div class="container">
-    <h1 class="my-4">Lista de Trámite Observados</h1>
+    <h1 class="my-4">Lista de Trámite No Vigentes</h1>
 
-    <table class="table table-striped">
+    <table id="tablaTramites" class="table table-striped">
         <thead class="table-dark">
             <tr>
-                <th>Numero Trámite</th>
+                <th>Número Trámite</th>
                 <th>Tipo de Trámite</th>
-                <th>Fecha/Hora</th>
+
                 <th>Solicitante</th>
                 <th>Estado</th>
-                <th>Detalle</th>
-                <th>Accion</th>
+                <th>Fecha validez inicio</th>
+                <th>Fecha validez fin</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for tra in page_obj %}
             <tr>
-                <td>{{ tra.id }}</td>
+                <td>{{ tra.numero_tramite }}</td>
                 <td>{{ tra.tipo_tramite }}</td>
-                <td>{{ tra.fecha_creacion }}</td>
                 <td>{{ tra.operador }}</td>
                 <td>{{ tra.estado }}</td>
-                <td>{{ tra.observaciones }}</td>
+                <td>{{ tra.fecha_validezI }}</td>
+                <td>{{ tra.fecha_validezF }}</td>
                 <td>
-                    <a href="{% url 'verTramite' tra.id %}" class="btn btn-info btn-sm">Ver</a>
+
+                    <a href="{% url 'detalleTramite' tra.id %}" class="btn btn-info btn-sm">Detalle</a>
+
                 </td>
             </tr>
-
             {% endfor %}
         </tbody>
     </table>
@@ -52,6 +58,12 @@
             {% endif %}
         </span>
     </div>
-
 </div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
 {% endblock %}

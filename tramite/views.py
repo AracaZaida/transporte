@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from django.template.loader import get_template
 from django.utils import timezone
-
+from django.db.models import Q
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -168,7 +168,7 @@ def verificadoTramite(request):
 @login_required
 def observadosramite(request):
 
-    resultado = verificarRol(request, ['super_admin', 'administrador'])
+    resultado = verificarRol(request, ['tecnico', 'administrador'])
     if resultado is not True:
         return resultado
     
@@ -368,19 +368,18 @@ def tramitesVigentes(request):
 
 @login_required
 def tramitesNoVigentes(request):
-    resultado = verificarRol(request, ['super_admin','administrador'])
+    resultado = verificarRol(request, ['super_admin', 'administrador'])
     if resultado is not True:
         return resultado
-    today = datetime.today() 
 
-    filtros = {
-        'flag': 'nuevo',
-        'estado': 'verificado',
-        'fecha_validezI__lte': today,  
-        'fecha_validezF__gte': today,
-    }
+    today = datetime.today()
 
-    tramites = Tramite.objects.filter(**filtros)
+    tramites = Tramite.objects.filter(
+        flag='nuevo',
+        estado='verificado'
+    ).filter(
+        Q(fecha_validezF__lt=today) | Q(fecha_validezI__gt=today)
+    )
 
     paginator = Paginator(tramites, 20)
     page_number = request.GET.get('page')
@@ -390,7 +389,7 @@ def tramitesNoVigentes(request):
         'page_obj': page_obj,
     }
 
-    return render(request, 'tramite/tramitesVigentes.html', context)
+    return render(request, 'tramite/noVigentes.html', context)
 
 def dibujar_encabezado(p, width, height, margin):
     # Calcular el centro vertical del encabezado

@@ -24,11 +24,11 @@ urlpatterns = [
   
    path('listarRuta',views.listarRuta, name='listarRuta'),
       path('tramitesVigentes',views.tramitesVigentes, name='tramitesVigentes'),
+      path('tramitesNoVigentes',views.tramitesNoVigentes, name='tramitesNoVigentes'),
         path('crearCosto',views.crearCosto, name='crearCosto'),
            path('listarCosto',views.listarCosto, name='listarCosto'),
                path('eliminarCosto/<int:id>',views.eliminarCosto, name='eliminarCosto'),
               path('editarCosto/<int:id>',views.editarCosto, name='editarCosto')
-  
   
 
   
