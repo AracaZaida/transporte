@@ -190,7 +190,7 @@ def detalleTramite (request, id):
     if resultado is not True:
         return resultado
     tramite = get_object_or_404(Tramite, pk=id)
-    detalle = DetalleTramite.objects.filter(tramite= tramite)
+    detalle = DetalleTramite.objects.filter(tramite= tramite, flag='nuevo')
     context  = {
         'tramite':tramite,
         'detalle':detalle
